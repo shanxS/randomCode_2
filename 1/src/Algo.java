@@ -4,67 +4,38 @@ import java.util.*;
  * @author shashaku on 29/03/16.
  */
 public class Algo {
-    private Integer[] A = {3,7,8,5,2,1,9,5,4};//{2,3,8,6,7};
-    private Stack<Integer> startStack, endStack;
+    private Integer[] A =  {10, 2, 6, 6};
+    private Integer target = 12;
+    private HashMap<Integer, Integer> elements;
 
     public void run() {
-        for (Integer i : A) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
-
-        startStack = new Stack<Integer>();
-        endStack = new Stack<Integer>();
-
-        startStack.push(0);
-        endStack.push(A.length - 1);
-        quickSort();
-
-        for (Integer i : A) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
-    }
-
-    private void quickSort() {
-        while (startStack.size() > 0 && endStack.size() > 0){
-            Integer start = startStack.pop();
-            Integer end = endStack.pop();
-
-            if (start >= end) {
-                continue;
+        elements = new HashMap<Integer, Integer>();
+        for (Integer element : A) {
+            Integer valueCount = elements.get(element);
+            if (valueCount == null) {
+                valueCount = 0;
             }
-
-            Integer pivotIndex = sort(start, end);
-            startStack.push(start);
-            endStack.push(pivotIndex - 1);
-
-            startStack.push(pivotIndex + 1);
-            endStack.push(end);
+            ++valueCount;
+            elements.put(element, valueCount);
         }
-    }
 
-    private Integer sort(Integer start, Integer end) {
-        Integer marker = start - 1;
-        Integer pivotValue = A[end];
+        Integer count = 0;
+        for (Integer element : A) {
+            Integer diff = target - element;
+            Integer diffCount = elements.get(diff);
+            if (diffCount != null && diffCount > 0) {
+                ++count;
 
-        for (Integer j=start; j<end; ++j) {
-            if (A[j] <= pivotValue) {
-                ++marker;
-                swap(marker, j);
+                remove(diff);
+                remove(element);
             }
         }
 
-        swap(marker+1, end);
-        return marker+1;
+        System.out.print(count);
     }
 
-    private void swap(Integer from, Integer to) {
-        Integer temp = A[from];
-        A[from] = A[to];
-        A[to] = temp;
+    private void remove(Integer value) {
+        Integer count = elements.get(value);
+        elements.put(value, count - 1);
     }
-
-
-
 }
