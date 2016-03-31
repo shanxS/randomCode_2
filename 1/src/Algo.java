@@ -2,39 +2,28 @@
  * @author shashaku on 29/03/16.
  */
 public class Algo {
-    private Integer[] A =  {2,2,2,3};//{1, 3, 3, 1, 2};//{2, 2, 3, 5, 2, 2, 6};
+    private Integer[] A =  {0,0,1,2};//{1, 3, 3, 5, 2};//{2,2,2,1};
 
 
     public void run() {
-        Integer count = 1;
-        Integer index = 0;
-
         for (Integer i=0; i<A.length; ++i) {
-            if (A[index] == A[i]) {
-                ++count;
-            }
-            else {
-                --count;
-            }
-
-            if (count == 0) {
-                count = 1;
-                index = i;
-            }
+            Integer orig = A[i] % A.length;
+            Integer addend = (orig == 0) ? A.length : (A.length * (orig));
+            A[orig] += addend;
         }
 
-        count = 0;
-        for (Integer i=0; i<A.length; ++i){
-            if (A[i] == A[index]) {
-                ++count;
+        Integer maxValue = 0;
+        Integer maxCount = (A[0] - (A[0] % A.length)) / A.length;
+        for (Integer i=1; i<A.length; ++i) {
+            Integer orig = A[i] % A.length;
+            Integer count = (A[i] - orig) / (A.length * (i));
+
+            if (count > maxCount) {
+                maxCount = count;
+                maxValue = i;
             }
         }
 
-        if (count > A.length/2) {
-            System.out.print(A[index]);
-        }
-        else {
-            System.out.print("not found");
-        }
+        System.out.print(maxValue + " " + maxCount);
     }
 }
