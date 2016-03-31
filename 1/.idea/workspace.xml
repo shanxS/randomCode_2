@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f98033c-4149-4d4c-a7d2-848376c8e0ea" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Algo.java" afterPath="$PROJECT_DIR$/src/Algo.java" />
     </list>
     <ignored path="1.iws" />
@@ -28,7 +29,7 @@
         <entry file="file://$PROJECT_DIR$/src/Algo.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0990099">
-              <caret line="4" column="35" selection-start-line="0" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+              <caret line="4" column="33" selection-start-line="4" selection-start-column="33" selection-end-line="4" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -529,7 +530,7 @@
     <entry file="file://$PROJECT_DIR$/src/Algo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0990099">
-          <caret line="4" column="35" selection-start-line="0" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <caret line="4" column="33" selection-start-line="4" selection-start-column="33" selection-end-line="4" selection-end-column="33" />
           <folding />
         </state>
       </provider>
