@@ -1,113 +1,60 @@
-import java.util.ArrayDeque;
-
 /**
  * @author shashaku on 29/03/16.
  */
 public class Algo {
 
-    private Integer[] A = {3,2,1,5,4};//{4,5,1,2,3};
-    private Integer target = 5;
-
-    private final Integer INC = 1;
-    private final Integer DEC = -1;
-    private ArrayDeque<Integer> trend;
-    private ArrayDeque<Integer> trendLength;
+    private Integer[] large = {2, 8, null, null, null, 13, null, 15, 20};//{1, null, 7,8,9,10,null};;
+    private Integer[] small = {5, 7, 9, 25};//{11,12};
 
 
     public void run() {
+        segrregateLarge();
+        merge();
 
-        if (A.length <= 3) {
-            linearSearch();
-        }
-
-        trend = new ArrayDeque<>();
-        trendLength = new ArrayDeque<>();
-
-        computeTrend();
-        Integer lengthSoFar = 0;
-        while (trend.size()>0 && trendLength.size()>0) {
-            Integer thisTrend = trend.removeLast();
-            Integer thisTrendLength = trendLength.removeLast();
-
-            if (thisTrend == INC && findInInc(lengthSoFar, lengthSoFar+thisTrendLength-1)) {
-                System.out.print("found in inc");
-            }
-            else if (thisTrend == DEC  && findInDec(lengthSoFar, lengthSoFar+thisTrendLength-1)) {
-                System.out.print("found in dec");
-            }
-
-            lengthSoFar += thisTrendLength-1;
+        for (Integer element : large) {
+            System.out.print(element + " ");
         }
     }
 
-    private void linearSearch() {
-        for (Integer element : A) {
-            if (element == target) {
-                System.out.print("found in linear search O(1)");
-            }
-        }
-    }
+    private void merge() {
+        Integer largeMarker = large.length - small.length - 1;
+        Integer smallMarker = small.length - 1;
+        Integer writer = large.length - 1;
 
-    private boolean findInInc(Integer start, int end) {
-
-        while (start <= end) {
-
-            Integer mid = start + ((end-start)/2);
-            if (A[mid] == target) {
-                System.out.println("found at " + mid);
-                return true;
-            } else if (A[mid] < target) {
-                start = mid+1;
+        while (large[writer] == null) {
+            if (large[largeMarker] > small[smallMarker]) {
+                large[writer] = large[largeMarker];
+                large[largeMarker] = null;
+                --largeMarker;
+            } else if (large[largeMarker] < small[smallMarker]) {
+                large[writer] = small[smallMarker];
+                --smallMarker;
             } else {
-                end = mid-1;
+                large[writer] = small[smallMarker];
+                --smallMarker;
             }
+
+            --writer;
         }
-
-
-        return false;
     }
 
-    private boolean findInDec(Integer start, Integer end) {
+    private void segrregateLarge() {
+        for (Integer marker=0, explorer=0; marker<large.length && explorer<large.length; ++marker) {
+            if (large[marker] == null) {
+                explorer = marker+1;
+                while (explorer < large.length) {
 
-        while (start <= end) {
-            Integer mid = start + ((end-start)/2);
-            if (A[mid] == target) {
-                System.out.println("found at " + mid);
-                return true;
-            } else if (A[mid] < target) {
-                end = mid-1;
-            } else {
-                start = mid+1;
+                    if (large[explorer] != null) {
+                        large[marker] = large[explorer];
+                        large[explorer] = null;
+                        break;
+                    }
+
+                    ++explorer;
+                }
             }
         }
-
-        return false;
     }
 
-    private void computeTrend() {
-        Integer trendSoFar = (A[0] > A[1]) ? DEC : INC;
-        Integer trendLengthSoFar = 2;
-        Boolean updated = false;
-        for (Integer i=1; i<A.length - 1; ++i) {
-            Integer thisTrend = (A[i] > A[i+1]) ? DEC : INC;
 
-            if (thisTrend == trendSoFar) {
-                ++trendLengthSoFar;
-               updated = false;
-            } else {
-                trend.push(trendSoFar);
-                trendLength.push(trendLengthSoFar);
-                updated = true;
-
-                trendSoFar = thisTrend;
-                trendLengthSoFar = 2;
-            }
-        }
-
-        //if (!updated)
-        {
-            trend.push(trendSoFar);
-            trendLength.push(trendLengthSoFar);
-        }
-    }
 }
