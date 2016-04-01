@@ -17,7 +17,7 @@ public class Algo {
     public void run() {
 
         if (A.length <= 3) {
-            System.out.print("array lenght in sufficient");
+            linearSearch();
         }
 
         trend = new ArrayDeque<>();
@@ -37,6 +37,14 @@ public class Algo {
             }
 
             lengthSoFar += thisTrendLength-1;
+        }
+    }
+
+    private void linearSearch() {
+        for (Integer element : A) {
+            if (element == target) {
+                System.out.print("found in linear search O(1)");
+            }
         }
     }
 
