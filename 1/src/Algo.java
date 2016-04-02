@@ -3,24 +3,36 @@
  */
 public class Algo {
 
-    private Integer[] A = {1, 12, 15, 26};//{1, 2, 3, 6};
+    private Integer[] A = {1,2,3,4, 5};//{1, 2, 3, 6};
+
 
     public void run() {
-        Integer s = 0;
-        Integer e = A.length - 1;
 
-        while (s < e) {
-            Integer temp = A[s];
-            A[s] = A[e];
-            A[e] = temp;
-
-            ++s;
-            --e;
-        }
+        //rightTurner(3);
+        leftTurner(1);
 
         for (Integer ele : A) {
             System.out.print(ele + " ");
         }
     }
 
+    private void rightTurner(final Integer turns) {
+        Integer from = A.length - 1;
+        Integer holder = A[from];
+        Integer counter = 0;
+
+        while (counter < A.length) {
+            Integer to = (turns + from) % A.length;
+            Integer temp = holder;
+            holder = A[to];
+            A[to] = temp;
+            from = to;
+
+            ++counter;
+        }
+    }
+
+    private void leftTurner(final Integer turns) {
+        rightTurner(A.length - turns);
+    }
 }
