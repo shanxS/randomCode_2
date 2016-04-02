@@ -3,58 +3,68 @@
  */
 public class Algo {
 
-    private Integer[] large = {2, 8, null, null, null, 13, null, 15, 20};//{1, null, 7,8,9,10,null};;
-    private Integer[] small = {5, 7, 9, 25};//{11,12};
-
+    private Integer[] array1 = {1, 2, 3, 6};//{1, 12, 15, 26, 38};
+    private Integer[] array2 = {4, 6, 8, 10};//{2, 13, 17, 30, 45};
 
     public void run() {
-        segrregateLarge();
-        merge();
+        Integer start1 = 0;
+        Integer start2 = 0;
+        Integer end1 = array1.length - 1;
+        Integer end2 = array2.length - 1;
 
-        for (Integer element : large) {
-            System.out.print(element + " ");
-        }
-    }
+        Integer median = null;
 
-    private void merge() {
-        Integer largeMarker = large.length - small.length - 1;
-        Integer smallMarker = small.length - 1;
-        Integer writer = large.length - 1;
+        while (end2-start2 > 1) {
+            Integer m1 = median(array1, start1, end1);
+            Integer m2 = median(array2, start2, end2);
 
-        while (large[writer] == null) {
-            if (large[largeMarker] > small[smallMarker]) {
-                large[writer] = large[largeMarker];
-                large[largeMarker] = null;
-                --largeMarker;
-            } else if (large[largeMarker] < small[smallMarker]) {
-                large[writer] = small[smallMarker];
-                --smallMarker;
-            } else {
-                large[writer] = small[smallMarker];
-                --smallMarker;
-            }
 
-            --writer;
-        }
-    }
+            System.out.println("s1 " + start1 + "  e1 " + end1 + "  s2 " + start2 + "  e2 " + end2);
+            System.out.println(m1 + " " + m2);
 
-    private void segrregateLarge() {
-        for (Integer marker=0, explorer=0; marker<large.length && explorer<large.length; ++marker) {
-            if (large[marker] == null) {
-                explorer = marker+1;
-                while (explorer < large.length) {
+            if (m1 > m2) {
 
-                    if (large[explorer] != null) {
-                        large[marker] = large[explorer];
-                        large[explorer] = null;
-                        break;
-                    }
+                end1 = mean(start1, end1);
+                start2 = mean(start2, end2);
 
-                    ++explorer;
-                }
+            } else if (m2 > m1) {
+
+                start1 = mean(start1, end1);
+                end2 = mean(start2, end2);
+
+            } else if (m1 == m2) {
+
+                median = m1;
+                break;
+
             }
         }
+
+        if (median == null) {
+            System.out.println("s1 " + start1 + "  e1 " + end1 + "  s2 " + start2 + "  e2 " + end2);
+            median = mean(Math.max(array1[start1], array2[start2]),
+                          Math.min(array1[end1], array2[end2]));
+        }
+
+        System.out.print(median);
     }
 
+
+    private Integer median (Integer[] A, Integer start, Integer end) {
+
+        if ((end-start+1)%2 == 0) {
+            Integer firstIndex = start + ((end-start)/2);
+            Integer secondIndex = firstIndex + 1;
+            return mean (A[firstIndex], A[secondIndex]);
+        } else {
+            Integer index = start + ((end-start)/2);
+            return A[index];
+        }
+
+    }
+
+    private Integer mean(Integer num1, Integer num2) {
+        return (num1>num2) ? (num2 + ((num1-num2)/2)) : (num1 + ((num2-num1)/2));
+    }
 
 }
