@@ -7,32 +7,16 @@ public class Algo {
 
 
     public void run() {
+        //System.out.print(gcd (5,7));
+        System.out.print(gcd (12,8));
+    }
 
-        //rightTurner(3);
-        leftTurner(1);
-
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
+    private Integer gcd(Integer large, Integer small) {
+        if (small == 0) {
+            return large;
+        } else {
+            return gcd(small, large % small);
         }
     }
 
-    private void rightTurner(final Integer turns) {
-        Integer from = A.length - 1;
-        Integer holder = A[from];
-        Integer counter = 0;
-
-        while (counter < A.length) {
-            Integer to = (turns + from) % A.length;
-            Integer temp = holder;
-            holder = A[to];
-            A[to] = temp;
-            from = to;
-
-            ++counter;
-        }
-    }
-
-    private void leftTurner(final Integer turns) {
-        rightTurner(A.length - turns);
-    }
 }
