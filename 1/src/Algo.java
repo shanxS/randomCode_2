@@ -14,57 +14,54 @@ public class Algo {
 
         Integer median = null;
 
-        while (end2-start2 > 1) {
-            Integer m1 = median(array1, start1, end1);
-            Integer m2 = median(array2, start2, end2);
+        while ((end1-start1) > 1 || (end2-start2) > 1) {
+            Integer m1 = findMedian(array1, start1, end1);
+            Integer m2 = findMedian(array2, start2, end2);
 
-
-            System.out.println("s1 " + start1 + "  e1 " + end1 + "  s2 " + start2 + "  e2 " + end2);
-            System.out.println(m1 + " " + m2);
-
-            if (m1 > m2) {
-
-                end1 = mean(start1, end1);
-                start2 = mean(start2, end2);
-
-            } else if (m2 > m1) {
-
-                start1 = mean(start1, end1);
-                end2 = mean(start2, end2);
-
-            } else if (m1 == m2) {
-
+            if (m1 == m2) {
                 median = m1;
                 break;
+            } else if (m1 > m2) {
+                if ((end1-start1) > 1) {
+                    end1 = mean(start1, end1);
+                }
 
+                if ((end2-start2) > 1) {
+                    start2 = mean(start2, end2);
+                }
+
+            } else if (m1 < m2) {
+                if ((end1-start1) > 1) {
+                    start1 = mean(start1, end1);
+                }
+
+                if ((end2-start2) > 1) {
+                    end2 = mean(start2, end2);
+                }
             }
         }
 
         if (median == null) {
-            System.out.println("s1 " + start1 + "  e1 " + end1 + "  s2 " + start2 + "  e2 " + end2);
-            median = mean(Math.max(array1[start1], array2[start2]),
-                          Math.min(array1[end1], array2[end2]));
+            median = mean (Math.max(array1[start1], array2[start2]),
+                            Math.min(array1[end1], array2[end2]));
         }
 
         System.out.print(median);
     }
 
-
-    private Integer median (Integer[] A, Integer start, Integer end) {
-
+    private Integer findMedian(Integer[] array, Integer start, Integer end) {
         if ((end-start+1)%2 == 0) {
-            Integer firstIndex = start + ((end-start)/2);
-            Integer secondIndex = firstIndex + 1;
-            return mean (A[firstIndex], A[secondIndex]);
+            Integer meanIndex = mean(start, end);
+            Integer value1 = array[meanIndex];
+            Integer value2 = array[meanIndex+1];
+            return mean(value1, value2);
         } else {
-            Integer index = start + ((end-start)/2);
-            return A[index];
+            return array[mean(start, end)];
         }
-
     }
 
     private Integer mean(Integer num1, Integer num2) {
-        return (num1>num2) ? (num2 + ((num1-num2)/2)) : (num1 + ((num2-num1)/2));
+        return Math.min(num1, num2) + ((Math.abs(num1-num2))/2);
     }
 
 }
