@@ -4,18 +4,27 @@
 public class Algo {
 
     private Integer[] A = {1,2,3,4, 5};//{1, 2, 3, 6};
+    private Integer turns = 2;
 
 
     public void run() {
-        //System.out.print(gcd (5,7));
-        System.out.print(gcd (12,8));
+        reverse(0,turns-1);
+        reverse(turns, A.length-1);
+        reverse(0, A.length-1);
+
+        for (Integer ele : A) {
+            System.out.print(ele + " ");
+        }
     }
 
-    private Integer gcd(Integer large, Integer small) {
-        if (small == 0) {
-            return large;
-        } else {
-            return gcd(small, large % small);
+    private void reverse(Integer start, Integer end) {
+        while (start < end) {
+            Integer temp = A[start];
+            A[start] = A[end];
+            A[end] = temp;
+
+            ++start;
+            --end;
         }
     }
 
