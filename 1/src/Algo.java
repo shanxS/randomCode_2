@@ -1,128 +1,80 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author shashaku on 29/03/16.
  */
 public class Algo {
 
     public void run() {
-        Integer[] A = {2, 4, 1, 3, 5};//{1, 20, 6, 4, 5};
-        InversionKeeper ik = new InversionKeeper();
+        Integer[] A = {2,7,5,8,4,6,3};//{3,2,1};
+        MergeSort ms = new MergeSort();
+        ms.process(A);
         for (Integer ele : A) {
-            ik.insert(ele);
+            System.out.print(ele + " ");
         }
-
-        ik.printInversions();
-
     }
 }
 
-class InversionKeeper {
-    private Node head;
-    private Map<Integer, List<Integer>> inversions;
-
-    public InversionKeeper() {
-        inversions = new HashMap<>();
+class MergeSort {
+    private Integer[] A;
+    public void process(Integer[] A) {
+        this.A = A;
+        sort(0, A.length-1);
     }
 
-    public void insert(Integer data) {
-        if (head == null) {
-            head = new Node(data);
-        } else {
-            insert(head, data);
-        }
-    }
-
-    public void printInversions() {
-        for (Map.Entry<Integer, List<Integer>> entry : inversions.entrySet()) {
-            System.out.println(entry);
-        }
-    }
-
-    private void insert(Node node, Integer data) {
-        if (node.getData() > data) {
-            populateInversions(node, data);
-            if (node.getLeft() != null) {
-                insert(node.getLeft(), data);
-            } else {
-                node.setLeft(new Node(data));
-            }
-        } else  if (node.getData() < data) {
-            if (node.getRight() != null) {
-                insert(node.getRight(), data);
-            } else {
-                node.setRight(new Node(data));
-            }
-        }
-    }
-
-    private void populateInversions(Node node, Integer data) {
-        if (node == null) {
+    private void sort (Integer start, Integer end) {
+        if (end == start) {
             return;
         }
 
-        List<Integer> inversionData = inversions.get(node.getData());
-        if (inversionData == null) {
-            inversionData = new ArrayList<>();
-            inversions.put(node.getData(), inversionData);
+        Integer start1 = start;
+        Integer end1 = mean (start1, end);
+        sort(start1, end1);
+
+        Integer start2 = end1 + 1;
+        Integer end2 = end;
+        sort(start2, end2);
+
+        merge(start1, end1, start2, end2);
+    }
+
+    private void merge(Integer start1, Integer end1, Integer start2, Integer end2) {
+        Integer marker1 = start1;
+        Integer marker2 = start2;
+
+        Integer[] tempA = new Integer[(end1-start1+1) + (end2-start2+1)];
+        Integer marker = 0;
+
+        while (marker1 <= end1 && marker2 <= end2) {
+            if (A[marker1] < A[marker2]) {
+                tempA[marker] = A[marker1];
+                ++marker1;
+            } else if (A[marker2] < A[marker1]) {
+                tempA[marker] = A[marker2];
+                ++marker2;
+            }
+
+            ++marker;
         }
-        inversionData.add(data);
 
-        populateInversions(node.getRight(), data);
-    }
-
-    public void print(Node node) {
-        if (node == null) {
-            return;
+        while (marker1 <= end1) {
+            tempA[marker] = A[marker1];
+            ++marker1;
+            ++marker;
         }
 
-        System.out.print(node.getData() + " - ");
-        if (node.getLeft() != null) {
-            System.out.print(node.getLeft().getData());
+        while (marker2 <= end2) {
+            tempA[marker] = A[marker2];
+            ++marker2;
+            ++marker;
         }
-        System.out.print(", ");
-        if (node.getRight() != null) {
-            System.out.print(node.getRight().getData());
+
+        marker = 0;
+        for (Integer i=start1; i<=end2; ++i, ++marker) {
+            A[i] = tempA[marker];
         }
-        System.out.println();
-
-        print(node.getLeft());
-        print(node.getRight());
-    }
-}
-
-class Node {
-    private Integer data;
-    private Node left, right;
-
-    public Node (Integer data) {
-        this.data = data;
     }
 
-    public Integer getData() {
-        return data;
-    }
 
-    public void setData(Integer data) {
-        this.data = data;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public Node getRight() {
-        return right;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
+    private Integer mean(Integer num1, Integer num2) {
+        return Math.min(num1, num2) + ((Math.abs(num1-num2))/2);
     }
 }
