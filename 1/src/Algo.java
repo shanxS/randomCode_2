@@ -3,23 +3,47 @@
  */
 public class Algo {
 
-    private Integer[] A = {12, 13, 1, 10, 34, 1};
+    private Integer[][] ARR = {{1, 1, 1, 2, 2},
+                             {1, 1, 2, 4, 4, 4, 6, 6},
+                             {1, 2, 3, 3, 3, 3, 10},
+                             {12, 13, 1, 10, 34, 1}};
 
     public void run() {
 
-        Integer small = Integer.MAX_VALUE;
-        Integer small2 = Integer.MAX_VALUE;
+        for (Integer[] arr : ARR) {
+            find(arr);
+        }
 
-        for (Integer i=0; i<A.length; ++i) {
-            if (A[i] < small) {
-                small2 = small;
-                small = A[i];
-            } else if (A[i] < small2 && A[i] != small) {
-                small2 = A[i];
+
+    }
+
+    private void find(Integer[] A) {
+        Integer num = A[0];
+        Integer count = 1;
+
+        for (Integer i=1; i<A.length; ++i) {
+            if (A[i] == num) {
+                ++count;
+            } else {
+                --count;
+                if (count == 0) {
+                    num = A[i];
+                    count = 1;
+                }
             }
         }
 
-        System.out.print(small + " " + small2);
+        count = 0;
+        for (Integer i=0; i<A.length; ++i) {
+            if (A[i] == num) {
+                ++count;
+            }
+        }
 
+        if (count >= A.length/2) {
+            System.out.println("foudn " + num);
+        } else {
+            System.out.println("not found");
+        }
     }
 }
