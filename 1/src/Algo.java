@@ -3,47 +3,66 @@
  */
 public class Algo {
 
-    private Integer[] A = {5,4,6,6,2};//{2, 4, 1, 3, 5};
+    private Integer[] A = {1, 60, -10, 70, -80, 85};
 
     public void run() {
-        Integer odd = 1;
-        Integer even = 0;
 
-        while (even < A.length) {
-            if (A[even] % 2 != 0) {
-                odd = nextOddPoistion(odd);
+        QuickSort qs = new QuickSort();
+        qs.sort(A);
 
-                if (odd >= A.length) {
-                    System.out.print("no can do");
-                    break;
-                }
+        Integer end = A.length-1;
+        Integer start = 0;
+        Integer minValue = Integer.MAX_VALUE;
+        while (end > start) {
+            Integer diff = A[end] + A[start];
+            minValue = (Math.abs(diff) < Math.abs(minValue)) ? diff : minValue;
 
-                swap(odd, even);
+            if (diff > 0) {
+                --end;
+            } else  if (diff < 0) {
+                ++start;
             }
-
-            even += 2;
+            else if (diff == 0) {
+                break;
+            }
         }
 
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
+        System.out.print(minValue);
+
+    }
+}
+
+class QuickSort {
+    private Integer[] A;
+    public void  sort (Integer[] A) {
+        this.A = A;
+        doItFor(0, A.length-1);
+    }
+
+    private void doItFor(int start, int end) {
+        if (start >= end) {
+            return;
         }
+
+        Integer marker = start - 1;
+        Integer pivotValue = A[end];
+
+        for (Integer j=start; j<end; ++j) {
+            if (A[j] <= pivotValue) {
+                ++marker;
+                swap(marker, j);
+            }
+        }
+
+        swap(marker+1, end);
+
+        doItFor(start, marker);
+        doItFor(marker+2, end);
     }
 
     private void swap(Integer from, Integer to) {
         Integer temp = A[from];
         A[from] = A[to];
         A[to] = temp;
-    }
-
-    private Integer nextOddPoistion(Integer odd) {
-        while (odd < A.length) {
-            if (A[odd] % 2 == 0) {
-                break;
-            }
-
-            odd += 2;
-        }
-
-        return odd;
     }
 }
