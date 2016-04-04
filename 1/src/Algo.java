@@ -3,66 +3,35 @@
  */
 public class Algo {
 
-    private Integer[][] ARR = {{1, 1, 1, 2, 2},
-                             {1, 1, 2, 4, 4, 4, 6, 6},
-                             {1, 2, 3, 3, 3, 3, 10},
-            {1, 2, 3, 3, 3, 3, 10}};
-    private Integer[] values = {1,4,3,10};
+    private final Integer MIN = 0;
+    private final Integer MAX = 1;
+    private Integer[] A = {1000, 11, 445, 1, 330, 3000};
 
     public void run() {
-        for (Integer i=0; i<ARR.length; ++i) {
-            System.out.println("first " + firstIndex(values[i], ARR[i]));
-            System.out.println("last " + lastIndex(values[i], ARR[i]));
-            System.out.println();
+
+        Integer[] values = findMinMax(0, A.length-1);
+        System.out.print(values[MIN] + " " + values[MAX]);
+    }
+
+    private Integer[] findMinMax(Integer start, Integer end) {
+        Integer[] values = new Integer[2];
+
+        if (end-start == 0) {
+            values[MIN] = A[end];
+            values[MAX] = A[end];
+        } else if (end-start== 1) {
+            values[MIN] = Math.min(A[start], A[end]);
+            values[MAX] = Math.max(A[start], A[end]);
+        } else {
+            Integer mid = Math.min(start, end) + ((Math.abs(end-start))/2);
+            Integer[] values1 = findMinMax(start, mid);
+            Integer[] values2 = findMinMax(mid+1, end);
+
+            values[MIN] = Math.min(values1[MIN], values2[MIN]);
+            values[MAX] = Math.max(values1[MAX], values2[MAX]);
         }
 
+        return values;
     }
 
-    private Integer lastIndex(Integer value, Integer[] A) {
-        Integer start = 0;
-        Integer end = A.length-1;
-
-        while (start <= end) {
-            Integer mid = mean(start, end);
-            if (A[mid] == value) {
-                if(mid < A.length-1 && A[mid+1] == value) {
-                    start = mid + 1;
-                } else {
-                    return mid;
-                }
-            } else if (A[mid] < value) {
-                start = start+1;
-            } else if (A[mid] > value) {
-                end = mid-1;
-            }
-        }
-
-        return null;
-    }
-
-    private Integer firstIndex(Integer value, Integer[] A) {
-        Integer start = 0;
-        Integer end = A.length-1;
-
-        while (start <= end) {
-            Integer mid = mean (start, end);
-            if (A[mid] == value) {
-                if (mid > 0 && A[mid-1] == value) {
-                    end = mid-1;
-                } else {
-                    return mid;
-                }
-            } else if (A[mid] < value) {
-                start = mid + 1;
-            } else if (A[mid] > value) {
-                end = mid - 1;
-            }
-        }
-
-        return null;
-    }
-
-    private Integer mean(Integer num1, Integer num2) {
-        return Math.min(num1, num2) + ((Math.abs(num1-num2))/2);
-    }
 }
