@@ -6,17 +6,16 @@ import java.util.List;
  */
 public class Algo {
     private Integer[] A = {6, 5, 3, 1, 8, 7, 2, 4};
+    private Integer k = 3;
     public void run() {
 
-        MaxHeap maxHeap = new MaxHeap();
+        MaxHeap maxHeap = new MaxHeap(k);
 
         for (Integer ele : A){
             maxHeap.put(ele);
         }
 
-        while (maxHeap.size() > 0) {
-            System.out.print(maxHeap.getMax() + " ");
-        }
+        System.out.print(k + " min is " + maxHeap.getMax());
 
     }
 }
@@ -24,14 +23,20 @@ public class Algo {
 
 class MaxHeap {
     private List<Integer> data;
+    private final Integer count;
 
-    public MaxHeap() {
+    public MaxHeap(Integer count) {
         data = new ArrayList<>();
+        this.count = count;
     }
 
     public void put(Integer value) {
         data.add(value);
         heapify(data.size()-1);
+
+        if (data.size() > count) {
+            getMax();
+        }
     }
 
     public Integer getMax() {
