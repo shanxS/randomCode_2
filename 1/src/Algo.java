@@ -7,18 +7,20 @@ import java.util.List;
 public class Algo {
     private Integer[] A = {6, 5, 3, 1, 8, 7, 2, 4};
     public void run() {
-        MaxHeap maxHeap = new MaxHeap();
-        for (Integer ele : A) {
-            maxHeap.insert(ele);
-        }
 
-        maxHeap.print();
+        MaxHeap maxHeap = new MaxHeap();
+
+        for (Integer ele : A){
+            maxHeap.put(ele);
+        }
 
         while (maxHeap.size() > 0) {
             System.out.print(maxHeap.getMax() + " ");
         }
+
     }
 }
+
 
 class MaxHeap {
     private List<Integer> data;
@@ -27,35 +29,9 @@ class MaxHeap {
         data = new ArrayList<>();
     }
 
-    public void insert(Integer value) {
+    public void put(Integer value) {
         data.add(value);
         heapify(data.size()-1);
-    }
-
-    public void print() {
-        print(0);
-    }
-
-    private void print(Integer parent) {
-        if (!isValid(parent)) {
-            return;
-        }
-
-        Integer leftChildIndex = leftChildOf(parent);
-        Integer rightChildIndex = rightChildOf(parent);
-
-        System.out.print(data.get(parent) + " - ");
-        if (isValid(leftChildIndex)) {
-            System.out.print(data.get(leftChildIndex));
-        }
-        System.out.print(", ");
-        if (isValid(rightChildIndex)) {
-            System.out.print(data.get(rightChildIndex));
-        }
-        System.out.println();
-
-        print(leftChildIndex);
-        print(rightChildIndex);
     }
 
     public Integer getMax() {
@@ -67,7 +43,6 @@ class MaxHeap {
         swap(0, data.size()-1);
         data.remove(data.size()-1);
         reverseHeapify(0);
-
 
         return maxValue;
     }
@@ -81,30 +56,30 @@ class MaxHeap {
                     && data.get(leftChildIndex) > data.get(parentIndex)) {
                 swap(leftChildIndex, parentIndex);
                 reverseHeapify(leftChildIndex);
-            } else if (data.get(rightChildIndex) > data.get(parentIndex)){
+            } else if (data.get(rightChildIndex) > data.get(parentIndex)) {
                 swap(rightChildIndex, parentIndex);
                 reverseHeapify(rightChildIndex);
             }
 
-        } else if (isValid(rightChildIndex) && data.get(rightChildIndex) > data.get(parentIndex)) {
-            swap(rightChildIndex, parentIndex);
-            reverseHeapify(rightChildIndex);
-
         } else if (isValid(leftChildIndex) && data.get(leftChildIndex) > data.get(parentIndex)) {
             swap(leftChildIndex, parentIndex);
             reverseHeapify(leftChildIndex);
+
+        } else if (isValid(rightChildIndex) && data.get(rightChildIndex) > data.get(parentIndex)) {
+            swap(rightChildIndex, parentIndex);
+            reverseHeapify(rightChildIndex);
 
         }
     }
 
     private void heapify(Integer childIndex) {
         Integer parentIndex = parentOf(childIndex);
+
         if (parentIndex == childIndex || !isValid(parentIndex) || data.get(parentIndex) > data.get(childIndex)) {
             return;
         }
 
-        swap(childIndex, parentIndex);
-
+        swap(parentIndex, childIndex);
         heapify(parentIndex);
     }
 
@@ -114,19 +89,20 @@ class MaxHeap {
         data.set(to, temp);
     }
 
-    private Integer leftChildOf(Integer parent) {
+
+    private Integer leftChildOf (Integer parent) {
         return (2*parent) + 1;
     }
 
-    private Integer rightChildOf(Integer parent) {
+    private Integer rightChildOf (Integer parent) {
         return leftChildOf(parent) + 1;
     }
 
-    private Integer parentOf(Integer child) {
-        return ((child - 1) / 2);
+    private Integer parentOf (Integer child) {
+        return (child-1)/2;
     }
 
-    private boolean isValid(Integer index) {
+    private Boolean isValid (Integer index) {
         return (index >= 0) && (index < data.size());
     }
 
