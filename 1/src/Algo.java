@@ -13,6 +13,10 @@ public class Algo {
         }
 
         maxHeap.print();
+
+        while (maxHeap.size() > 0) {
+            System.out.print(maxHeap.getMax() + " ");
+        }
     }
 }
 
@@ -54,17 +58,60 @@ class MaxHeap {
         print(rightChildIndex);
     }
 
+    public Integer getMax() {
+        if (data.size() == 0) {
+            return null;
+        }
+
+        Integer maxValue = data.get(0);
+        swap(0, data.size()-1);
+        data.remove(data.size()-1);
+        reverseHeapify(0);
+
+
+        return maxValue;
+    }
+
+    private void reverseHeapify(Integer parentIndex) {
+        Integer leftChildIndex = leftChildOf(parentIndex);
+        Integer rightChildIndex = rightChildOf(parentIndex);
+
+        if (isValid(leftChildIndex) && isValid(rightChildIndex)) {
+            if (data.get(leftChildIndex) > data.get(rightChildIndex)
+                    && data.get(leftChildIndex) > data.get(parentIndex)) {
+                swap(leftChildIndex, parentIndex);
+                reverseHeapify(leftChildIndex);
+            } else if (data.get(rightChildIndex) > data.get(parentIndex)){
+                swap(rightChildIndex, parentIndex);
+                reverseHeapify(rightChildIndex);
+            }
+
+        } else if (isValid(rightChildIndex) && data.get(rightChildIndex) > data.get(parentIndex)) {
+            swap(rightChildIndex, parentIndex);
+            reverseHeapify(rightChildIndex);
+
+        } else if (isValid(leftChildIndex) && data.get(leftChildIndex) > data.get(parentIndex)) {
+            swap(leftChildIndex, parentIndex);
+            reverseHeapify(leftChildIndex);
+
+        }
+    }
+
     private void heapify(Integer childIndex) {
         Integer parentIndex = parentOf(childIndex);
         if (parentIndex == childIndex || !isValid(parentIndex) || data.get(parentIndex) > data.get(childIndex)) {
             return;
         }
 
-        Integer temp = data.get(childIndex);
-        data.set(childIndex, data.get(parentIndex));
-        data.set(parentIndex, temp);
+        swap(childIndex, parentIndex);
 
         heapify(parentIndex);
+    }
+
+    private void swap(Integer from, Integer to) {
+        Integer temp = data.get(from);
+        data.set(from, data.get(to));
+        data.set(to, temp);
     }
 
     private Integer leftChildOf(Integer parent) {
@@ -81,5 +128,9 @@ class MaxHeap {
 
     private boolean isValid(Integer index) {
         return (index >= 0) && (index < data.size());
+    }
+
+    public Integer size() {
+        return data.size();
     }
 }
