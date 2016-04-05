@@ -9,98 +9,94 @@ public class Algo {
     private Integer k = 4;//3;
     public void run() {
 
-        MinHeap minHeap= new MinHeap(k);
+        Heap minHeap= new Heap(Heap.Type.MIN);
 
         for (Integer ele : A){
-            minHeap.put(ele);
+            minHeap.add(ele);
         }
 
-        System.out.print(k + " max is " + minHeap.getMin());
+        while (minHeap.getSize() > 0) {
+            System.out.print(minHeap.getTop() + " ");
+        }
 
     }
 }
 
-class MinHeap {
+class Heap {
+    public static enum Type {MIN, MAX};
 
+    private Boolean type; // true for max
     private List<Integer> data;
-    private Integer k;
 
-    public MinHeap(Integer k) {
+    public Heap(Type type) {
         data = new ArrayList<>();
-        this.k = k;
+        this.type = (type==Type.MAX);
     }
 
-    public void put(Integer value) {
+    public void add (Integer value) {
         data.add(value);
         heapify(data.size()-1);
-
-        if (data.size() > k) {
-            getMin();
-        }
     }
 
-    public Integer size() {
+    public Integer getSize() {
         return data.size();
     }
 
-    public Integer getMin() {
+    public Integer getTop() {
         if (data.size() == 0) {
             return null;
         }
 
-        Integer minValue = data.get(0);
+        Integer top = data.get(0);
         swap(0, data.size()-1);
         data.remove(data.size()-1);
-        reverserHeapify(0);
+        reverseHeapify(0);
 
 
-        return minValue;
+        return top;
     }
 
-    private void reverserHeapify(Integer parentIndex) {
+    private void reverseHeapify(Integer parentIndex) {
         Integer leftChildIndex = leftChildOf(parentIndex);
         Integer rightChildIndex = rightChildOf(parentIndex);
 
-        if(isValid(leftChildIndex) && isValid(rightChildIndex)) {
-            if (data.get(leftChildIndex) < data.get(rightChildIndex)
-                    && data.get(leftChildIndex) < data.get(parentIndex)){
+        if (isValid(leftChildIndex) && isValid(rightChildIndex)) {
+            if ((data.get(leftChildIndex) > data.get(rightChildIndex)) == type
+                    && (data.get(leftChildIndex) > data.get(parentIndex) == type)) {
                 swap(leftChildIndex, parentIndex);
-                reverserHeapify(leftChildIndex);
-            } else if (data.get(rightChildIndex) < data.get(parentIndex)) {
+                reverseHeapify(leftChildIndex);
+            } else if ((data.get(rightChildIndex) > data.get(parentIndex)) == type) {
                 swap(rightChildIndex, parentIndex);
-                reverserHeapify(rightChildIndex);
+                reverseHeapify(rightChildIndex);
             }
-
-        } else if (isValid(leftChildIndex) && data.get(leftChildIndex) < data.get(parentIndex)) {
+        } else if (isValid(leftChildIndex) && (data.get(leftChildIndex) > data.get(parentIndex) == type)) {
             swap(leftChildIndex, parentIndex);
-            reverserHeapify(leftChildIndex);
+            reverseHeapify(leftChildIndex);
 
-        } else if (isValid(rightChildIndex) && data.get(rightChildIndex) < data.get(parentIndex)) {
+        } else if (isValid(rightChildIndex) && (data.get(rightChildIndex) > data.get(parentIndex)) == type) {
             swap(rightChildIndex, parentIndex);
-            reverserHeapify(rightChildIndex);
-
+            reverseHeapify(rightChildIndex);
         }
     }
 
     private void heapify(Integer childIndex) {
         Integer parentIndex = parentOf(childIndex);
 
-        if (parentIndex == childIndex || data.get(parentIndex) < data.get(childIndex)) {
+        if (parentIndex == childIndex || (data.get(parentIndex) > data.get(childIndex)) == type) {
             return;
         }
 
-        swap(childIndex, parentIndex);
+        swap(parentIndex, childIndex);
         heapify(parentIndex);
     }
 
     private void swap(Integer from, Integer to) {
-        Integer temp = data.get(from);
-        data.set(from, data.get(to));
-        data.set(to, temp);
+        Integer temp = data.get(to);
+        data.set(to, data.get(from));
+        data.set(from,temp);
     }
 
-
-    private Integer leftChildOf(Integer parentIndex) {
+    private Integer leftChildOf (Integer parentIndex) {
         return (2*parentIndex) + 1;
     }
 
@@ -109,7 +105,7 @@ class MinHeap {
     }
 
     private Integer parentOf (Integer childIndex) {
-        return (childIndex - 1)/2;
+        return (childIndex-1)/2;
     }
 
     private Boolean isValid(Integer index) {
