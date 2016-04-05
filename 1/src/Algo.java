@@ -9,47 +9,48 @@ public class Algo {
     private Integer k = 3;
     public void run() {
 
-        MaxHeap maxHeap = new MaxHeap(k);
+        MinHeap minHeap= new MinHeap();
 
         for (Integer ele : A){
-            maxHeap.put(ele);
+            minHeap.add(ele);
         }
 
-        System.out.print(k + " min is " + maxHeap.getMax());
+        while (minHeap.size() > 0) {
+            System.out.print(minHeap.getMin() + " ");
+        }
 
     }
 }
 
-
-class MaxHeap {
+class MinHeap {
     private List<Integer> data;
-    private final Integer count;
 
-    public MaxHeap(Integer count) {
+    public MinHeap() {
         data = new ArrayList<>();
-        this.count = count;
     }
 
-    public void put(Integer value) {
+    public void add(Integer value) {
         data.add(value);
         heapify(data.size()-1);
 
-        if (data.size() > count) {
-            getMax();
-        }
     }
 
-    public Integer getMax() {
+    public Integer size() {
+        return data.size();
+    }
+
+    public Integer getMin() {
         if (data.size() == 0) {
             return null;
         }
 
-        Integer maxValue = data.get(0);
+        Integer minValue = data.get(0);
         swap(0, data.size()-1);
         data.remove(data.size()-1);
         reverseHeapify(0);
 
-        return maxValue;
+
+        return minValue;
     }
 
     private void reverseHeapify(Integer parentIndex) {
@@ -57,30 +58,30 @@ class MaxHeap {
         Integer rightChildIndex = rightChildOf(parentIndex);
 
         if (isValid(leftChildIndex) && isValid(rightChildIndex)) {
-            if (data.get(leftChildIndex) > data.get(rightChildIndex)
-                    && data.get(leftChildIndex) > data.get(parentIndex)) {
+            if (data.get(leftChildIndex) < data.get(rightChildIndex)
+                    && data.get(leftChildIndex) < data.get(parentIndex)) {
                 swap(leftChildIndex, parentIndex);
                 reverseHeapify(leftChildIndex);
-            } else if (data.get(rightChildIndex) > data.get(parentIndex)) {
+            } else if (data.get(rightChildIndex) < data.get(parentIndex)) {
                 swap(rightChildIndex, parentIndex);
                 reverseHeapify(rightChildIndex);
+
             }
 
-        } else if (isValid(leftChildIndex) && data.get(leftChildIndex) > data.get(parentIndex)) {
+        } else if (isValid(leftChildIndex) && data.get(leftChildIndex) < data.get(parentIndex)) {
             swap(leftChildIndex, parentIndex);
             reverseHeapify(leftChildIndex);
 
-        } else if (isValid(rightChildIndex) && data.get(rightChildIndex) > data.get(parentIndex)) {
+        } else if (isValid(rightChildIndex) && data.get(rightChildIndex) < data.get(parentIndex)) {
             swap(rightChildIndex, parentIndex);
             reverseHeapify(rightChildIndex);
-
         }
     }
 
     private void heapify(Integer childIndex) {
         Integer parentIndex = parentOf(childIndex);
 
-        if (parentIndex == childIndex || !isValid(parentIndex) || data.get(parentIndex) > data.get(childIndex)) {
+        if (parentIndex == childIndex || data.get(parentIndex) < data.get(childIndex)) {
             return;
         }
 
@@ -92,26 +93,22 @@ class MaxHeap {
         Integer temp = data.get(from);
         data.set(from, data.get(to));
         data.set(to, temp);
-    }
 
-
-    private Integer leftChildOf (Integer parent) {
-        return (2*parent) + 1;
-    }
-
-    private Integer rightChildOf (Integer parent) {
-        return leftChildOf(parent) + 1;
-    }
-
-    private Integer parentOf (Integer child) {
-        return (child-1)/2;
     }
 
     private Boolean isValid (Integer index) {
         return (index >= 0) && (index < data.size());
     }
 
-    public Integer size() {
-        return data.size();
+    private Integer leftChildOf(Integer parentIndex) {
+        return (2*parentIndex) + 1;
+    }
+
+    private Integer rightChildOf(Integer parentIndex) {
+        return leftChildOf(parentIndex) + 1;
+    }
+
+    private Integer parentOf(Integer childIndex) {
+        return (childIndex-1)/2;
     }
 }
