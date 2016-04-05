@@ -6,33 +6,37 @@ import java.util.List;
  */
 public class Algo {
     private Integer[] A = {6, 5, 3, 1, 8, 7, 2, 4};
-    private Integer k = 3;
+    private Integer k = 4;//3;
     public void run() {
 
-        MinHeap minHeap= new MinHeap();
+        MinHeap minHeap= new MinHeap(k);
 
         for (Integer ele : A){
-            minHeap.add(ele);
+            minHeap.put(ele);
         }
 
-        while (minHeap.size() > 0) {
-            System.out.print(minHeap.getMin() + " ");
-        }
+        System.out.print(k + " max is " + minHeap.getMin());
 
     }
 }
 
 class MinHeap {
-    private List<Integer> data;
 
-    public MinHeap() {
+    private List<Integer> data;
+    private Integer k;
+
+    public MinHeap(Integer k) {
         data = new ArrayList<>();
+        this.k = k;
     }
 
-    public void add(Integer value) {
+    public void put(Integer value) {
         data.add(value);
         heapify(data.size()-1);
 
+        if (data.size() > k) {
+            getMin();
+        }
     }
 
     public Integer size() {
@@ -47,34 +51,34 @@ class MinHeap {
         Integer minValue = data.get(0);
         swap(0, data.size()-1);
         data.remove(data.size()-1);
-        reverseHeapify(0);
+        reverserHeapify(0);
 
 
         return minValue;
     }
 
-    private void reverseHeapify(Integer parentIndex) {
+    private void reverserHeapify(Integer parentIndex) {
         Integer leftChildIndex = leftChildOf(parentIndex);
         Integer rightChildIndex = rightChildOf(parentIndex);
 
-        if (isValid(leftChildIndex) && isValid(rightChildIndex)) {
+        if(isValid(leftChildIndex) && isValid(rightChildIndex)) {
             if (data.get(leftChildIndex) < data.get(rightChildIndex)
-                    && data.get(leftChildIndex) < data.get(parentIndex)) {
+                    && data.get(leftChildIndex) < data.get(parentIndex)){
                 swap(leftChildIndex, parentIndex);
-                reverseHeapify(leftChildIndex);
+                reverserHeapify(leftChildIndex);
             } else if (data.get(rightChildIndex) < data.get(parentIndex)) {
                 swap(rightChildIndex, parentIndex);
-                reverseHeapify(rightChildIndex);
-
+                reverserHeapify(rightChildIndex);
             }
 
         } else if (isValid(leftChildIndex) && data.get(leftChildIndex) < data.get(parentIndex)) {
             swap(leftChildIndex, parentIndex);
-            reverseHeapify(leftChildIndex);
+            reverserHeapify(leftChildIndex);
 
         } else if (isValid(rightChildIndex) && data.get(rightChildIndex) < data.get(parentIndex)) {
             swap(rightChildIndex, parentIndex);
-            reverseHeapify(rightChildIndex);
+            reverserHeapify(rightChildIndex);
+
         }
     }
 
@@ -85,7 +89,7 @@ class MinHeap {
             return;
         }
 
-        swap(parentIndex, childIndex);
+        swap(childIndex, parentIndex);
         heapify(parentIndex);
     }
 
@@ -93,22 +97,22 @@ class MinHeap {
         Integer temp = data.get(from);
         data.set(from, data.get(to));
         data.set(to, temp);
-
     }
 
-    private Boolean isValid (Integer index) {
-        return (index >= 0) && (index < data.size());
-    }
 
     private Integer leftChildOf(Integer parentIndex) {
         return (2*parentIndex) + 1;
     }
 
-    private Integer rightChildOf(Integer parentIndex) {
+    private Integer rightChildOf (Integer parentIndex) {
         return leftChildOf(parentIndex) + 1;
     }
 
-    private Integer parentOf(Integer childIndex) {
-        return (childIndex-1)/2;
+    private Integer parentOf (Integer childIndex) {
+        return (childIndex - 1)/2;
+    }
+
+    private Boolean isValid(Integer index) {
+        return (index >= 0) && (index < data.size());
     }
 }
