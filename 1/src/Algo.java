@@ -17,16 +17,17 @@ public class Algo {
 
     public void run() {
         BST bst = new BST();
+
         for (Integer ele : A) {
             bst.insert(ele);
         }
 
         bst.print();
-
-        Integer deleteNode = 95;
-        System.out.println(" deleting  " + deleteNode);
-        bst.delete(deleteNode);
+        Integer deleteValue = 90;
+        bst.delete(deleteValue);
+        System.out.println("deleting " + deleteValue);
         bst.print();
+
     }
 }
 
@@ -34,80 +35,71 @@ class BST {
     private Node head;
 
     public void delete(Integer value) {
-        RemovalContext removalContext = getRemovalContext(head, null, value);
-        System.out.println("deleting for " + removalContext.toString());
+        RemovalContext removalContext = makeRemovalContext(head, null, value);
+        System.out.println("removalContext " + removalContext);
 
+
+        Node target = removalContext.target;
+        Node targetParent = removalContext.targetParent;
         Node replacementNode;
-        if (bothChildrenExist(removalContext.getTarget())) {
-            replacementNode = findMaxIn (removalContext.getTarget().getLeft());
+        if (hasBothChildren(removalContext.getTarget())) {
+            replacementNode = getMaxIn(target.getLeft());
             delete(replacementNode.getValue());
 
-            replacementNode.setLeft(removalContext.getTarget().getLeft());
-            replacementNode.setRight(removalContext.getTarget().getRight());
+            replacementNode.setRight(target.getRight());
+            replacementNode.setLeft(target.getLeft());
 
             dropInReplacement(removalContext, replacementNode);
 
-        } else if (noChildExist(removalContext.getTarget())) {
-
+        } else if (hasNoChildren(removalContext.getTarget())) {
             dropInReplacement(removalContext, null);
-
         } else {
-            if (removalContext.getTarget().getLeft() != null) {
-                replacementNode = removalContext.getTarget().getLeft();
-                //delete(replacementNode.getValue());
-                //removalContext.getTarget().setLeft(null);
-
-            } else {
-                replacementNode = removalContext.getTarget().getRight();
-
-            }
-
+            replacementNode = (target.getLeft() == null) ? target.getRight() : target.getLeft();
             dropInReplacement(removalContext, replacementNode);
         }
+
     }
 
-    private void dropInReplacement(RemovalContext removalContext, Node replacement) {
-
+    private void dropInReplacement(RemovalContext removalContext, Node replacementNode) {
         if (removalContext.getTargetParent() != null) {
-            if (removalContext.getTargetParent().getLeft() != null && removalContext.getTargetParent().getLeft().equals(removalContext.getTarget())) {
-                removalContext.getTargetParent().setLeft(replacement);
+            if (removalContext.getTargetParent().getRight().equals(removalContext.getTarget())) {
+                removalContext.getTargetParent().setRight(replacementNode);
             } else {
-                removalContext.getTargetParent().setRight(replacement);
+                removalContext.getTargetParent().setLeft(replacementNode);
             }
         } else {
-            head = replacement;
+            head = replacementNode;
         }
     }
 
-    private Node findMaxIn(Node node) {
-        if (node.getRight() == null) {
-            return node;
-        } else {
-            return findMaxIn(node.getRight());
-        }
-    }
-
-    private boolean noChildExist(Node node) {
-        return (node.getLeft() == null) && (node.getRight() == null);
-    }
-
-    private boolean bothChildrenExist(Node node) {
-        return (node.getLeft() != null) && (node.getRight() != null);
-    }
-
-    private RemovalContext getRemovalContext(Node node, Node parent, Integer value) {
+    private RemovalContext makeRemovalContext(Node node, Node parent, Integer value) {
         if (node == null) {
-            System.out.print("getRemoveContext cant find " + value);
-            return null;
+            System.out.print("makeRemovalContex cant find " + value);
         }
 
-        if (node.getValue() < value) {
-            return getRemovalContext(node.getRight(), node, value);
-        } else if (node.getValue() > value) {
-            return getRemovalContext(node.getLeft(), node, value);
+        if (node.getValue() > value) {
+            return makeRemovalContext(node.getLeft(), node, value);
+        } else if (node.getValue() < value) {
+            return makeRemovalContext(node.getRight(), node, value);
         } else {
             return new RemovalContext(node, parent);
         }
+    }
+
+    private Node getMaxIn(Node node) {
+        if (node.getRight() == null) {
+            return node;
+        } else {
+            return getMaxIn(node.getRight());
+        }
+    }
+
+    private boolean hasNoChildren(Node node) {
+        return (node.getLeft() == null) && (node.getRight() == null);
+    }
+
+    private boolean hasBothChildren(Node node) {
+        return (node.getLeft() != null) && (node.getRight() != null);
     }
 
     private class RemovalContext {
@@ -118,14 +110,6 @@ class BST {
             this.targetParent = targetParent;
         }
 
-        @Override
-        public String toString() {
-            return ""
-                    + (target == null ? ("null") : target.getValue())
-                    + " "
-                    + (targetParent == null ? ("null") : targetParent.getValue());
-        }
-
         public Node getTarget() {
             return target;
         }
@@ -133,8 +117,15 @@ class BST {
         public Node getTargetParent() {
             return targetParent;
         }
-    }
 
+        @Override
+        public String toString () {
+            return ""
+                    + ((target == null) ? ("null") : target.getValue())
+                    + " "
+                    + ((targetParent == null) ? ("null") : targetParent.getValue());
+        }
+    }
 
     public void insert(Integer value) {
         if (head == null) {
@@ -157,10 +148,12 @@ class BST {
             } else {
                 insert(node.getRight(), value);
             }
+        } else {
+            System.out.print("dude why the fuck are you sending duplicate values?");
         }
     }
 
-    public void print() {
+    public void print () {
         print(head);
     }
 
@@ -188,7 +181,7 @@ class Node {
     private Node left, right;
     private Integer value;
 
-    public Node(Integer value) {
+    public Node (Integer value) {
         this.value = value;
     }
 
@@ -196,11 +189,9 @@ class Node {
     public boolean equals(Object object) {
         boolean result = false;
 
-        if (object != null && object instanceof Node) {
+        if (object != null || object instanceof Node){
             Node other = (Node) object;
-            if (other.value == value) {
-                result = true;
-            }
+            result = other.value == value;
         }
 
         return result;
@@ -209,9 +200,10 @@ class Node {
     @Override
     public int hashCode() {
         int prime = 31;
-        int hash = 7;
-        hash = (hash*prime) + (value.hashCode());
-        return hash;
+        int result = 7;
+        result = (result*prime) + value.hashCode();
+
+        return result;
     }
 
     public Node getLeft() {
@@ -232,9 +224,5 @@ class Node {
 
     public Integer getValue() {
         return value;
-    }
-
-    public void setValue(Integer value) {
-        this.value = value;
     }
 }
