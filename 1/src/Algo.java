@@ -14,7 +14,7 @@ public class Algo {
     90, 150,
     70,95, 140,200,
     190,300, 175,400,
-    350};
+    350,10};
 
 //    private Integer[] A = {100};
 //    private Integer[] A = {100,150};
@@ -43,79 +43,6 @@ class BST {
     private Node head, minParent;
     private Integer size;
 
-    public BST(Integer size) {
-        this.size = size;
-        this.minParent = null;
-    }
-
-    public void insert(Integer value) {
-        if (head == null) {
-            head = new Node(value);
-        } else {
-            insert(head, value);
-        }
-        updateMinParent(head);
-
-        --size;
-        if (size == 0) {
-            removeMinimum();
-        }
-
-        if (size < 0){
-            System.out.println("size < 0");
-        }
-    }
-
-    private void removeMinimum() {
-        if (minParent == null) {
-            System.out.println("removing " + head.getValue());
-            if (head.getRight() == null) {
-                head = null;
-            } else {
-                head = head.getRight();
-            }
-        } else {
-            System.out.println("removing " + minParent.getLeft().getValue());
-            Node minReplacementNode = minParent.getLeft().getRight();
-            minParent.setLeft(minReplacementNode);
-        }
-        ++size;
-
-        updateMinParent(head);
-    }
-
-    private void updateMinParent(Node node) {
-        if (node == null || node.getLeft() == null) {
-            minParent = null;
-        }
-
-        if (node.getLeft() != null && node.getLeft().getLeft() != null) {
-            updateMinParent(node.getLeft());
-        } else if (node.getLeft() != null && node.getLeft().getLeft() == null) {
-            minParent = node;
-        }
-
-    }
-
-    private void insert(Node node, Integer value) {
-        if (node.getValue() > value) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value));
-            } else {
-                insert(node.getLeft(), value);
-            }
-        } else if (node.getValue() < value) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(value));
-            } else {
-                insert(node.getRight(), value);
-            }
-        } else {
-            System.out.println("duplicate node insertion ASSHOEL");
-        }
-
-    }
-
     public void print() {
         print(head);
     }
@@ -137,6 +64,84 @@ class BST {
 
         print(node.getLeft());
         print(node.getRight());
+    }
+
+    public BST(Integer size) {
+        this.size = size;
+        this.minParent = null;
+        this.head = null;
+    }
+
+    public void insert(Integer value) {
+        if (size == 0 && getMinValue() > value) {
+            System.out.println("why bother adding " + value);
+            return;
+        }
+
+
+        if (head == null) {
+            head = new Node(value);
+        } else {
+            insert(head, value);
+        }
+        --size;
+        updateMinParentNode(head);
+
+        if (size < 0) {
+            removeMinNode();
+            updateMinParentNode(head);
+        }
+    }
+
+    private Integer getMinValue() {
+        if (minParent == null) {
+            return head.getValue();
+        } else {
+            return minParent.getLeft().getValue();
+        }
+    }
+
+    private void insert(Node node, Integer value) {
+        if (node.getValue() < value) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(value));
+            } else {
+                insert(node.getRight(), value);
+            }
+        } else if (node.getValue() > value) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(value));
+            } else {
+                insert(node.getLeft(), value);
+            }
+        }
+    }
+
+    private void removeMinNode() {
+        if (minParent == null) {
+            System.out.println("removing " + head.getValue());
+            if (head.getRight() == null) {
+                head = null;
+            } else {
+                head = head.getRight();
+            }
+        } else {
+            System.out.println("removing " + minParent.getLeft().getValue());
+            Node replacementNode = minParent.getLeft().getRight();
+            minParent.setLeft(replacementNode);
+        }
+
+        ++size;
+    }
+
+    private void updateMinParentNode(Node node) {
+        if (node == null || node.getLeft() == null) {
+            minParent = null;
+        } else if (node.getLeft() != null && node.getLeft().getLeft() == null) {
+            minParent = node;
+        } else {
+            updateMinParentNode(node.getLeft());
+        }
     }
 }
 
