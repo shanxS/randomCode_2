@@ -2,19 +2,20 @@
  * @author shashaku on 29/03/16.
  */
 public class Algo {
-//    private Integer[] A = {100,
-//            90, 150,
-//    70,95,
-//    50, 71,
-//    40,55,80,
-//    30,45,72,
-//            75};
-
     private Integer[] A = {100,
-    90, 150,
-    70,95, 140,200,
-    190,300, 175,400,
-    350,10};
+            90, 150,
+    70,95,
+    50, 71,
+    40,55,80,
+    30,45,72,
+            75};
+
+//    private Integer[] A = {100,
+//    90, 150,
+//    70,95, 140,200,
+//    190,300, 175,400,
+//    350,10};
+
 
 //    private Integer[] A = {100};
 //    private Integer[] A = {100,150};
@@ -40,8 +41,15 @@ public class Algo {
 }
 
 class BST {
-    private Node head, minParent;
+
+    private Node head, maxNodeParent;
     private Integer size;
+
+    public BST(Integer size) {
+        this.size = size;
+        this.maxNodeParent = null;
+        this.head = null;
+    }
 
     public void print() {
         print(head);
@@ -66,18 +74,11 @@ class BST {
         print(node.getRight());
     }
 
-    public BST(Integer size) {
-        this.size = size;
-        this.minParent = null;
-        this.head = null;
-    }
-
     public void insert(Integer value) {
-        if (size == 0 && getMinValue() > value) {
+        if (size == 0 && getMaxValue() < value ) {
             System.out.println("why bother adding " + value);
             return;
         }
-
 
         if (head == null) {
             head = new Node(value);
@@ -85,64 +86,65 @@ class BST {
             insert(head, value);
         }
         --size;
-        updateMinParentNode(head);
+        updateMaxNodeParent(head);
 
         if (size < 0) {
-            removeMinNode();
-            updateMinParentNode(head);
-        }
-    }
-
-    private Integer getMinValue() {
-        if (minParent == null) {
-            return head.getValue();
-        } else {
-            return minParent.getLeft().getValue();
+            deleteMaxNode();
+            updateMaxNodeParent(head);
         }
     }
 
     private void insert(Node node, Integer value) {
-        if (node.getValue() < value) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(value));
-            } else {
-                insert(node.getRight(), value);
-            }
-        } else if (node.getValue() > value) {
+        if (node.getValue() > value) {
             if (node.getLeft() == null) {
                 node.setLeft(new Node(value));
             } else {
                 insert(node.getLeft(), value);
             }
+        } else if (node.getValue() < value) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(value));
+            } else {
+                insert(node.getRight(), value);
+            }
         }
     }
 
-    private void removeMinNode() {
-        if (minParent == null) {
-            System.out.println("removing " + head.getValue());
-            if (head.getRight() == null) {
+    private void updateMaxNodeParent(Node node) {
+        if (node == null || node.getRight() == null) {
+            maxNodeParent = null;
+        } else if (node.getRight() != null && node.getRight().getRight() == null) {
+            maxNodeParent = node;
+        } else if (node.getRight() != null && node.getRight().getRight() != null) {
+            updateMaxNodeParent(node.getRight());
+        }
+    }
+
+    private void deleteMaxNode() {
+        if (maxNodeParent == null) {
+            System.out.println("deleting node " + getMaxValue());
+            if (head.getLeft() == null) {
                 head = null;
             } else {
-                head = head.getRight();
+                head = head.getLeft();
             }
         } else {
-            System.out.println("removing " + minParent.getLeft().getValue());
-            Node replacementNode = minParent.getLeft().getRight();
-            minParent.setLeft(replacementNode);
+            System.out.println("deleting node " + getMaxValue());
+            Node replacementNode = maxNodeParent.getRight().getLeft();
+            maxNodeParent.setRight(replacementNode);
         }
 
         ++size;
     }
 
-    private void updateMinParentNode(Node node) {
-        if (node == null || node.getLeft() == null) {
-            minParent = null;
-        } else if (node.getLeft() != null && node.getLeft().getLeft() == null) {
-            minParent = node;
+    private Integer getMaxValue() {
+        if (maxNodeParent == null) {
+            return head.getValue();
         } else {
-            updateMinParentNode(node.getLeft());
+            return maxNodeParent.getRight().getValue();
         }
     }
+
 }
 
 class Node {
