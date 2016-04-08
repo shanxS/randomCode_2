@@ -2,13 +2,13 @@
  * @author shashaku on 29/03/16.
  */
 public class Algo {
-//    private Integer[] A = {100,
-//            90, 150,
-//    70,95,
-//    50, 71,
-//    40,55,80,
-//    30,45,72,
-//            75};
+    private Integer[] A = {100,
+            90, 150,
+    70,95,
+    50, 71,
+    40,55,80,
+    30,45,72,
+            75};
 
 //    private Integer[] A = {100};
 //    private Integer[] A = {100,150};
@@ -16,15 +16,16 @@ public class Algo {
 
 
     public void run() {
+
         BST bst = new BST();
         for (Integer ele : A) {
             bst.insert(ele);
         }
 
         bst.print();
-        Integer deleteValue = 90;
-        System.out.println("deleting " + deleteValue);
-        bst.delete(deleteValue);
+        Integer deleteNode = 80;
+        bst.delete(deleteNode);
+        System.out.println("deleting " + deleteNode );
         bst.print();
 
     }
@@ -39,43 +40,42 @@ class BST {
         Node target = removalContext.target;
         Node replacementNode;
         if (bothChildren(target)) {
-            replacementNode = findMaxIn(target.getLeft());
+            replacementNode = getMaxIn(target.getLeft());
             delete(replacementNode.getValue());
 
-            replacementNode.setLeft(target.getLeft());
             replacementNode.setRight(target.getRight());
+            replacementNode.setLeft(target.getLeft());
 
-            dropInReplacement(removalContext, replacementNode);
-
-        } else if (noChildren(target)) {
-            dropInReplacement(removalContext, null);
+        } else if (noChild(target)) {
+            replacementNode = null;
         } else {
-            replacementNode = (target.getLeft() == null) ? (target.getRight()) : (target.getLeft());
-            dropInReplacement(removalContext, replacementNode);
+            replacementNode = (target.getLeft() != null) ? target.getLeft() : target.getRight();
         }
+
+        dropInReplacement(removalContext, replacementNode);
     }
 
-    private boolean noChildren(Node node) {
+    private boolean noChild(Node node) {
         return (node.getLeft() == null) && (node.getRight() == null);
+    }
+
+    private Node getMaxIn(Node node) {
+        if (node.getRight() != null) {
+            return getMaxIn(node.getRight());
+        } else {
+            return node;
+        }
     }
 
     private boolean bothChildren(Node node) {
         return (node.getLeft() != null) && (node.getRight() != null);
     }
 
-    private Node findMaxIn(Node node) {
-        if (node.getRight() == null) {
-            return node;
-        } else {
-            return findMaxIn(node.getRight());
-        }
-    }
-
     private RemovalContext makeRemovalContext(Node node, Node parent, Integer value) {
         if (node == null) {
-            System.out.print("makeRemovalContext cant find node with " + value);
+            sprint("cant find node for remocalContext " + value);
         }
-        
+
         if (node.getValue() > value) {
             return makeRemovalContext(node.getLeft(), node, value);
         } else if (node.getValue() < value) {
@@ -95,12 +95,10 @@ class BST {
             } else {
                 targetParent.setRight(replacementNode);
             }
-
         } else {
             head = replacementNode;
         }
     }
-
 
     private class RemovalContext {
         private final Node target, targetParent;
@@ -112,7 +110,7 @@ class BST {
     }
 
     public void insert(Integer value) {
-        if(head == null) {
+        if (head == null) {
             head = new Node(value);
         } else {
             insert(head, value);
@@ -133,7 +131,7 @@ class BST {
                 insert(node.getRight(), value);
             }
         } else {
-            System.out.print("dudde why the fuck are you sending in duplicates?");
+            System.out.print("dude wtf!");
         }
     }
 
@@ -146,24 +144,34 @@ class BST {
             return;
         }
 
-        System.out.print(node.getValue() + " - ");
+        sprint(node.getValue() + " - ");
         if (node.getLeft() != null) {
-            System.out.print(node.getLeft().getValue());
+            sprint(node.getLeft().getValue());
         }
-        System.out.print(", ");
+        sprint(", ");
         if (node.getRight() != null) {
-            System.out.print(node.getRight().getValue());
+            sprint(node.getRight().getValue());
         }
-        System.out.println();
+        sprint("\n");
 
         print(node.getLeft());
         print(node.getRight());
     }
+
+    private void sprint (Object o) {
+        System.out.print(o);
+    }
 }
+
 
 class Node {
     private Node left, right;
     private Integer value;
+
+
+    public Node (Integer value) {
+        this.value = value;
+    }
 
     @Override
     public boolean equals(Object object) {
@@ -171,7 +179,7 @@ class Node {
 
         if (object != null && object instanceof Node) {
             Node other = (Node) object;
-            result = other.getValue() == value;
+            result = other.value == value;
         }
 
         return result;
@@ -187,8 +195,16 @@ class Node {
         return result;
     }
 
-    public Node(Integer value) {
+    public void setValue(Integer value) {
         this.value = value;
+    }
+
+    public void setLeft(Node left) {
+        this.left = left;
+    }
+
+    public void setRight(Node right) {
+        this.right = right;
     }
 
     public Node getLeft() {
@@ -201,13 +217,5 @@ class Node {
 
     public Integer getValue() {
         return value;
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
     }
 }
