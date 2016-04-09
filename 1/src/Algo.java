@@ -3,26 +3,28 @@
  */
 public class Algo {
 
-    private Integer[] A = {10, 3, 5, 6, 2};
+    private Integer[] A = {12, 34, 45, 9, 8, 90, 3};
 
     public void run() {
-        Integer[] res = new Integer[A.length];
-        Integer temp = 1;
+        Integer even = -1;
+        Integer odd = 0;
+        while (odd < A.length) {
+            if (A[odd]%2 == 0) {
+                ++even;
+                swap (even, odd);
+            }
 
-        for (Integer i=1; i<A.length; ++i) {
-            temp *= A[i-1];
-            res[i] = temp;
+            ++odd;
         }
 
-        temp = 1;
-        res[0] = 1;
-        for (Integer i=A.length-2; i>=0; --i) {
-            temp *= A[i+1];
-            res[i] *= temp;
-        }
-
-        for (Integer ele : res) {
+        for (Integer ele : A) {
             System.out.print(ele + " ");
         }
+    }
+
+    private void swap(Integer from, Integer to) {
+        Integer temp = A[from];
+        A[from] = A[to];
+        A[to] = temp;
     }
 }
