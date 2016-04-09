@@ -6,34 +6,53 @@ public class Algo {
     private Integer[] A = {1, 2, 8, 10, 10, 12, 19};
 
     public void run() {
-        BinarySearch bs = new BinarySearch();
-        System.out.print(bs.search(A, 6));
+        LimitFinder lf = new LimitFinder();
+        lf.find(A, 0);
+        System.out.print(lf.getCeil() + " " + lf.getFloor());
     }
 }
 
-class BinarySearch {
+class LimitFinder {
     private Integer[] A;
+    private Integer ceil;
+    private Integer floor;
 
-    public Integer search(Integer[] A, Integer target) {
-        this.A = A;
-        return find(0, A.length-1, target);
+    public Integer getCeil() {
+        return ceil;
     }
 
-    private Integer find(int start, int end, Integer target) {
+    public Integer getFloor() {
+        return floor;
+    }
+
+    public void find(Integer[] A, Integer value) {
+        this.A = A;
+
+        findFor(0, A.length-1, value);
+    }
+
+    private void findFor(Integer start, Integer end, Integer target) {
         if (start > end) {
-            return null;
+            return;
         }
 
         Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+        if (A[mid] > target) {
+            ceil = A[mid];
+            end = mid-1;
+        } else if (A[mid] < target) {
+            floor = A[mid];
+            start = mid+1;
 
-        if (A[mid] == target) {
-            return mid;
-        } else if (A[mid] > target) {
-            end = mid - 1;
-            return find (start, end, target);
         } else {
-            start = mid + 1;
-            return find (start, end, target);
+            floor = A[mid];
+            ceil = A[mid];
+
+            return;
         }
+
+        findFor(start, end, target);
     }
+
+
 }
