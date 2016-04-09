@@ -1,67 +1,76 @@
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * @author shashaku on 29/03/16.
  */
 public class Algo {
 
-    private Integer[] A = {5,  2,  2,  8,  5,  6,  8,  8};
+    private Integer[] A = {5, 2, 2, 8, 5, 6, 8, 8};
 
     public void run() {
-        Map<Integer, Integer> keyFreq = new HashMap<>();
-        Map<Integer, List<Integer>> freqKeys = new TreeMap<>(new Sorter());
-
-        for (Integer i=0; i<A.length; ++i) {
-            Integer key = A[i];
-
-            Integer freq = keyFreq.get(key);
-            if (freq == null) {
-                freq = 0;
-            }
-            ++freq;
-            keyFreq.put(key, freq);
+        Sorter sorter = new Sorter(new MyComparator());
+        sorter.sort(A);
+        for (Integer ele : A) {
+            System.out.print(ele + " ");
         }
-
-        for (Integer i=0; i<A.length; ++i) {
-            Integer key = A[i];
-            Integer freq = keyFreq.get(key);
-
-            List<Integer> keys = freqKeys.get(freq);
-            if (keys == null) {
-                keys = new ArrayList<>();
-                freqKeys.put(freq, keys);
-            }
-            if (!keys.contains(key)) {
-                keys.add(key);
-            }
-        }
-
-        for (Map.Entry<Integer, List<Integer>> entry : freqKeys.entrySet()) {
-            final Integer freq = entry.getKey();
-            List<Integer> keys = entry.getValue();
-
-            for (Integer key : keys) {
-                Integer counter = freq;
-                while (counter > 0) {
-                    System.out.print(key + " ");
-                    --counter;
-                }
-            }
-        }
-
-        System.out.println(freqKeys);
-        System.out.println(keyFreq);
     }
 }
 
-class Sorter implements Comparator<Integer> {
+class Sorter<T> {
+    private T[] A;
+    private Comparator comparator;
+
+    public Sorter(Comparator comparator) {
+        this.comparator = comparator;
+    }
+
+    public void sort(T[] A) {
+        this.A = A;
+
+        sort(0, A.length-1);
+    }
+
+    private void sort(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        Integer pivotIndex = quickSort(start, end);
+        sort(start, pivotIndex-1);
+        sort(pivotIndex+1, end);
+    }
+
+    private Integer quickSort(int start, int end) {
+        Integer marker = start - 1;
+        T pivotValue = A[end];
+
+        for (Integer i=start; i<end; ++i) {
+//            if (A[i] < pivotValue) {
+            if (comparator.compare(A[i], pivotValue) == 1){
+                ++marker;
+                swap(marker, i);
+            }
+        }
+
+        swap (marker+1, end);
+        return marker+1;
+    }
+
+    private void swap(int from, int to) {
+        T temp = A[from];
+        A[from] = A[to];
+        A[to] = temp;
+    }
+}
+
+class MyComparator implements Comparator<Integer> {
 
     @Override
     public int compare(Integer o1, Integer o2) {
-        if (o1<o2) {
-            return 1;
-        } else  if (o1>o2) {
+        if (o1 > o2) {
             return -1;
+        } else if (o1 < o2) {
+            return 1;
         } else {
             return 0;
         }
