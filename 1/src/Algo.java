@@ -3,44 +3,37 @@
  */
 public class Algo {
 
-    public Integer[] A = {2, 3, -4, 1, 2, -1, -5, 3};
+    public Integer[] A = {-2, -3, -4, -1, -2, -1, -5, -3};
     //public Integer[] A = {2,-3,5};
 
 
     public void run() {
-        Integer gMin = null;
-        Integer gStart = null;
-        Integer gEnd = null;
+        Integer gMax = A[0];
+        Integer gStart = 0;
+        Integer gEnd = 0;
 
-        Integer lMin = null;
-        Integer lStart = null;
-        Integer lEnd = null;
+        Integer lMax = A[0];
+        Integer lStart = 0;
+        Integer lEnd = 0;
 
-        for (Integer i=0; i<A.length; ++i) {
-            if (lMin == null && A[i] <= 0) {
-                lMin = A[i];
+        for (Integer i=1; i<A.length; ++i) {
+            if (lMax <= 0 && lMax < A[i]) {
+                lMax = A[i];
                 lStart = i;
                 lEnd = i;
-            } else if (lMin != null) {
-                lMin += A[i];
+            } else if (lMax > 0) {
+                lMax += A[i];
                 lEnd = i;
-
-                if (lMin >= 0) {
-                    lMin = null;
-                    lStart = null;
-                    lEnd = null;
-                }
             }
 
-            if (lMin != null) {
-                if (gMin == null || lMin < gMin) {
-                    gMin = lMin;
-                    gStart = lStart;
-                    gEnd = lEnd;
-                }
+            if (lMax > gMax) {
+                gMax = lMax;
+                gEnd = lEnd;
+                gStart = lStart;
             }
         }
 
-        System.out.print(gMin + " " + gStart + " " + gEnd);
+        System.out.print(gMax + " " + gStart + " " + gEnd);
+
     }
 }
