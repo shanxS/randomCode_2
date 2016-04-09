@@ -1,113 +1,35 @@
-import java.util.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author shashaku on 29/03/16.
  */
 public class Algo {
 
-    private Integer[] A1 = {1, 3, 4, 5, 7};
-    private Integer[] A2 = {2, 3, 5, 6};
+    private Integer[] A = {1, 2, 8, 10, 10, 12, 19};
 
     public void run() {
-        BST bst = new BST();
-
-        for (Integer ele : A1) {
-            bst.insert(ele);
-        }
-        for (Integer ele : A2) {
-            bst.insert(ele);
-        }
-
-        bst.printUnion();
-        System.out.println();
-        bst.printIntersection();
-
+        BinarySearch bs = new BinarySearch();
+        System.out.print(bs.search(A, 19));
     }
 }
 
-class BST {
-    private Node head;
-    private Set<Integer> intersection;
+class BinarySearch {
+    private Integer[] A;
 
-    public BST() {
-        intersection = new HashSet<>();
+    public Integer search(Integer[] A, Integer target) {
+        this.A = A;
+        return find(0, A.length-1, target);
     }
 
-    public void insert(Integer value) {
-        if (head == null) {
-            head = new Node(value);
+    private Integer find(int start, int end, Integer target) {
+        Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+
+        if (A[mid] == target) {
+            return mid;
+        } else if (A[mid] > target) {
+            end = mid - 1;
+            return find (start, end, target);
         } else {
-            insert(head, value);
+            start = mid + 1;
+            return find (start, end, target);
         }
-    }
-
-    private void insert(Node node, Integer value) {
-        if (node.getValue() > value) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value));
-            } else {
-                insert(node.getLeft(), value);
-            }
-        } else if (node.getValue() < value) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(value));
-            } else {
-                insert(node.getRight(), value);
-            }
-        } else {
-            intersection.add(value);
-        }
-    }
-
-    public void printIntersection() {
-        for (Integer ele : intersection) {
-            System.out.print(ele + " ");
-        }
-    }
-
-    public void printUnion() {
-        print(head);
-    }
-
-    private void print(Node node) {
-        if (node == null) {
-            return;
-        }
-
-        System.out.print(node.getValue() + " ");
-        print(node.getLeft());
-        print(node.getRight());
-    }
-}
-
-class Node {
-    private Node left, right;
-    private Integer value;
-
-    public Node (Integer value) {
-        this.value = value;
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
-    }
-
-    public Integer getValue() {
-        return value;
     }
 }
