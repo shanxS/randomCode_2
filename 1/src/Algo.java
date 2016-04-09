@@ -9,7 +9,7 @@ public class Algo {
 
     public void run() {
         Map<Integer, Integer> keyFreq = new HashMap<>();
-        Map<Integer, List<Integer>> freqKeys = new TreeMap<>();
+        Map<Integer, List<Integer>> freqKeys = new TreeMap<>(new Sorter());
 
         for (Integer i=0; i<A.length; ++i) {
             Integer key = A[i];
@@ -51,5 +51,19 @@ public class Algo {
 
         System.out.println(freqKeys);
         System.out.println(keyFreq);
+    }
+}
+
+class Sorter implements Comparator<Integer> {
+
+    @Override
+    public int compare(Integer o1, Integer o2) {
+        if (o1<o2) {
+            return 1;
+        } else  if (o1>o2) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }
