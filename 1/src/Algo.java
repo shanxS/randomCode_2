@@ -3,56 +3,26 @@
  */
 public class Algo {
 
-    private Integer[] A = {1, 2, 8, 10, 10, 12, 19};
+    private Integer[] A = {10, 3, 5, 6, 2};
 
     public void run() {
-        LimitFinder lf = new LimitFinder();
-        lf.find(A, 0);
-        System.out.print(lf.getCeil() + " " + lf.getFloor());
-    }
-}
+        Integer[] res = new Integer[A.length];
+        Integer temp = 1;
 
-class LimitFinder {
-    private Integer[] A;
-    private Integer ceil;
-    private Integer floor;
-
-    public Integer getCeil() {
-        return ceil;
-    }
-
-    public Integer getFloor() {
-        return floor;
-    }
-
-    public void find(Integer[] A, Integer value) {
-        this.A = A;
-
-        findFor(0, A.length-1, value);
-    }
-
-    private void findFor(Integer start, Integer end, Integer target) {
-        if (start > end) {
-            return;
+        for (Integer i=1; i<A.length; ++i) {
+            temp *= A[i-1];
+            res[i] = temp;
         }
 
-        Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
-        if (A[mid] > target) {
-            ceil = A[mid];
-            end = mid-1;
-        } else if (A[mid] < target) {
-            floor = A[mid];
-            start = mid+1;
-
-        } else {
-            floor = A[mid];
-            ceil = A[mid];
-
-            return;
+        temp = 1;
+        res[0] = 1;
+        for (Integer i=A.length-2; i>=0; --i) {
+            temp *= A[i+1];
+            res[i] *= temp;
         }
 
-        findFor(start, end, target);
+        for (Integer ele : res) {
+            System.out.print(ele + " ");
+        }
     }
-
-
 }
