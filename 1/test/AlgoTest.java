@@ -15,8 +15,7 @@ public class AlgoTest {
 
     @Test
     public void test1() {
-        testObject.A =  new Integer[]{-2, -3, -4, -1, -2, -1, -5, -3};
-        testObject.run();
+
     }
 
 

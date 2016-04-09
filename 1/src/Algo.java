@@ -3,37 +3,46 @@
  */
 public class Algo {
 
-    public Integer[] A = {-2, -3, -4, -1, -2, -1, -5, -3};
-    //public Integer[] A = {2,-3,5};
-
+    private Integer[] A = {5,4,3,2,1};//{-7, -1, -5, -6, -3, -2};//{80, 2, 6, 3, 100};//{2, 3, 10, 6, 4, 8, 1};
 
     public void run() {
-        Integer gMax = A[0];
-        Integer gStart = 0;
-        Integer gEnd = 0;
+        Integer gMax = null;
+        Integer gStart = null;
+        Integer gEnd = null;
 
-        Integer lMax = A[0];
-        Integer lStart = 0;
-        Integer lEnd = 0;
+        Integer lMax = null;
+        Integer lStart = null;
+        Integer lEnd = null;
 
         for (Integer i=1; i<A.length; ++i) {
-            if (lMax <= 0 && lMax < A[i]) {
-                lMax = A[i];
+            Integer value = A[i] - A[i-1];
+
+            if (lMax == null && value > 0) {
+                lMax = value;
                 lStart = i;
                 lEnd = i;
-            } else if (lMax > 0) {
-                lMax += A[i];
+            } else if (lMax != null) {
+                lMax += value;
                 lEnd = i;
+
+                if (lMax <= 0) {
+                    lMax = null;
+                    lStart = null;
+                    lEnd = null;
+                }
             }
 
-            if (lMax > gMax) {
-                gMax = lMax;
-                gEnd = lEnd;
-                gStart = lStart;
+            if (lMax != null) {
+                if (gMax == null || gMax < lMax) {
+                    gMax = lMax;
+                    gStart = lStart;
+                    gEnd = lEnd;
+                }
             }
         }
 
-        System.out.print(gMax + " " + gStart + " " + gEnd);
-
+        System.out.print(gMax + " "
+                + ((gStart != null) ? (gStart-1) : ("null")) + " "
+                + ((gEnd != null) ? (gEnd) : ("null")));
     }
 }
