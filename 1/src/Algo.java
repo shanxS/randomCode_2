@@ -1,78 +1,113 @@
-import java.util.Comparator;
+import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author shashaku on 29/03/16.
  */
 public class Algo {
 
-    private Integer[] A = {5, 2, 2, 8, 5, 6, 8, 8};
+    private Integer[] A1 = {1, 3, 4, 5, 7};
+    private Integer[] A2 = {2, 3, 5, 6};
 
     public void run() {
-        Sorter sorter = new Sorter(new MyComparator());
-        sorter.sort(A);
-        for (Integer ele : A) {
+        BST bst = new BST();
+
+        for (Integer ele : A1) {
+            bst.insert(ele);
+        }
+        for (Integer ele : A2) {
+            bst.insert(ele);
+        }
+
+        bst.printUnion();
+        System.out.println();
+        bst.printIntersection();
+
+    }
+}
+
+class BST {
+    private Node head;
+    private Set<Integer> intersection;
+
+    public BST() {
+        intersection = new HashSet<>();
+    }
+
+    public void insert(Integer value) {
+        if (head == null) {
+            head = new Node(value);
+        } else {
+            insert(head, value);
+        }
+    }
+
+    private void insert(Node node, Integer value) {
+        if (node.getValue() > value) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(value));
+            } else {
+                insert(node.getLeft(), value);
+            }
+        } else if (node.getValue() < value) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(value));
+            } else {
+                insert(node.getRight(), value);
+            }
+        } else {
+            intersection.add(value);
+        }
+    }
+
+    public void printIntersection() {
+        for (Integer ele : intersection) {
             System.out.print(ele + " ");
         }
     }
-}
 
-class Sorter<T> {
-    private T[] A;
-    private Comparator comparator;
-
-    public Sorter(Comparator comparator) {
-        this.comparator = comparator;
+    public void printUnion() {
+        print(head);
     }
 
-    public void sort(T[] A) {
-        this.A = A;
-
-        sort(0, A.length-1);
-    }
-
-    private void sort(int start, int end) {
-        if (start >= end) {
+    private void print(Node node) {
+        if (node == null) {
             return;
         }
 
-        Integer pivotIndex = quickSort(start, end);
-        sort(start, pivotIndex-1);
-        sort(pivotIndex+1, end);
-    }
-
-    private Integer quickSort(int start, int end) {
-        Integer marker = start - 1;
-        T pivotValue = A[end];
-
-        for (Integer i=start; i<end; ++i) {
-//            if (A[i] < pivotValue) {
-            if (comparator.compare(A[i], pivotValue) == 1){
-                ++marker;
-                swap(marker, i);
-            }
-        }
-
-        swap (marker+1, end);
-        return marker+1;
-    }
-
-    private void swap(int from, int to) {
-        T temp = A[from];
-        A[from] = A[to];
-        A[to] = temp;
+        System.out.print(node.getValue() + " ");
+        print(node.getLeft());
+        print(node.getRight());
     }
 }
 
-class MyComparator implements Comparator<Integer> {
+class Node {
+    private Node left, right;
+    private Integer value;
 
-    @Override
-    public int compare(Integer o1, Integer o2) {
-        if (o1 > o2) {
-            return -1;
-        } else if (o1 < o2) {
-            return 1;
-        } else {
-            return 0;
-        }
+    public Node (Integer value) {
+        this.value = value;
+    }
+
+    public void setLeft(Node left) {
+        this.left = left;
+    }
+
+    public void setRight(Node right) {
+        this.right = right;
+    }
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
+
+    public Integer getValue() {
+        return value;
     }
 }
