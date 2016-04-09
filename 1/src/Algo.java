@@ -3,11 +3,12 @@
  */
 public class Algo {
 
-    private Integer[] A = {-2, -3, 4, -1, -2, 1, 5, -3};
+//    public Integer[] A = {-2, -3, -4, -1, -2, -1, -5, -3};
+public Integer[] A = {2,-3,5};
 
 
     public void run() {
-        Integer gMax = A[0];
+        Integer gMax = null;
         Integer gStart = null;
         Integer gEnd = null;
 
@@ -24,15 +25,18 @@ public class Algo {
                 lMax += A[i];
                 lEnd = i;
 
-
-                if (lMax > gMax) {
-                    gMax = lMax;
-                    gStart = lStart;
-                    gEnd = lEnd;
-                } else if (lMax <= 0) {
+                if (lMax <= 0) {
                     lMax = null;
                     lStart = null;
                     lEnd = null;
+                }
+            }
+
+            if (lMax != null) {
+                if (gMax == null || lMax > gMax) {
+                    gMax = lMax;
+                    gStart = lStart;
+                    gEnd = lEnd;
                 }
             }
         }
