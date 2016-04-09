@@ -7,7 +7,7 @@ public class Algo {
 
     public void run() {
         BinarySearch bs = new BinarySearch();
-        System.out.print(bs.search(A, 19));
+        System.out.print(bs.search(A, 6));
     }
 }
 
@@ -20,6 +20,10 @@ class BinarySearch {
     }
 
     private Integer find(int start, int end, Integer target) {
+        if (start > end) {
+            return null;
+        }
+
         Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
 
         if (A[mid] == target) {
