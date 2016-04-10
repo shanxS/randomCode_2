@@ -1,43 +1,27 @@
-import java.util.ArrayDeque;
-
 /**
  * @author shashaku on 29/03/16.
  */
 public class Algo {
 
-    private Integer[] A = {12, 34, 9, 8, 90, 3};
+    private Integer[] A = {4, 2, 4, 5, 2, 3, 1};
+    private Integer range = 5;
 
     public void run() {
-        ArrayDeque<Integer> que = new ArrayDeque<>();
-
-        Integer even = -1;
-        Integer odd = 0;
-        while (odd < A.length) {
-            if (A[odd]%2 == 0) {
-                ++even;
-                swap(even,  odd);
-            } else {
-                que.push(A[odd]);
-            }
-
-            ++odd;
-        }
-
-        ++even;
-        while (even < A.length) {
-            A[even] = que.pollLast();
-            ++even;
-        }
+        int[] res = new int[range+1];
 
         for (Integer ele : A) {
-            System.out.print(ele + " ");
+            res[ele]++;
         }
+
+        for (Integer i=0; i<res.length; ++i) {
+            Integer ele = res[i];
+            if (ele == 2) {
+                System.out.print((i) + " ");
+            }
+        }
+
+
     }
 
-    private void swap(Integer from, Integer to) {
-        Integer temp = A[from];
-        A[from] = A[to];
-        A[to] = temp;
-    }
 
 }
