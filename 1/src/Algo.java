@@ -3,24 +3,38 @@
  */
 public class Algo {
 
-    private Integer[] A = {4, 2, 4, 5, 2, 3, 1};
-    private Integer range = 5;
+//    private Integer[] A = {0, 1, 1, 0, 1, 2, 1, 2, 0, 0, 0, 2};
+//    private Integer[] A = {2,2,2,2,0};
+    private Integer[] A = {1,1,1,1};
 
     public void run() {
-        int[] res = new int[range+1];
+        Integer endMarker = A.length;
+        Integer startMarker = -1;
+        Integer marker = 0;
 
-        for (Integer ele : A) {
-            res[ele]++;
-        }
+        while (marker<endMarker) {
+            if (A[marker] == 0) {
+                ++startMarker;
+                swap (startMarker, marker);
 
-        for (Integer i=0; i<res.length; ++i) {
-            Integer ele = res[i];
-            if (ele == 2) {
-                System.out.print((i) + " ");
+                ++marker;
+            } else if (A[marker] == 2) {
+                --endMarker;
+                swap (endMarker, marker);
+            } else if (A[marker] == 1) {
+                ++marker;
             }
         }
 
+        for (Integer ele : A) {
+            System.out.print(ele + " ");
+        }
+    }
 
+    private void swap(Integer from, Integer to) {
+        Integer temp = A[from];
+        A[from] = A[to];
+        A[to] = temp;
     }
 
 
