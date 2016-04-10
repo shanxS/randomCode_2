@@ -1,33 +1,37 @@
+import java.util.Stack;
+
 public class Algo {
 
-//    private Integer[][] A = {
-//            {1,2,3},
-//            {4,5,6},
-//            {7,8,9},
-//            {10,11,12}
-//    };
-
-    private Integer[][] A = {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}};
+    private Integer[] A = {4,5,2,3,25};
 
     public void run() {
-        Integer initRowCount = A.length;
-        Integer initColCount = A[0].length;
+        Stack<Integer> stack = new Stack<>();
+        Integer[] NGE = new Integer[A.length];
 
-        Integer[][] res = new Integer[initColCount][initRowCount];
+        for (Integer i=A.length-1; i>=0; --i) {
+            if (stack.size() == 0) {
+                stack.push(A[i]);
+                NGE[i] = -1;
+            } else {
+                while (stack.size() > 0 && stack.peek() < A[i]) {
+                    stack.pop();
+                }
 
-        for (Integer inputRow = 0, outputCol = initRowCount-1; inputRow < initRowCount; ++inputRow, --outputCol) {
-            for (Integer inputCol = 0, outputRow = 0; inputCol < initColCount; ++inputCol, ++outputRow) {
-                res[outputRow][outputCol] = A[inputRow][inputCol];
+                if (stack.size() > 0) {
+                    NGE[i] = stack.peek();
+                } else {
+                    NGE[i] = -1;
+                }
             }
+
+            stack.push(A[i]);
         }
 
-        for (Integer[] arr : res) {
-            for (Integer ele : arr) {
-                System.out.print(ele + " ");
-            }
-
-            System.out.println();
+        for (Integer ele : NGE) {
+            System.out.print(ele + "  ");
         }
+
+
     }
 
 }
