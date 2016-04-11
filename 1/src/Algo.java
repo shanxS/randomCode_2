@@ -1,35 +1,26 @@
-import java.util.Stack;
-
 public class Algo {
 
-    private Integer[] A = {4,5,2,3,25};
+    private Integer[] A = {34, 23, 52, 12, 3};
 
     public void run() {
-        Stack<Integer> stack = new Stack<>();
-        Integer[] NGE = new Integer[A.length];
+        Integer min = A[0];
+        Integer max = A[0];
+        Integer sum = 0;
 
-        for (Integer i=A.length-1; i>=0; --i) {
-            if (stack.size() == 0) {
-                stack.push(A[i]);
-                NGE[i] = -1;
-            } else {
-                while (stack.size() > 0 && stack.peek() < A[i]) {
-                    stack.pop();
-                }
+        for (Integer ele : A) {
+            sum += ele;
 
-                if (stack.size() > 0) {
-                    NGE[i] = stack.peek();
-                } else {
-                    NGE[i] = -1;
-                }
-            }
-
-            stack.push(A[i]);
+            min = Math.min(min, ele);
+            max = Math.max(max, ele);
         }
 
-        for (Integer ele : NGE) {
-            System.out.print(ele + "  ");
+        Integer ap = (A.length*(min + max))/2;
+        if (sum == ap) {
+            System.out.print("consecutive");
+        } else {
+            System.out.print("NOT consecutive");
         }
+
 
 
     }
