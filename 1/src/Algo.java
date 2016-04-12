@@ -1,63 +1,115 @@
 public class Algo {
 
-    private Integer[] A = {1, 1, 2, 2, 2, 2, 3};
+    private Integer[] A = {6, 5, 4, 3, 2, 1};
 
     public void run() {
-        Integer target = 1;
-        Integer firstOccurance = findFirstOccurance(target);
-        Integer lastOccurance = findLastOccurance(target);
+        BST bst = new BST();
 
-        System.out.print(firstOccurance + " " + lastOccurance + " " + (lastOccurance-firstOccurance + 1));
-    }
-
-    private Integer findLastOccurance (Integer target) {
-        Integer start = 0;
-        Integer end = A.length-1;
-
-        Integer mid = null;
-
-        while (start <= end) {
-            mid = Math.min(start,end)  + ((Math.abs(start-end))/2);
-
-            if (A[mid] == target) {
-                if (mid == A.length-1 || A[mid+1] != target) {
-                    break;
-                } else {
-                    start = mid + 1;
-                }
-            } if (A[mid] < target) {
-                start = mid + 1;
-            } else if (A[mid] > target) {
-                end = mid - 1;
-            }
+        for (Integer i=0; i<A.length; ++i) {
+            Integer ele = A[i];
+            bst.insert(ele, i);
         }
 
-        return mid;
+        System.out.print(bst.getMaxGap());
+    }
+}
+
+class BST{
+    private Node head;
+    private Integer maxGap = Integer.MIN_VALUE, start, stop;
+
+    public Integer getMaxGap() {
+        System.out.println(start + " " + stop);
+        return maxGap;
     }
 
-    private Integer findFirstOccurance (Integer target) {
-        Integer start = 0;
-        Integer end = A.length-1;
-        Integer mid = null;
 
-        while(start <= end) {
-            mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+    public void insert(Integer value, Integer selfIndex) {
+        if (head == null) {
+            head = new Node(value, selfIndex);
+        } else {
+            insert(head, value, selfIndex);
+        }
+    }
 
-            if (A[mid] == target) {
-                if (mid == 0 || A[mid-1] != target) {
-                    break;
-                } else {
-                    end = end -1;
+    private void insert(Node node, Integer value, Integer selfIndex) {
+
+        if (node.getValue() < value) {
+
+            if (node.getRight() == null) {
+                Node rightNode = new Node(value, selfIndex);
+                rightNode.setLeftIndex(node.getLeftIndex());
+
+                if (selfIndex - node.getLeftIndex() > maxGap) {
+                    stop = node.getLeftIndex();
+                    start = selfIndex;
+                    maxGap = selfIndex - node.getLeftIndex();
                 }
-            } else if (A[mid] < target) {
-                start = mid + 1;
-            } else if (A[mid] > target) {
-                end = mid - 1;
+
+                node.setRight(rightNode);
+            } else {
+                insert(node.getRight(), value, selfIndex);
             }
+
+
+        } else if (node.getValue() > value) {
+
+            if (node.getLeft() == null) {
+                Node leftNode = new Node(value, selfIndex);
+                node.setLeft(leftNode);
+
+            } else {
+                insert(node.getLeft(), value, selfIndex);
+            }
+
         }
 
 
-        return mid;
+    }
+}
+
+
+class Node {
+    private Node left, right;
+    private Integer value, leftIndex, sellIndex;
+
+    public Node(Integer value, Integer selfIndex) {
+        this.value = value;
+        this.sellIndex = selfIndex;
     }
 
+    public Integer getSelfIndex() { return sellIndex; }
+
+    public Integer getLeftIndex() {
+        if (leftIndex == null) {
+            return sellIndex;
+        } else {
+            return leftIndex;
+        }
+
+    }
+
+    public void setLeft(Node left) {
+        this.left = left;
+    }
+
+    public void setRight(Node right) {
+        this.right = right;
+    }
+
+    public void setLeftIndex(Integer leftIndex) {
+        this.leftIndex = leftIndex;
+    }
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
 }
