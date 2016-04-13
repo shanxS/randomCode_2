@@ -1,43 +1,33 @@
 public class Algo {
 
-    private Integer[] A = {6, 5, 4, 3, 2, 1};
+    private Integer[] A = {1, 2, 3, 4, 5, 6};
 
     public void run() {
-        Integer[] lMinIndex = new Integer[A.length];
-        Integer minMarker = 0;
-        lMinIndex[minMarker] = minMarker;
-        Integer minSoFarIndex = minMarker;
+        Integer[] lMin = new Integer[A.length];
+        lMin[0] = A[0];
+        Integer minMarker = 1;
 
-        Integer[] rMaxIndex = new Integer[A.length];
-        Integer maxMarker = A.length-1;
-        rMaxIndex[maxMarker] = maxMarker;
-        Integer maxSoFarIndex = maxMarker;
+        Integer[] rMax = new Integer[A.length];
+        rMax[A.length-1] = A[A.length-1];
+        Integer maxMarker = A.length - 2;
 
         while (minMarker < A.length) {
-            if (A[minSoFarIndex] > A[minMarker]) {
-                minSoFarIndex = minMarker;
-            }
-            lMinIndex[minMarker] = minSoFarIndex;
-
-            if (A[maxSoFarIndex] < A[maxMarker]) {
-                maxSoFarIndex = maxMarker;
-            }
-            rMaxIndex[maxMarker] = maxSoFarIndex;
-
+            lMin[minMarker] = Math.min(lMin[minMarker-1], A[minMarker]);
             ++minMarker;
+
+            rMax[maxMarker] = Math.max(rMax[maxMarker+1], A[maxMarker]);
             --maxMarker;
         }
 
         minMarker = 0;
         maxMarker = 0;
-        Integer gap = Integer.MIN_VALUE;
-        Integer start=null, end=null;
+        Integer gap = Integer.MIN_VALUE, start = null, end = null;
         while (minMarker < A.length && maxMarker < A.length) {
-            if (A[lMinIndex[minMarker]] < A[rMaxIndex[maxMarker]]) {
-                if (gap < (rMaxIndex[maxMarker] - lMinIndex[minMarker])) {
-                    gap = (rMaxIndex[maxMarker] - lMinIndex[minMarker]);
-                    start = lMinIndex[minMarker];
-                    end = rMaxIndex[maxMarker];
+            if (lMin[minMarker] < rMax[maxMarker]) {
+                if (gap < (maxMarker - minMarker)) {
+                    gap = maxMarker - minMarker;
+                    start = minMarker;
+                    end = maxMarker;
                 }
 
                 ++maxMarker;
@@ -47,5 +37,6 @@ public class Algo {
         }
 
         System.out.print(start + " " + end + " " + gap);
+
     }
 }
