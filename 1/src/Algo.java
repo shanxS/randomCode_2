@@ -1,42 +1,50 @@
+import java.util.ArrayDeque;
+
 public class Algo {
 
-    private Integer[] A = {1, 2, 3, 4, 5, 6};
+    private Integer[] A = {1, 2, 3, 1, 4, 5, 2, 3, 6};
+    private final Integer k=3;
+    private ArrayDeque<Integer> arrayDeque;
 
     public void run() {
-        Integer[] lMin = new Integer[A.length];
-        lMin[0] = A[0];
-        Integer minMarker = 1;
+        arrayDeque = new ArrayDeque<>();
 
-        Integer[] rMax = new Integer[A.length];
-        rMax[A.length-1] = A[A.length-1];
-        Integer maxMarker = A.length - 2;
+        init();
+        processOthers();
+    }
 
-        while (minMarker < A.length) {
-            lMin[minMarker] = Math.min(lMin[minMarker-1], A[minMarker]);
-            ++minMarker;
+    private void processOthers() {
+        Integer counter = k;
 
-            rMax[maxMarker] = Math.max(rMax[maxMarker+1], A[maxMarker]);
-            --maxMarker;
-        }
+        while (counter < A.length) {
+            System.out.println(A[arrayDeque.peekLast()]);
 
-        minMarker = 0;
-        maxMarker = 0;
-        Integer gap = Integer.MIN_VALUE, start = null, end = null;
-        while (minMarker < A.length && maxMarker < A.length) {
-            if (lMin[minMarker] < rMax[maxMarker]) {
-                if (gap < (maxMarker - minMarker)) {
-                    gap = maxMarker - minMarker;
-                    start = minMarker;
-                    end = maxMarker;
-                }
-
-                ++maxMarker;
-            } else {
-                ++minMarker;
+            while (arrayDeque.size() > k) {
+                arrayDeque.removeLast();
             }
+
+            while (arrayDeque.size() > 0 && A[counter] >= A[arrayDeque.peekLast()]) {
+                arrayDeque.removeLast();
+            }
+
+            arrayDeque.addFirst(counter);
+
+            ++counter;
         }
+    }
 
-        System.out.print(start + " " + end + " " + gap);
+    private void init() {
+        Integer counter = 0;
 
+        while (counter < k) {
+
+            while (arrayDeque.size() > 0 && A[counter] >= A[arrayDeque.peekLast()]) {
+                arrayDeque.removeLast();
+            }
+
+            arrayDeque.addFirst(counter);
+
+            ++counter;
+        }
     }
 }
