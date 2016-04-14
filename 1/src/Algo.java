@@ -2,7 +2,7 @@ import java.util.ArrayDeque;
 
 public class Algo {
 
-    private Integer[] A = {1, 2, 30, 4, 5, 6};
+    private Integer[] A = {1, 2, 3, 1, 4, 5, 2, 3, 6};
     public void run() {
         BST bst = new BST(3);
         for (Integer ele : A) {
@@ -47,6 +47,11 @@ class BST {
         DeletionContext deletionContext = makeDeletionContext(value, head, null);
 
         Node target = deletionContext.target;
+        if (target.getCount() > 1) {
+            target.reduceCount();
+            return;
+        }
+
         Node replacementNode;
         if (bothChildren(target)) {
             replacementNode = getBiggestNode(target.getRight());
@@ -133,6 +138,8 @@ class BST {
             } else {
                 insert(node.getRight(), value);
             }
+        } else {
+            node.bumpCount();
         }
     }
 
@@ -165,12 +172,17 @@ class BST {
 }
 
 class Node {
-    private Integer value;
+    private Integer value, count;
     private Node left, right;
 
     public Node(Integer value) {
         this.value = value;
+        count = 1;
     }
+
+    public Integer getCount() { return count; }
+    public void bumpCount() { ++count; }
+    public void reduceCount() { --count; }
 
     public void setLeft(Node left) {
         this.left = left;
