@@ -4,16 +4,19 @@ public class Algo {
 
     public void run() {
 
-        for(Integer i=0; i<A.length; ++i) {
-            if (A[Math.abs(A[i]) - 1] < 0) {
-                System.out.print("repeated " + Math.abs(A[i]));
+        Integer[] store = new Integer[A.length];
+
+        for (Integer ele : A) {
+            if (store[(ele - 1)] != null) {
+                System.out.print("repeated " + ele);
             } else {
-                A[Math.abs(A[i]) - 1] = -A[Math.abs(A[i]) - 1];
+                store[(ele - 1)] = ele;
             }
         }
 
-        for(Integer i=0; i<A.length; ++i) {
-            if (A[i] > 0) {
+        for (Integer i=0; i<A.length; ++i) {
+            Integer ele = store[i];
+            if (ele == null) {
                 System.out.print("not found " + (i+1));
             }
         }
