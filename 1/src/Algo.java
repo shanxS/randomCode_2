@@ -1,15 +1,16 @@
 public class Algo {
 
-    private Integer[] A = {2,1,3,6,5};
+    private Integer[] A = {100,50,150,25,70,110,200,60,75};
 
     public void run() {
         BST bst = new BST();
         for (Integer ele : A) {
             bst.insert(ele);
         }
-        System.out.print(bst.findMin());
+        bst.printInorder();
     }
 }
+
 
 class BST {
     private Node head;
@@ -22,35 +23,43 @@ class BST {
         }
     }
 
-    public Integer findMin() {
-        return (findMin(head)).getValue();
+    public void printInorder() {
+        printInorder(head);
     }
 
-    private Node findMin(Node node) {
-        if (node.getLeft() == null) {
-            return node;
-        } else {
-            return findMin(node.getLeft());
+    private void printInorder(Node node) {
+        if (node == null) {
+            return;
         }
+
+        printInorder(node.getLeft());
+        System.out.print(node.getValue() + " ");
+        printInorder(node.getRight());
     }
+
 
     private void insert(Node node, Integer value) {
         if (node.getValue() > value) {
+
             if (node.getLeft() == null) {
                 node.setLeft(new Node(value));
             } else {
                 insert(node.getLeft(), value);
             }
+
         } else if (node.getValue() < value) {
+
             if (node.getRight() == null) {
                 node.setRight(new Node(value));
             } else {
                 insert(node.getRight(), value);
             }
+
         } else {
-            System.out.print("same values");
+            System.out.print("wtf!");
         }
     }
+
 
     public void print() {
         print(head);
@@ -61,13 +70,12 @@ class BST {
             return;
         }
 
-
         System.out.print(node.getValue() + " - ");
-        if (node.getLeft() != null) {
+        if (node.getLeft() == null) {
             System.out.print(node.getLeft().getValue());
         }
         System.out.print(", ");
-        if (node.getRight() != null) {
+        if (node.getRight() == null) {
             System.out.print(node.getRight().getValue());
         }
         System.out.println();
@@ -76,6 +84,7 @@ class BST {
         print(node.getRight());
     }
 }
+
 
 class Node {
     private Node left, right;
