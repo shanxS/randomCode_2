@@ -1,119 +1,107 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Algo {
 
-    private Integer[] A = {1,9,5,10,7,3};
+    private Integer[] A = {2,1,3,6,5};
 
     public void run() {
-        Heap max = new Heap(Heap.Type.MIN);
+        BST bst = new BST();
         for (Integer ele : A) {
-            max.insert(ele);
-//            System.out.println(max.getTop());
+            bst.insert(ele);
         }
-
-        while (max.size() > 0) {
-            System.out.println(max.removeTop());
-        }
+        System.out.print(bst.findMin());
     }
 }
 
-class Heap {
-    public static enum Type {MIN, MAX};
-
-    private final boolean isMax;
-    private List<Integer> data;
-
-    public Heap(Type type) {
-        isMax = (type == Type.MAX);
-        data = new ArrayList<>();
-    }
-
-    public Integer size() {
-        return data.size();
-    }
+class BST {
+    private Node head;
 
     public void insert(Integer value) {
-        data.add(value);
-        heapify(data.size() - 1);
-    }
-
-    public Integer removeTop() {
-        if (data.size() == 0) {
-            return null;
+        if (head == null) {
+            head = new Node(value);
+        } else {
+            insert(head, value);
         }
-
-        Integer result = data.get(0);
-        swap(0, data.size()-1);
-        data.remove(data.size()-1);
-        reverseHeapify(0);
-
-        return result;
     }
 
-    private void reverseHeapify(Integer parentIndex) {
-        Integer leftChildIndex = getLeftChildIndex(parentIndex);
-        Integer rightChildIndex = getRightChildIndex(parentIndex);
+    public Integer findMin() {
+        return (findMin(head)).getValue();
+    }
 
-        if (isValidIndex(leftChildIndex) && isValidIndex(rightChildIndex)) {
-            if ((data.get(leftChildIndex) > data.get(rightChildIndex)) == isMax) {
-                if ((data.get(parentIndex) > data.get(leftChildIndex)) != isMax) {
-                    swap(parentIndex, leftChildIndex);
-                    reverseHeapify(leftChildIndex);
-                }
+    private Node findMin(Node node) {
+        if (node.getLeft() == null) {
+            return node;
+        } else {
+            return findMin(node.getLeft());
+        }
+    }
+
+    private void insert(Node node, Integer value) {
+        if (node.getValue() > value) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(value));
             } else {
-                if ((data.get(parentIndex) > data.get(rightChildIndex)) != isMax ) {
-                    swap(parentIndex, rightChildIndex);
-                    reverseHeapify(rightChildIndex);
-                }
+                insert(node.getLeft(), value);
             }
-
-        } else if (isValidIndex(leftChildIndex)) {
-            if ((data.get(parentIndex) > data.get(leftChildIndex)) != isMax) {
-                swap(parentIndex, leftChildIndex);
-                reverseHeapify(leftChildIndex);
+        } else if (node.getValue() < value) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(value));
+            } else {
+                insert(node.getRight(), value);
             }
-
-        } else if (isValidIndex(rightChildIndex)) {
-            if ((data.get(parentIndex) > data.get(rightChildIndex)) != isMax ) {
-                swap(parentIndex, rightChildIndex);
-                reverseHeapify(rightChildIndex);
-            }
+        } else {
+            System.out.print("same values");
         }
     }
 
-    private Integer getRightChildIndex(Integer index) {
-        return getLeftChildIndex(index) + 1;
+    public void print() {
+        print(head);
     }
 
-    private Integer getLeftChildIndex(Integer index) {
-        return ((2*index) + 1);
-    }
-
-    private boolean isValidIndex(Integer index) {
-        return (index >= 0) && (index < data.size());
-    }
-
-    private void heapify(Integer childIndex) {
-        Integer parentIndex = getParentIndex(childIndex);
-
-        if (parentIndex == childIndex) {
+    private void print(Node node) {
+        if (node == null) {
             return;
         }
 
-        if ((data.get(parentIndex) > data.get(childIndex)) != isMax) {
-            swap (parentIndex, childIndex);
-            heapify(parentIndex);
+
+        System.out.print(node.getValue() + " - ");
+        if (node.getLeft() != null) {
+            System.out.print(node.getLeft().getValue());
         }
+        System.out.print(", ");
+        if (node.getRight() != null) {
+            System.out.print(node.getRight().getValue());
+        }
+        System.out.println();
+
+        print(node.getLeft());
+        print(node.getRight());
+    }
+}
+
+class Node {
+    private Node left, right;
+    private Integer value;
+
+    public Node(Integer value) {
+        this.value = value;
     }
 
-    private void swap(Integer parentIndex, Integer childIndex) {
-        Integer tmp = data.get(parentIndex);
-        data.set(parentIndex, data.get(childIndex));
-        data.set(childIndex, tmp);
+    public void setLeft(Node left) {
+        this.left = left;
     }
 
-    private Integer getParentIndex(Integer childIndex) {
-        return ((childIndex-1)/2);
+    public void setRight(Node right) {
+        this.right = right;
+    }
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
+
+    public Integer getValue() {
+        return value;
     }
 }
