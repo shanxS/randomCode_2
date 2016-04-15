@@ -1,16 +1,15 @@
 public class Algo {
 
-    private Integer[] A = {100,50,150,25,70,110,200,60,75};
+    private Integer[] A = {100,50,150,25,70,110,200,60,75, 190, 250, 55, 65};
 
     public void run() {
         BST bst = new BST();
         for (Integer ele : A) {
             bst.insert(ele);
         }
-        bst.printInorder();
+        bst.find(70);
     }
 }
-
 
 class BST {
     private Node head;
@@ -23,43 +22,50 @@ class BST {
         }
     }
 
-    public void printInorder() {
-        printInorder(head);
+    public void find(Integer target) {
+
+        traverseInorder(head, target);
     }
 
-    private void printInorder(Node node) {
+    private Node traverseInorder(Node node, Integer target) {
         if (node == null) {
-            return;
+            return node;
         }
 
-        printInorder(node.getLeft());
-        System.out.print(node.getValue() + " ");
-        printInorder(node.getRight());
-    }
+        Node pre = traverseInorder(node.getLeft(), target);
 
+        Node post = traverseInorder(node.getRight(), target);
+
+        if (node.getValue() == target) {
+            System.out.println((pre == null) ? ("null") : pre.getValue());
+            System.out.println((post == null) ? ("null") : post.getValue());
+        }
+
+
+        if (pre == null) {
+            return node;
+        } else {
+            return pre;
+        }
+    }
 
     private void insert(Node node, Integer value) {
         if (node.getValue() > value) {
-
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value));
-            } else {
+            if (node.getLeft() != null) {
                 insert(node.getLeft(), value);
-            }
-
-        } else if (node.getValue() < value) {
-
-            if (node.getRight() == null) {
-                node.setRight(new Node(value));
             } else {
-                insert(node.getRight(), value);
+                node.setLeft(new Node(value));
             }
-
+        } else if (node.getValue() < value) {
+            if (node.getRight() != null) {
+                insert(node.getRight(), value);
+            } else {
+                node.setRight(new Node(value));
+            }
         } else {
-            System.out.print("wtf!");
+            System.out.print("wtf");
         }
     }
-
 
     public void print() {
         print(head);
@@ -85,8 +91,7 @@ class BST {
     }
 }
 
-
-class Node {
+class Node{
     private Node left, right;
     private Integer value;
 
