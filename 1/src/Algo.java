@@ -1,70 +1,52 @@
+import java.util.ArrayDeque;
+
 public class Algo {
 
     private Integer[] A = {100,50,150,25,70,110,200,60,75, 190, 250, 55, 65};
 
     public void run() {
-        BST bst = new BST();
+        BinaryTree binaryTree = new BinaryTree();
         for (Integer ele : A) {
-            bst.insert(ele);
+            binaryTree.insert(ele);
         }
-        bst.find(70);
+        binaryTree.print();
     }
 }
 
-class BST {
+
+
+class BinaryTree {
     private Node head;
+    private ArrayDeque<Node> parents;
+
+    public BinaryTree() {
+        parents = new ArrayDeque<>();
+    }
+
 
     public void insert(Integer value) {
+        Node node = new Node(value);
+
         if (head == null) {
-            head = new Node(value);
+            head = node;
         } else {
-            insert(head, value);
-        }
-    }
+            while (parents.size() > 0) {
+                Node thisParent = parents.peekFirst();
+                if (thisParent.getLeft() != null && thisParent.getRight() != null) {
+                    parents.removeFirst();
+                } else if (thisParent.getLeft() == null) {
+                    thisParent.setLeft(node);
 
-    public void find(Integer target) {
+                    break;
+                } else if (thisParent.getRight() == null) {
+                    thisParent.setRight(node);
 
-        traverseInorder(head, target);
-    }
-
-    private Node traverseInorder(Node node, Integer target) {
-        if (node == null) {
-            return node;
-        }
-
-        Node pre = traverseInorder(node.getLeft(), target);
-
-        Node post = traverseInorder(node.getRight(), target);
-
-        if (node.getValue() == target) {
-            System.out.println((pre == null) ? ("null") : pre.getValue());
-            System.out.println((post == null) ? ("null") : post.getValue());
-        }
-
-
-        if (pre == null) {
-            return node;
-        } else {
-            return pre;
-        }
-    }
-
-    private void insert(Node node, Integer value) {
-        if (node.getValue() > value) {
-            if (node.getLeft() != null) {
-                insert(node.getLeft(), value);
-            } else {
-                node.setLeft(new Node(value));
+                    break;
+                }
             }
-        } else if (node.getValue() < value) {
-            if (node.getRight() != null) {
-                insert(node.getRight(), value);
-            } else {
-                node.setRight(new Node(value));
-            }
-        } else {
-            System.out.print("wtf");
         }
+
+        parents.addLast(node);
     }
 
     public void print() {
@@ -77,11 +59,11 @@ class BST {
         }
 
         System.out.print(node.getValue() + " - ");
-        if (node.getLeft() == null) {
+        if (node.getLeft() != null) {
             System.out.print(node.getLeft().getValue());
         }
         System.out.print(", ");
-        if (node.getRight() == null) {
+        if (node.getRight() != null) {
             System.out.print(node.getRight().getValue());
         }
         System.out.println();
@@ -89,9 +71,10 @@ class BST {
         print(node.getLeft());
         print(node.getRight());
     }
+
 }
 
-class Node{
+class Node {
     private Node left, right;
     private Integer value;
 
@@ -107,15 +90,15 @@ class Node{
         this.right = right;
     }
 
+    public Integer getValue() {
+        return value;
+    }
+
     public Node getLeft() {
         return left;
     }
 
     public Node getRight() {
         return right;
-    }
-
-    public Integer getValue() {
-        return value;
     }
 }
