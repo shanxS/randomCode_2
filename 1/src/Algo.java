@@ -2,7 +2,10 @@ import java.util.ArrayDeque;
 
 public class Algo {
 
-    private Integer[] A = {100,50,150,25,70,110,200,60,75, 190, 250, 55, 65};
+    private Integer[] A = {100,
+    50, 150,
+    25, 70, 110, 30,
+    10, 200};
 
     public void run() {
         BinaryTree binaryTree = new BinaryTree();
@@ -10,9 +13,43 @@ public class Algo {
             binaryTree.insert(ele);
         }
         binaryTree.print();
+
+        BSTTester tester = new BSTTester();
+
+        System.out.print(tester.test(
+                binaryTree.getHead()));
     }
 }
 
+class BSTTester {
+    private Boolean status;
+    public Boolean test(Node head) {
+        status = true;
+        testInorder(head);
+
+        return status;
+    }
+
+    private Node testInorder(Node node) {
+        if (node == null || !status) {
+            return null;
+        }
+
+        Node pre = testInorder(node.getLeft());
+        if (pre != null && pre.getValue() > node.getValue()) {
+            status = false;
+            return null;
+        }
+
+        Node post = testInorder(node.getRight());
+        if (post != null && post.getValue() < node.getValue()) {
+            status = false;
+            return null;
+        }
+
+        return (post == null) ? node : post;
+    }
+}
 
 
 class BinaryTree {
@@ -72,6 +109,9 @@ class BinaryTree {
         print(node.getRight());
     }
 
+    public Node getHead() {
+        return head;
+    }
 }
 
 class Node {
