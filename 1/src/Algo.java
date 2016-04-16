@@ -3,9 +3,9 @@ import java.util.ArrayDeque;
 public class Algo {
 
     private Integer[] A = {100,
-    50, 150,
-    25, 70, 110, 30,
-    10, 200};
+    25, 150,
+    50, 70, 110, 200,
+    10, 30};
 
     public void run() {
         BinaryTree binaryTree = new BinaryTree();
@@ -25,30 +25,30 @@ class BSTTester {
     private Boolean status;
     public Boolean test(Node head) {
         status = true;
-        testInorder(head);
+        testByTraversing(head, null, null);
 
         return status;
     }
 
-    private Node testInorder(Node node) {
+    private void testByTraversing(Node node, Node bigger, Node lesser) {
         if (node == null || !status) {
-            return null;
+            return;
         }
 
-        Node pre = testInorder(node.getLeft());
-        if (pre != null && pre.getValue() > node.getValue()) {
+        if (bigger != null && bigger.getValue() < node.getValue()) {
             status = false;
-            return null;
+            return;
         }
 
-        Node post = testInorder(node.getRight());
-        if (post != null && post.getValue() < node.getValue()) {
+        if (lesser != null && lesser.getValue() > node.getValue()) {
             status = false;
-            return null;
+            return;
         }
 
-        return (post == null) ? node : post;
+        testByTraversing(node.getLeft(), node, lesser);
+        testByTraversing(node.getRight(), bigger, node);
     }
+
 }
 
 
