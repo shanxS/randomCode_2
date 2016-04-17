@@ -1,142 +1,76 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 public class Algo {
 
-    private Integer[] A = {2, 6, 3, 12, 56, 8};
-    private Integer k = 3;
+    private Integer[] A = {4,5,8,1,3,2,7,9};
+    private Stack<Integer> minStack, maxStack;
+
 
     public void run() {
-
-        Heap heap = new Heap(Heap.Type.MIN);
-
-        Integer reader = 0;
-        Integer writer = 0;
-        while (reader < A.length) {
-            if (heap.getSize() > k) {
-                A[writer] = heap.removeTop();
-                ++writer;
-            }
-
-            heap.insert(A[reader]);
-            ++reader;
-        }
-
-        while (writer < A.length) {
-            A[writer] = heap.removeTop();
-            ++writer;
-        }
-
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
-        }
-
-    }
-}
-
-class Heap {
-    public enum Type {MIN, MAX};
-
-    private List<Integer> data;
-    private final Boolean isMax;
-
-    public Heap(Type type) {
-        isMax = (type == Type.MAX);
-        data = new ArrayList<>();
+        init();
+        process();
 
     }
 
-    public Integer getSize() { return  data.size(); }
+    private void process() {
+        Stack<Integer> secMinStack = new Stack<>();
+        Stack<Integer> secMaxStack = new Stack<>();
 
-    public void insert(Integer value) {
-        data.add(value);
-        heapify(data.size()-1);
+        Boolean evenRun = true;
 
-    }
+        while ((evenRun && minStack.size() > 1)
+                || (!evenRun && secMinStack.size() > 1)) {
 
-    public Integer removeTop() {
-        if (data.size() == 0) {
-            return null;
-        }
+            if (evenRun) {
 
-        Integer result = data.get(0);
-        swap(0, data.size()-1);
-        data.remove(data.size()-1);
-
-        reverseHeapify(0);
-
-
-        return result;
-    }
-
-    private void reverseHeapify(Integer parentIndex) {
-        Integer leftChildIndex = getLeftChildIndex(parentIndex);
-        Integer rightChildIndex = getRightChildIndex(parentIndex);
-
-
-        if (isValidIndex(leftChildIndex) && isValidIndex(rightChildIndex)) {
-
-            if ((data.get(leftChildIndex) > data.get(rightChildIndex)) == isMax) {
-                if ((data.get(parentIndex) > data.get(leftChildIndex)) != isMax) {
-                    swap(parentIndex, leftChildIndex);
-                    reverseHeapify(leftChildIndex);
+                while (minStack.size() > 1) {
+                    secMinStack.push(Math.min(minStack.pop(), minStack.pop()));
+                    secMaxStack.push(Math.max(maxStack.pop(), maxStack.pop()));
                 }
-            } else if ((data.get(parentIndex) > data.get(rightChildIndex)) != isMax) {
-                swap(parentIndex, rightChildIndex);
-                reverseHeapify(rightChildIndex);
+                if (minStack.size() == 1) {
+                    secMinStack.push(minStack.pop());
+                    secMaxStack.push(maxStack.pop());
+                }
+
+            } else {
+
+                while (secMinStack.size() > 1) {
+                    minStack.push(Math.min(secMinStack.pop(), secMinStack.pop()));
+                    maxStack.push(Math.max(secMaxStack.pop(), secMaxStack.peek()));
+                }
+
+                if (secMinStack.size() == 1) {
+                    minStack.push(secMaxStack.pop());
+                    maxStack.push(secMaxStack.pop());
+                }
             }
 
-        } else if (isValidIndex(leftChildIndex)) {
-            if ((data.get(parentIndex) > data.get(leftChildIndex)) != isMax) {
-                swap(parentIndex, leftChildIndex);
-                reverseHeapify(leftChildIndex);
-            }
+            evenRun = !evenRun;
+        }
 
-        } else if (isValidIndex(rightChildIndex)) {
-            if ((data.get(parentIndex) > data.get(rightChildIndex)) != isMax) {
-                swap(rightChildIndex, parentIndex);
-                reverseHeapify(rightChildIndex);
-            }
-
+        if (evenRun) {
+            System.out.print("min " + minStack.peek() + " max " + maxStack.peek());
+        } else {
+            System.out.print("min " + secMinStack.peek() + " max " + secMaxStack.peek());
         }
     }
 
-    private Integer getRightChildIndex(Integer parentIndex) {
-        return getLeftChildIndex(parentIndex) + 1;
-    }
+    private void init() {
+        minStack = new Stack<>();
+        maxStack = new Stack<>();
 
-    private Integer getLeftChildIndex(Integer parentIndex) {
-        return (2*parentIndex) + 1;
-    }
+        Integer counter = 0;
 
-    private boolean isValidIndex(Integer index) {
-        return (index >= 0) && (index < data.size());
-    }
+        while (counter < A.length) {
+            if (counter+1 < A.length) {
+                minStack.push(Math.min(A[counter], A[counter+1]));
+                maxStack.push(Math.max(A[counter], A[counter+1]));
+            } else {
+                minStack.push(A[counter]);
+                maxStack.push(A[counter]);
+            }
 
-    private void heapify(Integer childIndex) {
-        Integer parentIndex = getParentIndex(childIndex);
-
-
-        if (parentIndex == childIndex) {
-            return;
-        }
-
-
-        if ((data.get(parentIndex) > data.get(childIndex)) != isMax) {
-            swap(parentIndex, childIndex);
-            heapify(parentIndex);
+            counter += 2;
         }
     }
-
-    private Integer getParentIndex(Integer childIndex) {
-        return ((childIndex-1)/2);
-    }
-
-    private void swap(Integer from, Integer to) {
-        Integer tmp = data.get(from);
-        data.set(from, data.get(to));
-        data.set(to, tmp);
-    }
-
-
 }
