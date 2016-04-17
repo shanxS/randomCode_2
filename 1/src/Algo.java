@@ -2,7 +2,7 @@ import java.util.Stack;
 
 public class Algo {
 
-    private Integer[] A = {4,5,8,1,3,2,7,9};
+    private Integer[] A = {4,5,8,3,2,7,1};
     private Stack<Integer> minStack, maxStack;
 
 
@@ -16,17 +16,19 @@ public class Algo {
         Stack<Integer> secMinStack = new Stack<>();
         Stack<Integer> secMaxStack = new Stack<>();
 
-        Boolean evenRun = true;
+        Boolean isEvenRun = true;
 
-        while ((evenRun && minStack.size() > 1)
-                || (!evenRun && secMinStack.size() > 1)) {
+        while ((isEvenRun && minStack.size() > 1)
+                || (!isEvenRun && secMinStack.size() > 1)) {
 
-            if (evenRun) {
+
+            if (isEvenRun) {
 
                 while (minStack.size() > 1) {
                     secMinStack.push(Math.min(minStack.pop(), minStack.pop()));
                     secMaxStack.push(Math.max(maxStack.pop(), maxStack.pop()));
                 }
+
                 if (minStack.size() == 1) {
                     secMinStack.push(minStack.pop());
                     secMaxStack.push(maxStack.pop());
@@ -36,19 +38,21 @@ public class Algo {
 
                 while (secMinStack.size() > 1) {
                     minStack.push(Math.min(secMinStack.pop(), secMinStack.pop()));
-                    maxStack.push(Math.max(secMaxStack.pop(), secMaxStack.peek()));
+                    maxStack.push(Math.max(secMaxStack.pop(), secMaxStack.pop()));
                 }
 
-                if (secMinStack.size() == 1) {
-                    minStack.push(secMaxStack.pop());
+                if (secMaxStack.size() == 1) {
+                    minStack.push(secMinStack.pop());
                     maxStack.push(secMaxStack.pop());
                 }
+
             }
 
-            evenRun = !evenRun;
+            isEvenRun = !isEvenRun;
+
         }
 
-        if (evenRun) {
+        if (isEvenRun) {
             System.out.print("min " + minStack.peek() + " max " + maxStack.peek());
         } else {
             System.out.print("min " + secMinStack.peek() + " max " + secMaxStack.peek());
@@ -60,8 +64,8 @@ public class Algo {
         maxStack = new Stack<>();
 
         Integer counter = 0;
-
         while (counter < A.length) {
+
             if (counter+1 < A.length) {
                 minStack.push(Math.min(A[counter], A[counter+1]));
                 maxStack.push(Math.max(A[counter], A[counter+1]));
@@ -73,4 +77,6 @@ public class Algo {
             counter += 2;
         }
     }
+
+
 }
