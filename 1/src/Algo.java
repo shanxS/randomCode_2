@@ -1,144 +1,142 @@
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Algo {
 
-    private Integer[] A = {100,
-    25, 150,
-    50, 70, 110, 200,
-    10, 30};
+    private Integer[] A = {2, 6, 3, 12, 56, 8};
+    private Integer k = 3;
 
     public void run() {
-        BinaryTree binaryTree = new BinaryTree();
+
+        Heap heap = new Heap(Heap.Type.MIN);
+
+        Integer reader = 0;
+        Integer writer = 0;
+        while (reader < A.length) {
+            if (heap.getSize() > k) {
+                A[writer] = heap.removeTop();
+                ++writer;
+            }
+
+            heap.insert(A[reader]);
+            ++reader;
+        }
+
+        while (writer < A.length) {
+            A[writer] = heap.removeTop();
+            ++writer;
+        }
+
         for (Integer ele : A) {
-            binaryTree.insert(ele);
+            System.out.print(ele + " ");
         }
-        binaryTree.print();
 
-        BSTTester tester = new BSTTester();
-
-        System.out.print(tester.test(
-                binaryTree.getHead()));
     }
 }
 
-class BSTTester {
-    private Boolean status;
-    public Boolean test(Node head) {
-        status = true;
-        testByTraversing(head, null, null);
+class Heap {
+    public enum Type {MIN, MAX};
 
-        return status;
+    private List<Integer> data;
+    private final Boolean isMax;
+
+    public Heap(Type type) {
+        isMax = (type == Type.MAX);
+        data = new ArrayList<>();
+
     }
 
-    private void testByTraversing(Node node, Node bigger, Node lesser) {
-        if (node == null || !status) {
-            return;
-        }
-
-        if (bigger != null && bigger.getValue() < node.getValue()) {
-            status = false;
-            return;
-        }
-
-        if (lesser != null && lesser.getValue() > node.getValue()) {
-            status = false;
-            return;
-        }
-
-        testByTraversing(node.getLeft(), node, lesser);
-        testByTraversing(node.getRight(), bigger, node);
-    }
-
-}
-
-
-class BinaryTree {
-    private Node head;
-    private ArrayDeque<Node> parents;
-
-    public BinaryTree() {
-        parents = new ArrayDeque<>();
-    }
-
+    public Integer getSize() { return  data.size(); }
 
     public void insert(Integer value) {
-        Node node = new Node(value);
+        data.add(value);
+        heapify(data.size()-1);
 
-        if (head == null) {
-            head = node;
-        } else {
-            while (parents.size() > 0) {
-                Node thisParent = parents.peekFirst();
-                if (thisParent.getLeft() != null && thisParent.getRight() != null) {
-                    parents.removeFirst();
-                } else if (thisParent.getLeft() == null) {
-                    thisParent.setLeft(node);
+    }
 
-                    break;
-                } else if (thisParent.getRight() == null) {
-                    thisParent.setRight(node);
-
-                    break;
-                }
-            }
+    public Integer removeTop() {
+        if (data.size() == 0) {
+            return null;
         }
 
-        parents.addLast(node);
+        Integer result = data.get(0);
+        swap(0, data.size()-1);
+        data.remove(data.size()-1);
+
+        reverseHeapify(0);
+
+
+        return result;
     }
 
-    public void print() {
-        print(head);
+    private void reverseHeapify(Integer parentIndex) {
+        Integer leftChildIndex = getLeftChildIndex(parentIndex);
+        Integer rightChildIndex = getRightChildIndex(parentIndex);
+
+
+        if (isValidIndex(leftChildIndex) && isValidIndex(rightChildIndex)) {
+
+            if ((data.get(leftChildIndex) > data.get(rightChildIndex)) == isMax) {
+                if ((data.get(parentIndex) > data.get(leftChildIndex)) != isMax) {
+                    swap(parentIndex, leftChildIndex);
+                    reverseHeapify(leftChildIndex);
+                }
+            } else if ((data.get(parentIndex) > data.get(rightChildIndex)) != isMax) {
+                swap(parentIndex, rightChildIndex);
+                reverseHeapify(rightChildIndex);
+            }
+
+        } else if (isValidIndex(leftChildIndex)) {
+            if ((data.get(parentIndex) > data.get(leftChildIndex)) != isMax) {
+                swap(parentIndex, leftChildIndex);
+                reverseHeapify(leftChildIndex);
+            }
+
+        } else if (isValidIndex(rightChildIndex)) {
+            if ((data.get(parentIndex) > data.get(rightChildIndex)) != isMax) {
+                swap(rightChildIndex, parentIndex);
+                reverseHeapify(rightChildIndex);
+            }
+
+        }
     }
 
-    private void print(Node node) {
-        if (node == null) {
+    private Integer getRightChildIndex(Integer parentIndex) {
+        return getLeftChildIndex(parentIndex) + 1;
+    }
+
+    private Integer getLeftChildIndex(Integer parentIndex) {
+        return (2*parentIndex) + 1;
+    }
+
+    private boolean isValidIndex(Integer index) {
+        return (index >= 0) && (index < data.size());
+    }
+
+    private void heapify(Integer childIndex) {
+        Integer parentIndex = getParentIndex(childIndex);
+
+
+        if (parentIndex == childIndex) {
             return;
         }
 
-        System.out.print(node.getValue() + " - ");
-        if (node.getLeft() != null) {
-            System.out.print(node.getLeft().getValue());
+
+        if ((data.get(parentIndex) > data.get(childIndex)) != isMax) {
+            swap(parentIndex, childIndex);
+            heapify(parentIndex);
         }
-        System.out.print(", ");
-        if (node.getRight() != null) {
-            System.out.print(node.getRight().getValue());
-        }
-        System.out.println();
-
-        print(node.getLeft());
-        print(node.getRight());
     }
 
-    public Node getHead() {
-        return head;
-    }
-}
-
-class Node {
-    private Node left, right;
-    private Integer value;
-
-    public Node(Integer value) {
-        this.value = value;
+    private Integer getParentIndex(Integer childIndex) {
+        return ((childIndex-1)/2);
     }
 
-    public void setLeft(Node left) {
-        this.left = left;
+    private void swap(Integer from, Integer to) {
+        Integer tmp = data.get(from);
+        data.set(from, data.get(to));
+        data.set(to, tmp);
     }
 
-    public void setRight(Node right) {
-        this.right = right;
-    }
 
-    public Integer getValue() {
-        return value;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
-    }
 }
