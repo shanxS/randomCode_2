@@ -1,91 +1,75 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Algo {
 
-    private Integer[] A = {2,3,9,4,5,6,1};
-    private Stack<Integer> minStack;
-    private HashMap<Integer, Integer> trace;
+    private Integer[][] A = {
+            {2, 5, 7, 11, 15 },
+            {1, 3},
+            {6, 8, 12, 13, 14}
+    };
+
+    private Integer medianPos;
+    private Map<Integer, Integer> indexCounterMap;
+
 
     public void run() {
-        init();
-        process();
 
+        init();
+
+        process();
     }
 
-
     private void process() {
-        Stack<Integer> secMinStack = new Stack<>();
 
-        Boolean isEvenRun = true;
+        Integer winner = 0;
 
-        while ((isEvenRun && minStack.size() > 1)
-                || (!isEvenRun && secMinStack.size() > 1)) {
+        while (medianPos >= 0) {
+            Map<Integer, Integer> competitors = getCompetitors();
+            winner = compete(competitors);
 
+            --medianPos;
+        }
 
-            if (isEvenRun) {
+        System.out.print(winner);
+    }
 
-                while (minStack.size() > 1) {
-                    secMinStack.push ( compete (minStack.pop(), minStack.pop()) );
-                }
-
-                if (minStack.size() == 1) {
-                    secMinStack.push ( minStack.pop() );
-                }
-
-            } else {
-
-                while (secMinStack.size() > 1) {
-                    minStack.push ( compete (secMinStack.pop(), secMinStack.pop()) );
-                }
-
-                if (secMinStack.size() == 1) {
-                    minStack.push(secMinStack.pop());
-                }
-
+    private Integer compete(Map<Integer, Integer> competitors) {
+        Integer winner = Integer.MAX_VALUE;
+        Integer index = null;
+        for (Map.Entry<Integer, Integer> entry : competitors.entrySet()) {
+            if (winner > entry.getValue()) {
+                winner = entry.getValue();
+                index = entry.getKey();
             }
-
-
-            isEvenRun = !isEvenRun;
         }
 
+        indexCounterMap.put(index, (indexCounterMap.get(index) + 1));
 
-        if (isEvenRun) {
-            System.out.print("min " + minStack.peek() + " sec min " + trace.get(minStack.peek()));
-        } else {
-            System.out.print("min " + secMinStack.peek() + " sec min " + trace.get(secMinStack.peek()));
-        }
-
+        return winner;
     }
 
     private void init() {
-        minStack = new Stack<>();
-        trace = new HashMap<>();
-
-        Integer counter = 0;
-        while (counter < A.length) {
-
-            if (counter+1 < A.length) {
-                minStack.push ( compete (A[counter], A[counter+1]) );
-            } else {
-                minStack.push (A[counter]);
-            }
-
-
-            counter += 2;
+        medianPos = 0;
+        indexCounterMap = new HashMap<>();
+        for (Integer i=0; i<A.length; ++i) {
+            medianPos += A[i].length;
+            indexCounterMap.put(i, 0);
         }
-
+        medianPos /= 2;
     }
 
-    private Integer compete(Integer i1, Integer i2) {
-        Integer min = Math.min(i1, i2);
-        Integer max = Math.max(i1, i2);
 
-        Integer compe = trace.get(min);
-        if (compe == null) {
-            compe = Integer.MAX_VALUE;
+    public Map<Integer,Integer> getCompetitors() {
+        Map<Integer,Integer> competitors = new HashMap<>();
+
+        for (Integer i=0; i<A.length; ++i) {
+            if (indexCounterMap.get(i) < A[i].length) {
+                competitors.put(i, A[i][indexCounterMap.get(i)]);
+            }
         }
-        trace.put(min, Math.min(compe, max));
 
-        return min;
+        return competitors;
     }
 }
 
