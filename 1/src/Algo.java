@@ -1,117 +1,38 @@
 public class Algo {
 
-    private Integer[] A = {2900,2500,3000,1500,700,800,2000,1000,500};
+    private Integer[] A = {1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9};
+    private Integer[] minJumps = new Integer[A.length];
+    private final Integer INF = Integer.MAX_VALUE;
 
     public void run() {
 
-        BST bst = new BST();
-        for (Integer i=A.length-1; i>=0; --i) {
-            Integer ele = A[i];
-            bst.insert(ele);
+        for (Integer i=A.length-1; i>=0;--i) {
+            findMinJumps(i);
         }
 
-        bst.print();
+        System.out.println(minJumps[0]);
 
-    }
-}
-
-class BST {
-    Node head;
-
-    public void insert(Integer value) {
-        if (head == null) {
-            head = new Node(value, 0);
-        } else {
-            insert(head, value, 0);
+        for (Integer ele : minJumps) {
+            System.out.print(ele + " ");
         }
+
+
     }
 
-    private void insert(Node node, Integer value, Integer inherit) {
+    private void findMinJumps(Integer source) {
 
-        if (node.getValue() > value) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value, inherit));
-            } else {
-                insert(node.getLeft(), value, inherit);
-            }
-
-            node.bumpAfterLess();
+        if ((A.length - source) <= A[source]) {
+            minJumps[source] = 1;
         } else {
-            inherit += 1 + node.getAfterLess();
+            minJumps[source] = INF;
+        }
 
-            if (node.getRight() == null) {
-                node.setRight(new Node(value, inherit));
-            } else {
-                insert(node.getRight(), value, inherit);
+        Integer minJump = minJumps[source];
+        for (Integer i=1; i<=A[source] && (i+source) < A.length; ++i) {
+            if (minJumps[i+source] != INF && 1 + minJumps[i+source] < minJump) {
+                minJump = 1+minJumps[i+source];
             }
         }
-
-    }
-
-    public void print() {
-        print(head);
-    }
-
-    private void print(Node node) {
-        if (node == null) {
-            return;
-        }
-
-        System.out.print(node.getValue() + " (" + node.getBeforeLess() + ") " + " - ");
-        if (node.getLeft() != null) {
-            System.out.print(node.getLeft().getValue());
-        }
-        System.out.print(", ");
-        if (node.getRight() != null) {
-            System.out.print(node.getRight().getValue());
-        }
-        System.out.println();
-
-        print(node.getLeft());
-        print(node.getRight());
-    }
-
-}
-
-class Node {
-    private Node left, right;
-    private Integer value, beforeLess, afterLess;
-
-    public Node(Integer value, Integer beforeLess) {
-        this.value = value;
-        this.beforeLess = beforeLess;
-        this.afterLess = 0;
-    }
-
-    public void bumpAfterLess() {
-        ++afterLess;
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
-    }
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public Integer getBeforeLess() {
-        return beforeLess;
-    }
-
-    public Integer getAfterLess() {
-        return afterLess;
+        minJumps[source] = minJump;
     }
 }
