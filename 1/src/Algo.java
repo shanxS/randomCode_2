@@ -1,63 +1,54 @@
 public class Algo {
 
-    private Integer[] A = {20, 4, 1, 2, 3, 4, 2, 10};
-    private enum Type {INC, DEC};
+    private Integer[] A = {8, 10, 20, 80, 100, 200, 400, 500, 3, 2, 1};
 
     public void run() {
-        Integer maxDistance = Integer.MIN_VALUE;
-        Integer start = null, end = null;
-        Integer counter = 0;
-        while (counter < A.length) {
 
-            Integer thisStart = counter;
-            Integer thisEnd = thisStart;
+        System.out.print(A[getFlexi()]);
 
-            Type thisType = findType(counter);
-            if (thisType == Type.DEC) {
-                thisEnd = findIncIndex(counter);
-            } else {
-                Integer endIncIndex = findDecIndex(counter);
-                thisEnd = findIncIndex(endIncIndex);
+    }
+
+    private Integer getFlexi() {
+        Integer start = 0;
+        Integer end = A.length-1;
+
+        while (start <= end) {
+            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+
+            if ((mid+1) < A.length
+                    && (mid-1) >= 0) {
+
+                if (A[mid] > A[mid-1]
+                        && A[mid] > A[mid+1]) {
+                    return mid;
+                } else if (A[mid] > A[mid-1]) {
+                    start = mid+1;
+                } else if (A[mid] < A[mid-1]) {
+                    end = mid-1;
+                }
+
+            } else if ((mid+1) == A.length) {
+
+                if (A[mid] > A[mid-1]) {
+                    return mid;
+                }
+//                else {
+//                    end = mid-1;
+//                }
+
+            } else if ((mid-1) < 0) {
+
+                if (A[mid] > A[mid+1]) {
+                    return mid;
+                }
+//                else {
+//                    start = mid+1;
+//                }
+
             }
-
-            if (maxDistance < (thisEnd-thisStart + 1)) {
-                maxDistance = (thisEnd-thisStart + 1);
-                start = thisStart;
-                end = thisEnd;
-            }
-
-            counter = thisEnd;
-            if (counter+1 == A.length) {
-                break;
-            }
         }
 
-        System.out.print(maxDistance + " " + start + " " + end);
+        return null;
     }
-
-    private Integer findDecIndex(Integer counter) {
-        while (counter+1 < A.length && A[counter] < A[counter+1]) {
-            ++counter;
-        }
-
-        return counter;
-    }
-
-    private Integer findIncIndex(Integer counter) {
-        while (counter+1 < A.length && A[counter] > A[counter+1]) {
-            ++counter;
-        }
-
-        return counter;
-    }
-
-    private Type findType(Integer counter) {
-        if (counter+1 < A.length && A[counter] < A[counter+1]) {
-            return Type.INC;
-        }
-
-        return Type.DEC;
-    }
-
 
 }
