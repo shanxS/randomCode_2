@@ -16,7 +16,7 @@ public class Algo {
 }
 
 class BST {
-    private Node head;
+    Node head;
 
     public void insert(Integer value) {
         if (head == null) {
@@ -28,26 +28,23 @@ class BST {
 
     private void insert(Node node, Integer value, Integer inherit) {
 
-         if (node.getValue() > value) {
+        if (node.getValue() > value) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(value, inherit));
+            } else {
+                insert(node.getLeft(), value, inherit);
+            }
 
-             if (node.getLeft() == null) {
-                 node.setLeft(new Node(value, inherit));
-             } else {
-                 insert(node.getLeft(), value, inherit);
-             }
+            node.bumpAfterLess();
+        } else {
+            inherit += 1 + node.getAfterLess();
 
-             node.bumpAfterLess();
-         } else if (node.getValue() < value) {
-
-             inherit += (1 + node.getAfterLess());
-
-             if (node.getRight() == null) {
-                 node.setRight(new Node(value, inherit));
-             } else {
-                 insert(node.getRight(), value, inherit);
-             }
-
-         }
+            if (node.getRight() == null) {
+                node.setRight(new Node(value, inherit));
+            } else {
+                insert(node.getRight(), value, inherit);
+            }
+        }
 
     }
 
@@ -73,6 +70,7 @@ class BST {
         print(node.getLeft());
         print(node.getRight());
     }
+
 }
 
 class Node {
@@ -87,10 +85,6 @@ class Node {
 
     public void bumpAfterLess() {
         ++afterLess;
-    }
-
-    public Integer getAfterLess() {
-        return afterLess;
     }
 
     public void setLeft(Node left) {
@@ -115,5 +109,9 @@ class Node {
 
     public Integer getBeforeLess() {
         return beforeLess;
+    }
+
+    public Integer getAfterLess() {
+        return afterLess;
     }
 }
