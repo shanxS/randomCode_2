@@ -1,25 +1,63 @@
 public class Algo {
 
-    private Integer[] A = {-10, -5, 0, 3, 7};
+    private Integer[] A = {20, 4, 1, 2, 3, 4, 2, 10};
+    private enum Type {INC, DEC};
 
     public void run() {
-        System.out.print(find(0, A.length-1));
-    }
+        Integer maxDistance = Integer.MIN_VALUE;
+        Integer start = null, end = null;
+        Integer counter = 0;
+        while (counter < A.length) {
 
-    private Integer find(Integer start, Integer end) {
+            Integer thisStart = counter;
+            Integer thisEnd = thisStart;
 
-        while (start <= end) {
-            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+            Type thisType = findType(counter);
+            if (thisType == Type.DEC) {
+                thisEnd = findIncIndex(counter);
+            } else {
+                Integer endIncIndex = findDecIndex(counter);
+                thisEnd = findIncIndex(endIncIndex);
+            }
 
-            if (A[mid] == mid) {
-                return mid;
-            } else if (A[mid] > mid) {
-                end = mid-1;
-            } else if (A[mid] < mid) {
-                start = mid+1;
+            if (maxDistance < (thisEnd-thisStart + 1)) {
+                maxDistance = (thisEnd-thisStart + 1);
+                start = thisStart;
+                end = thisEnd;
+            }
+
+            counter = thisEnd;
+            if (counter+1 == A.length) {
+                break;
             }
         }
 
-        return -1;
+        System.out.print(maxDistance + " " + start + " " + end);
     }
+
+    private Integer findDecIndex(Integer counter) {
+        while (counter+1 < A.length && A[counter] < A[counter+1]) {
+            ++counter;
+        }
+
+        return counter;
+    }
+
+    private Integer findIncIndex(Integer counter) {
+        while (counter+1 < A.length && A[counter] > A[counter+1]) {
+            ++counter;
+        }
+
+        return counter;
+    }
+
+    private Type findType(Integer counter) {
+        if (counter+1 < A.length && A[counter] < A[counter+1]) {
+            return Type.INC;
+        }
+
+        return Type.DEC;
+    }
+
+
 }
