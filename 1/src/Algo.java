@@ -1,28 +1,28 @@
 public class Algo {
 
-    private Integer[] A = {1,4};
-    private final Integer target = 5;
+    private Integer[] A = {1, 101, 2, 3, 100, 4, 5};
 
     public void run() {
-        Integer start = 0;
-        Integer stop = 0;
-        Integer sumSoFar = 0;
 
-        while (stop < A.length) {
+        Integer maxSum = Integer.MIN_VALUE;
+        Integer[] sums = new Integer[A.length];
 
-            sumSoFar += A[stop];
+        for (Integer i=A.length-1; i>=0; --i) {
 
-            while (sumSoFar > target && start < stop) {
-                sumSoFar -= A[start];
-                ++start;
+            sums[i] = A[i];
+
+            for (Integer j=A.length-1; j>i; --j) {
+                if (A[j] > A[i] && sums[j] + A[i] > sums[i]) {
+                    sums[i] = A[i] + sums[j];
+                }
             }
 
-            if (sumSoFar == target) {
-                System.out.print("found at " + start + " " + stop);
-            }
-
-            ++stop;
+            maxSum = Math.max(sums[i], maxSum);
 
         }
+
+        System.out.print(maxSum);
+
+
     }
 }
