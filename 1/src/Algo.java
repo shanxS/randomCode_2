@@ -1,28 +1,34 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Algo {
 
-    private Integer[] A = {1, 101, 2, 3, 100, 4, 5};
+    private Integer[] A = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
 
     public void run() {
 
-        Integer maxSum = Integer.MIN_VALUE;
-        Integer[] sums = new Integer[A.length];
+        List<Integer> list = new ArrayList<>();
 
-        for (Integer i=A.length-1; i>=0; --i) {
-
-            sums[i] = A[i];
-
-            for (Integer j=A.length-1; j>i; --j) {
-                if (A[j] > A[i] && sums[j] + A[i] > sums[i]) {
-                    sums[i] = A[i] + sums[j];
-                }
+        for (Integer i=0; i<A.length; ++i) {
+            if (list.size() == 0) {
+                list.add(A[i]);
+            } else if (list.get(list.size()-1) < A[i]) {
+                list.add(A[i]);
+            } else {
+                replace(list, A[i]);
             }
-
-            maxSum = Math.max(sums[i], maxSum);
-
         }
 
-        System.out.print(maxSum);
+        System.out.print(list + " " + list.size());
+    }
 
+    private void replace(List<Integer> list, Integer value) {
 
+        Integer counter = list.size()-1;
+        while (counter >= 0 && value < list.get(counter)) {
+            --counter;
+        }
+
+        list.set(counter+1, value);
     }
 }
