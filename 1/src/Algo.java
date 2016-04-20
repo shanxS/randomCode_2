@@ -1,44 +1,28 @@
 public class Algo {
 
-    private Integer[] A = {1, 4};
-    private final Integer target = 6;
+    private Integer[] A = {1,4};
+    private final Integer target = 5;
 
     public void run() {
-
         Integer start = 0;
         Integer stop = 0;
-        Integer sumSoFar = A[stop];
+        Integer sumSoFar = 0;
 
         while (stop < A.length) {
 
+            sumSoFar += A[stop];
+
+            while (sumSoFar > target && start < stop) {
+                sumSoFar -= A[start];
+                ++start;
+            }
 
             if (sumSoFar == target) {
-                System.out.print("foudn at " + start + " " + stop);
-                break;
-            } else if (sumSoFar < target) {
-                ++stop;
-
-                if (stop < A.length) {
-                    sumSoFar += A[stop];
-                }
-
-            } else {
-                if (start == stop) {
-                    ++start;
-                    ++stop;
-
-                    if (stop < A.length) {
-                        sumSoFar = A[stop];
-                    }
-
-                } else {
-                    sumSoFar -= A[start];
-                    ++start;
-                }
+                System.out.print("found at " + start + " " + stop);
             }
+
+            ++stop;
+
         }
-
     }
-
-
 }
