@@ -1,26 +1,36 @@
 public class Algo {
 
-    private Integer[] A = {4, 4, 100, 5000, 4, 4, 4, 4, 100, 100};
+    private Integer relation[][] = {
+            {0, 0, 1, 0},
+            {0, 0, 1, 0},
+            {1, 0, 0, 0},
+            {0, 0, 1, 0}
+    };
 
     public void run() {
 
-        Integer xor = 0;
-        for (Integer ele : A) {
-            xor ^= ele;
-        }
-
-        Integer filter = xor & ~(xor-1);
-        Integer num1 = 0;
-        Integer num2 = 0;
-        for (Integer ele : A) {
-            if ((ele & filter) > 0) {
-                num1 ^= ele;
-            } else {
-                num2 ^= ele;
+        Integer A = 0;
+        for (Integer B=1; B<relation.length; ++B) {
+            if (haveAcquaintance(A, B)) {
+                A = B;
             }
         }
 
-        System.out.print(num1 + " " + num2);
+        System.out.println("potential celeb " + A);
 
+        for (Integer other = 0; other<relation.length; ++other) {
+            if (other != A && haveAcquaintance(A, other)) {
+                System.out.println("no celeb");
+
+                return;
+            }
+        }
+
+        System.out.println("celeb is " + A);
+
+    }
+
+    private Boolean haveAcquaintance(Integer A, Integer B) {
+        return (relation[A][B] == 1);
     }
 }
