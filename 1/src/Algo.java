@@ -1,30 +1,26 @@
 public class Algo {
 
-    private Integer[] A = {10, 20};
+    private Integer[] A = {4, 4, 100, 5000, 4, 4, 4, 4, 100, 100};
 
     public void run() {
 
-        Integer xor = A[0];
-        for (Integer i=1; i<A.length; ++i) {
-            xor ^= A[i];
+        Integer xor = 0;
+        for (Integer ele : A) {
+            xor ^= ele;
         }
 
-        Integer filter = xor & (~(xor-1));
+        Integer filter = xor & ~(xor-1);
         Integer num1 = 0;
+        Integer num2 = 0;
         for (Integer ele : A) {
             if ((ele & filter) > 0) {
                 num1 ^= ele;
-            }
-        }
-
-
-        Integer num2 = 0;
-        for (Integer ele : A) {
-            if (((~ele) & filter) > 0) {
+            } else {
                 num2 ^= ele;
             }
         }
 
-        System.out.print(num1 + " " + (num2));
+        System.out.print(num1 + " " + num2);
+
     }
 }
