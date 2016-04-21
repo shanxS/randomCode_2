@@ -1,13 +1,13 @@
 public class Algo {
 
-    private Integer[] A = {4, 3, 2, 1};
+    private Integer[] A = {10,20,30,40,29,19,9};
 
     public void run() {
 
         Integer[] min =  new Integer[A.length];
         Integer minSoFar = Integer.MAX_VALUE;
         Integer[] max = new Integer[A.length];
-        Integer maxSoFar = Integer.MIN_VALUE;
+        Integer maxSoFar = Integer.MAX_VALUE;
 
         Integer fwd = 0, rwd = A.length-1;
         while (fwd < A.length && rwd >= 0) {
@@ -15,7 +15,7 @@ public class Algo {
             min[fwd] = Math.min(A[fwd], minSoFar);
             minSoFar = min[fwd];
 
-            max[rwd] = Math.max(A[rwd], maxSoFar);
+            max[rwd] = Math.min(A[rwd], maxSoFar);
             maxSoFar = max[rwd];
 
             ++fwd;
