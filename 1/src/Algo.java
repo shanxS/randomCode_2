@@ -3,30 +3,47 @@ public class Algo {
     private Integer relation[][] = {
             {0, 0, 1, 0},
             {0, 0, 1, 0},
-            {1, 0, 0, 0},
+            {0, 0, 0, 0},
             {0, 0, 1, 0}
     };
 
     public void run() {
 
-        Integer A = 0;
-        for (Integer B=1; B<relation.length; ++B) {
-            if (haveAcquaintance(A, B)) {
-                A = B;
+
+        Integer celeb = findCeleb(0, relation.length-1);
+
+        System.out.println("ptential celeb is " + celeb);
+
+        if (celebLitmusTest(celeb)) {
+            System.out.println("celeb is " + celeb);
+        } else {
+            System.out.println("no celeb");
+        }
+
+    }
+
+    private boolean celebLitmusTest(Integer celeb) {
+        for (Integer i=0; i<relation.length; ++i) {
+            if (i!=celeb && haveAcquaintance(celeb, i)) {
+                return false;
             }
         }
 
-        System.out.println("potential celeb " + A);
+        return true;
+    }
 
-        for (Integer other = 0; other<relation.length; ++other) {
-            if (other != A && haveAcquaintance(A, other)) {
-                System.out.println("no celeb");
+    private Integer findCeleb(Integer start, int end) {
+        if (start == end) {
+            return start;
+        } else if (end - start == 1) {
+            return (haveAcquaintance(start, end)) ? (end) : (start);
+        } else {
 
-                return;
-            }
+            Integer celeb1 = findCeleb(start, start + 1);
+            Integer celeb2 = findCeleb(start + 2, end);
+
+            return (haveAcquaintance(celeb1, celeb2)) ? (celeb2) : (celeb1);
         }
-
-        System.out.println("celeb is " + A);
 
     }
 
