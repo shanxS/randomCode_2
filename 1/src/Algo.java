@@ -1,53 +1,54 @@
 public class Algo {
 
-    private Integer relation[][] = {
-            {0, 0, 1, 0},
-            {0, 0, 1, 0},
-            {0, 0, 0, 0},
-            {0, 0, 1, 0}
-    };
+    private Integer[] A = {80, 60, 30, 40, 20, 10};
+    private Integer[] LIS = new Integer[A.length];
+    private Integer[] LDS = new Integer[A.length];
 
     public void run() {
+        populateLIS();
+        populateLDS();
+        System.out.println(findLongestBitonic());
 
-
-        Integer celeb = findCeleb(0, relation.length-1);
-
-        System.out.println("ptential celeb is " + celeb);
-
-        if (celebLitmusTest(celeb)) {
-            System.out.println("celeb is " + celeb);
-        } else {
-            System.out.println("no celeb");
+        for (Integer ele : LIS) {
+            System.out.print(ele + " ");
         }
 
+        System.out.println();
+        for (Integer ele : LDS) {
+            System.out.print(ele + " ");
+        }
+   }
+
+    private Integer findLongestBitonic() {
+        Integer num = Integer.MIN_VALUE;
+
+        for (Integer i=0; i<A.length; ++i) {
+            num = Math.max((LDS[i] + LIS[i] - 1), num);
+        }
+
+        return num;
     }
 
-    private boolean celebLitmusTest(Integer celeb) {
-        for (Integer i=0; i<relation.length; ++i) {
-            if (i!=celeb && haveAcquaintance(celeb, i)) {
-                return false;
+    private void populateLDS() {
+        for (Integer i=A.length-1; i>=0; --i) {
+            LDS[i] = 1;
+            for (Integer j=A.length-1; j>i; --j) {
+                if (A[i] > A[j] && (LDS[i] < (LDS[j]+1))) {
+                    LDS[i] = 1+LDS[j];
+                }
             }
         }
-
-        return true;
     }
 
-    private Integer findCeleb(Integer start, int end) {
-        if (start == end) {
-            return start;
-        } else if (end - start == 1) {
-            return (haveAcquaintance(start, end)) ? (end) : (start);
-        } else {
+    private void populateLIS() {
 
-            Integer celeb1 = findCeleb(start, start + 1);
-            Integer celeb2 = findCeleb(start + 2, end);
-
-            return (haveAcquaintance(celeb1, celeb2)) ? (celeb2) : (celeb1);
+        for (Integer i=0; i<A.length; ++i) {
+            LIS[i] = 1;
+            for (Integer j=0; j<i; ++j) {
+                if (A[j] < A[i] &&  (LIS[i] <  (1+LIS[j]))) {
+                    LIS[i] = 1+LIS[j];
+                }
+            }
         }
-
-    }
-
-    private Boolean haveAcquaintance(Integer A, Integer B) {
-        return (relation[A][B] == 1);
     }
 }
