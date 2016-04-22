@@ -1,52 +1,74 @@
+import java.util.*;
+
 public class Algo {
 
-    private Integer[] A = {6, 5, 4, 3, 2, 1};
+    private Integer[] A = {-1,-1,
+            1,-1,1,-1,
+            1,1,
+            1,1,1,-1,-1,-1,
+            1,1,1
+    };//{1,1,1,1,-1,1,-1,1,1};//{1, -1, 1, 1, 1, -1, -1};
+    private Integer[] leftSum = new Integer[A.length];
+    private Map<Integer, Integer> leftSumIndex = new HashMap<>();
+
+    private Integer[] rightSum = new Integer[A.length];
+    private Integer maxLen = Integer.MIN_VALUE;
+    private Integer start, end;
 
     public void run() {
 
-        Integer[] min = new Integer[A.length];
-        Integer minSoFar = Integer.MAX_VALUE;
-        Integer[] max = new Integer[A.length];
-        Integer maxSoFar = Integer.MIN_VALUE;
+        init();
+
+        coverCornerCases();
 
 
-        Integer fwd = 0;
-        Integer rev = A.length - 1;
-        while (fwd < A.length && rev >= 0) {
-            minSoFar = Math.min(minSoFar, A[fwd]);
-            min[fwd] = minSoFar;
+        System.out.print(maxLen + " " + start + " " + end);
+    }
 
-            maxSoFar = Math.max(maxSoFar, A[rev]);
-            max[rev] = maxSoFar;
+    private void coverCornerCases() {
 
-            ++fwd;
-            --rev;
-        }
+        Integer total = rightSum[0];
 
+        for (Integer rev = A.length-1; rev >= 0; --rev) {
 
-        Integer i=0, j=0;
-        Integer globalI = null, globalJ = null, maxDiff = Integer.MIN_VALUE;
-        while (j<A.length) {
-
-            if (min[i] < max[j]) {
-
-                if (maxDiff < (j-i)) {
-                    maxDiff = j-i;
-                    globalI = i;
-                    globalJ = j;
-                }
-
-                ++j;
-
-            } else if (min[i] >= max[j] && i<j) {
-                ++i;
-            } else {
-                ++j;
+            Integer right = rightSum[rev];
+            Integer leftIndex = leftSumIndex.get(total - right);
+            if (leftIndex != null && leftIndex < rev && maxLen < (rev-leftIndex-1)) {
+                maxLen = (rev-leftIndex-1);
+                start = leftIndex+1;
+                end = rev-1;
             }
 
         }
 
-        System.out.print(maxDiff + " " + globalI + " " + globalJ);
+    }
 
+    private void init() {
+        Integer fwd = 1, rev = A.length-2;
+        leftSum[0] = A[0];
+        rightSum[A.length-1] = A[A.length - 1];
+
+        while (fwd < A.length && rev >= 0) {
+
+            leftSum[fwd] = leftSum[fwd-1] + A[fwd];
+            if (leftSumIndex.get(leftSum[fwd]) == null) {
+                leftSumIndex.put(leftSum[fwd], fwd);
+            }
+            if (leftSum[fwd] == 0 && maxLen < (fwd+1)) {
+                maxLen = fwd+1;
+                start = 0;
+                end = fwd;
+            }
+
+            rightSum[rev] = rightSum[rev+1] + A[rev];
+            if (rightSum[rev] == 0 && maxLen < (A.length - rev)) {
+                maxLen = A.length - rev;
+                start = rev;
+                end = A.length-1;
+            }
+
+            ++fwd;
+            --rev;
+        }
     }
 }
