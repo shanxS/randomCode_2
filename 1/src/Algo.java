@@ -1,42 +1,52 @@
 public class Algo {
 
-    private Integer[] A = {1, 2, 3, 4};
+    private Integer[] A = {6, 5, 4, 3, 2, 1};
 
     public void run() {
 
         Integer[] min = new Integer[A.length];
         Integer minSoFar = Integer.MAX_VALUE;
-
-        Integer[] sMin = new Integer[A.length];
-        Integer sMinSoFar = Integer.MAX_VALUE;
-
-        for (Integer i=0; i<A.length; ++i) {
-
-            if (minSoFar > A[i]) {
-                sMinSoFar = minSoFar;
-                minSoFar = A[i];
-            } else if (sMinSoFar > A[i]) {
-                sMinSoFar = A[i];
-            }
-
-            sMin[i] = sMinSoFar;
-            min[i] = minSoFar;
-
-        }
-
-
         Integer[] max = new Integer[A.length];
         Integer maxSoFar = Integer.MIN_VALUE;
-        for (Integer i=A.length-1; i>=0; --i) {
-            maxSoFar = Math.max(maxSoFar, A[i]);
-            max[i] = maxSoFar;
+
+
+        Integer fwd = 0;
+        Integer rev = A.length - 1;
+        while (fwd < A.length && rev >= 0) {
+            minSoFar = Math.min(minSoFar, A[fwd]);
+            min[fwd] = minSoFar;
+
+            maxSoFar = Math.max(maxSoFar, A[rev]);
+            max[rev] = maxSoFar;
+
+            ++fwd;
+            --rev;
         }
 
-        for (Integer i=0; i<A.length; ++i) {
-            if (A[i] != min[i] && A[i] != sMin[i] && A[i] != max[i]) {
-                System.out.println(min[i] + " " + sMin[i] + " " + A[i] + " " + max[i]);
+
+        Integer i=0, j=0;
+        Integer globalI = null, globalJ = null, maxDiff = Integer.MIN_VALUE;
+        while (j<A.length) {
+
+            if (min[i] < max[j]) {
+
+                if (maxDiff < (j-i)) {
+                    maxDiff = j-i;
+                    globalI = i;
+                    globalJ = j;
+                }
+
+                ++j;
+
+            } else if (min[i] >= max[j] && i<j) {
+                ++i;
+            } else {
+                ++j;
             }
+
         }
+
+        System.out.print(maxDiff + " " + globalI + " " + globalJ);
 
     }
 }
