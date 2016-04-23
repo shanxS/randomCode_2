@@ -4,7 +4,7 @@ public class Algo {
 
 
     private Integer[] A = {1, 5, 11, 5};
-    private Integer sum = 0, target;
+    private Integer sum = 0;
     private Stack<Integer> stack = new Stack<>();
 
     public void run() {
@@ -17,42 +17,28 @@ public class Algo {
             System.out.print("cant divide");
             return;
         }
-        target = sum/2;
+        Integer target = sum / 2;
 
-        if (evaluate(0, -1)) {
+        if (evaluate(1, target-A[0])
+                || evaluate(1, target)) {
             System.out.print("found ");
-            while (stack.size() > 0) {
-                System.out.print(stack.pop() + " ");
-            }
-
-            return;
+        } else {
+            System.out.print("not found");
         }
 
     }
 
-
-    private Boolean evaluate(Integer lastSumSoFar, Integer lastIndex) {
-
-        for (Integer i=lastIndex+1; i<A.length; ++i) {
-            Integer sumSoFar = A[i] + lastSumSoFar;
-
-            if (sumSoFar < target) {
-                stack.push(A[i]);
-
-                if (evaluate(sumSoFar, i)) {
-                    return true;
-                } else {
-                    stack.pop();
-                }
-            } else if (sumSoFar == target) {
-                stack.push(A[i]);
-                return true;
-            } else {
-                continue;
-            }
+    private Boolean evaluate (Integer thisIndex, Integer thisTarget) {
+        if (thisTarget == 0) {
+            return true;
         }
 
-        return false;
+        if (thisIndex >= A.length) {
+            return false;
+        }
+
+        return evaluate(thisIndex+1, thisTarget-A[thisIndex])
+                || evaluate(thisIndex+1, thisTarget);
     }
 
 }
