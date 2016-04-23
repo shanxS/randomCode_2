@@ -12,12 +12,17 @@ public class Algo {
 
         for (Integer i=A.length-1; i>=3; --i) {
             for (Integer j=i-1; j>=2; --j) {
-                for (Integer k=j-1; k>=1; --k) {
-                    Integer diff = target - (A[i] + A[j] + A[k]);
-                    Integer diffIndex = find(diff, 0, k-1);
-                    if (diffIndex != null) {
-                        System.out.print(A[i] + " " + A[j] + " " + A[k] + " " + A[diffIndex]);
-                        return;
+                Integer diff = target - (A[i] + A[j]);
+                Integer fwd = 0, rev = j-1;
+                while (fwd < rev) {
+                    Integer sum = A[rev] + A[fwd];
+                    if (sum == diff) {
+                        System.out.println(A[i] + " " + A[j] + " " + A[fwd] + " " + A[rev]);
+                        break;
+                    } else if (sum < diff) {
+                        ++fwd;
+                    } else if (sum > diff) {
+                        --rev;
                     }
                 }
             }
