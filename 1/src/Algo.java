@@ -19,30 +19,13 @@ public class Algo {
         }
         target = sum/2;
 
-        for (Integer i=0; i<A.length; ++i) {
-
-            Integer sumSoFar = A[i];
-
-            if (sumSoFar < target) {
-
-                stack.push(A[i]);
-
-                if (evaluate(sumSoFar, i)) {
-                    System.out.print("found ");
-                    while (stack.size() > 0) {
-                        System.out.print(stack.pop() + " ");
-                    }
-
-                    return;
-                } else {
-                    stack.pop();
-                }
-            } else if (sumSoFar == target) {
-                System.out.print("found " + A[i]);
-            } else {
-                continue;
+        if (evaluate(0, -1)) {
+            System.out.print("found ");
+            while (stack.size() > 0) {
+                System.out.print(stack.pop() + " ");
             }
 
+            return;
         }
 
     }
