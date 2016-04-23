@@ -2,48 +2,28 @@ import java.util.*;
 
 public class Algo {
 
-    private Node[] A = {
-            new Node(5, 24),
-            new Node(39, 60),
-            new Node(15, 28),
-            new Node(27, 40),
-            new Node(50, 90)
-
-    };
+    private Integer[] A = {10, 2, 3, 4, 5, 9, 7, 8};
+    private Integer target = 23;
 
     public void run() {
-        sort(0, A.length-1);
+
+        //sort(0, A.length-1);
 
 
-        List<Node> list = new ArrayList<>();
-        for (Integer i=0; i<A.length; ++i) {
-
-            if (list.size() == 0) {
-                list.add(A[i]);
-            } else if (list.get(list.size()-1).second < A[i].first) {
-                list.add(A[i]);
-            } else {
-                replace(list, A[i]);
-            }
-        }
-
-        System.out.print(list.size());
-    }
-
-    public void replace(List<Node> list, Node node) {
-        for (Integer i=list.size()-1; i>=0; --i) {
-            if (list.get(i).second > node.first) {
-                if (list.get(i).second > node.second) {
-                    list.set(i, node);
+        for (Integer i=A.length-1; i>=3; --i) {
+            for (Integer j=i-1; j>=2; --j) {
+                for (Integer k=j-1; k>=1; --k) {
+                    Integer diff = target - (A[i] + A[j] + A[k]);
+                    for (Integer l=k-1; l>=0; --l) {
+                        if (diff == A[l]) {
+                            System.out.print(A[i] + " " + A[j] + " " + A[k] + " " + A[l]);
+                            return;
+                        }
+                    }
                 }
-
-                return;
             }
         }
 
-        if (list.get(0).second > node.second) {
-            list.set(0, node);
-        }
     }
 
     public void sort(Integer start, Integer end) {
@@ -53,22 +33,19 @@ public class Algo {
         }
 
         Integer pivot = qSort(start, end);
-        sort (start, pivot-1);
+        sort(start, pivot-1);
         sort(pivot+1, end);
 
     }
 
-    Integer qSort(Integer start, Integer end) {
-
-        Integer marker = start - 1;
-        Integer pivotValue = A[end].first;
+    private Integer qSort(Integer start, Integer end) {
+        Integer pivotValue = A[end];
+        Integer marker = start-1;
 
         for (Integer i=start; i<end; ++i) {
-            if (A[i].first < pivotValue) {
-
+            if (A[i] <= pivotValue) {
                 ++marker;
-                swap(marker, i);
-
+                swap (marker, i);
             }
         }
 
@@ -76,27 +53,10 @@ public class Algo {
         return marker+1;
     }
 
-    private void swap(Integer from , Integer to) {
-        Node tmp = A[from];
+    private void swap (Integer from, Integer to) {
+        Integer tmp = A[from];
         A[from] = A[to];
-        A[to]  = tmp;
+        A[to] = tmp;
     }
 
-}
-
-class Node {
-    public Integer first, second;
-
-    public Node(Integer first, Integer second) {
-        this.first = first;
-        this.second = second;
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" +
-                "first=" + first +
-                ", second=" + second +
-                '}';
-    }
 }
