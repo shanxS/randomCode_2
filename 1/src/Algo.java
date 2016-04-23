@@ -3,40 +3,28 @@ import java.util.*;
 public class Algo {
 
 
-    private Integer[] A = {1, -2, -3, 0, 7, -8, -2};
-    private Integer maxProd = Integer.MIN_VALUE;
-    Integer thisProd = 1;
-    Integer minNegative = Integer.MAX_VALUE;
+    private Integer[] A = {5, 20, 3, 2, 50, 80};
+    private Integer n = -1;
 
     public void run() {
 
+        Set<Integer> set = new TreeSet<>();
 
-        for (Integer i=0; i<A.length; ++i) {
+        for (Integer ele : A) {
 
-            if (A[i] == 0) {
-                updateMax();
+            if (ele > n) {
+                boolean found = set.contains(ele-n);
+                if (found) {
+                    System.out.print("found " + ele + " " + (ele-n));
+                }
             } else {
-
-                thisProd *= A[i];
-                minNegative = (A[i] < 0) ? Math.min(minNegative, Math.abs(A[i])) : minNegative;
-
+                boolean found = set.contains(ele+n);
+                if (found) {
+                    System.out.print("found " + ele + " " + (ele+n));
+                }
             }
 
+            set.add(ele);
         }
-        updateMax();
-
-        System.out.print(maxProd);
-
-    }
-
-    private void updateMax() {
-
-        if (thisProd < 0) {
-            thisProd /= (minNegative * -1);
-        }
-        maxProd = Math.max(maxProd, thisProd);
-
-        thisProd = 1;
-        minNegative = Integer.MAX_VALUE;
     }
 }
