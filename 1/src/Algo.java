@@ -3,42 +3,40 @@ import java.util.*;
 public class Algo {
 
 
-    private Integer[] A = {1, 5, 11, 5};
-    private Integer sum = 0;
-    private Stack<Integer> stack = new Stack<>();
+    private Integer[] A = {1, -2, -3, 0, 7, -8, -2};
+    private Integer maxProd = Integer.MIN_VALUE;
+    Integer thisProd = 1;
+    Integer minNegative = Integer.MAX_VALUE;
 
     public void run() {
 
-        for (Integer ele : A) {
-            sum += ele;
-        }
 
-        if (sum % 2 != 0) {
-            System.out.print("cant divide");
-            return;
-        }
-        Integer target = sum / 2;
+        for (Integer i=0; i<A.length; ++i) {
 
-        if (evaluate(1, target-A[0])
-                || evaluate(1, target)) {
-            System.out.print("found ");
-        } else {
-            System.out.print("not found");
+            if (A[i] == 0) {
+                updateMax();
+            } else {
+
+                thisProd *= A[i];
+                minNegative = (A[i] < 0) ? Math.min(minNegative, Math.abs(A[i])) : minNegative;
+
+            }
+
         }
+        updateMax();
+
+        System.out.print(maxProd);
 
     }
 
-    private Boolean evaluate (Integer thisIndex, Integer thisTarget) {
-        if (thisTarget == 0) {
-            return true;
-        }
+    private void updateMax() {
 
-        if (thisIndex >= A.length) {
-            return false;
+        if (thisProd < 0) {
+            thisProd /= (minNegative * -1);
         }
+        maxProd = Math.max(maxProd, thisProd);
 
-        return evaluate(thisIndex+1, thisTarget-A[thisIndex])
-                || evaluate(thisIndex+1, thisTarget);
+        thisProd = 1;
+        minNegative = Integer.MAX_VALUE;
     }
-
 }
