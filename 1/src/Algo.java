@@ -2,73 +2,74 @@ import java.util.*;
 
 public class Algo {
 
-    private Integer[] A = {-1,-1,
-            1,-1,1,-1,
-            1,1,
-            1,1,1,-1,-1,-1,
-            1,1,1
-    };//{1,1,1,1,-1,1,-1,1,1};//{1, -1, 1, 1, 1, -1, -1};
-    private Integer[] leftSum = new Integer[A.length];
-    private Map<Integer, Integer> leftSumIndex = new HashMap<>();
 
-    private Integer[] rightSum = new Integer[A.length];
-    private Integer maxLen = Integer.MIN_VALUE;
-    private Integer start, end;
+    private Integer[] A = {1, 5, 11, 5};
+    private Integer sum = 0, target;
+    private Stack<Integer> stack = new Stack<>();
 
     public void run() {
 
-        init();
+        for (Integer ele : A) {
+            sum += ele;
+        }
 
-        coverCornerCases();
+        if (sum % 2 != 0) {
+            System.out.print("cant divide");
+            return;
+        }
+        target = sum/2;
 
+        for (Integer i=0; i<A.length; ++i) {
 
-        System.out.print(maxLen + " " + start + " " + end);
-    }
+            Integer sumSoFar = A[i];
 
-    private void coverCornerCases() {
+            if (sumSoFar < target) {
 
-        Integer total = rightSum[0];
+                stack.push(A[i]);
 
-        for (Integer rev = A.length-1; rev >= 0; --rev) {
+                if (evaluate(sumSoFar, i)) {
+                    System.out.print("found ");
+                    while (stack.size() > 0) {
+                        System.out.print(stack.pop() + " ");
+                    }
 
-            Integer right = rightSum[rev];
-            Integer leftIndex = leftSumIndex.get(total - right);
-            if (leftIndex != null && leftIndex < rev && maxLen < (rev-leftIndex-1)) {
-                maxLen = (rev-leftIndex-1);
-                start = leftIndex+1;
-                end = rev-1;
+                    return;
+                } else {
+                    stack.pop();
+                }
+            } else if (sumSoFar == target) {
+                System.out.print("found " + A[i]);
+            } else {
+                continue;
             }
 
         }
 
     }
 
-    private void init() {
-        Integer fwd = 1, rev = A.length-2;
-        leftSum[0] = A[0];
-        rightSum[A.length-1] = A[A.length - 1];
 
-        while (fwd < A.length && rev >= 0) {
+    private Boolean evaluate(Integer lastSumSoFar, Integer lastIndex) {
 
-            leftSum[fwd] = leftSum[fwd-1] + A[fwd];
-            if (leftSumIndex.get(leftSum[fwd]) == null) {
-                leftSumIndex.put(leftSum[fwd], fwd);
+        for (Integer i=lastIndex+1; i<A.length; ++i) {
+            Integer sumSoFar = A[i] + lastSumSoFar;
+
+            if (sumSoFar < target) {
+                stack.push(A[i]);
+
+                if (evaluate(sumSoFar, i)) {
+                    return true;
+                } else {
+                    stack.pop();
+                }
+            } else if (sumSoFar == target) {
+                stack.push(A[i]);
+                return true;
+            } else {
+                continue;
             }
-            if (leftSum[fwd] == 0 && maxLen < (fwd+1)) {
-                maxLen = fwd+1;
-                start = 0;
-                end = fwd;
-            }
-
-            rightSum[rev] = rightSum[rev+1] + A[rev];
-            if (rightSum[rev] == 0 && maxLen < (A.length - rev)) {
-                maxLen = A.length - rev;
-                start = rev;
-                end = A.length-1;
-            }
-
-            ++fwd;
-            --rev;
         }
+
+        return false;
     }
+
 }
