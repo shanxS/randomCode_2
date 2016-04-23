@@ -7,23 +7,40 @@ public class Algo {
 
     public void run() {
 
-        //sort(0, A.length-1);
+        sort(0, A.length-1);
 
 
         for (Integer i=A.length-1; i>=3; --i) {
             for (Integer j=i-1; j>=2; --j) {
                 for (Integer k=j-1; k>=1; --k) {
                     Integer diff = target - (A[i] + A[j] + A[k]);
-                    for (Integer l=k-1; l>=0; --l) {
-                        if (diff == A[l]) {
-                            System.out.print(A[i] + " " + A[j] + " " + A[k] + " " + A[l]);
-                            return;
-                        }
+                    Integer diffIndex = find(diff, 0, k-1);
+                    if (diffIndex != null) {
+                        System.out.print(A[i] + " " + A[j] + " " + A[k] + " " + A[diffIndex]);
+                        return;
                     }
                 }
             }
         }
 
+    }
+
+    private Integer find(Integer diff, Integer start, Integer end) {
+        while (start <= end) {
+
+            Integer mid = Math.min(start, end) + ((Math.abs(A[start]-A[end]))/2);
+
+            if (A[mid] == diff) {
+                return mid;
+            } else if (A[mid] < diff) {
+                start = mid+1;
+            } else {
+                end = mid-1;
+            }
+
+        }
+
+        return null;
     }
 
     public void sort(Integer start, Integer end) {
