@@ -4,7 +4,12 @@
 public class Main {
 
     public static void main(String[] args) {
-        SpeedRadar speedRadar = new SpeedRadar();
-        System.out.print(speedRadar.averageSpeed(1, 50, new int[]{42, 46, 48, 50, 52}));
+
+
+
+
+        SymbolFrequency symbolFrequency = new SymbolFrequency();
+        System.out.print(symbolFrequency.language(new String[]{"a10b10c10d10e10f50"},
+                new String[] {"abcde g"}));
     }
 }
