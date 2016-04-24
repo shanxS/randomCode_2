@@ -8,13 +8,8 @@ public class Main {
 
 
 
-        TroytownKeeper troytownKeeper = new TroytownKeeper();
-        System.out.print(troytownKeeper.limeLiters(new String[]{"######"
-                ,"#....."
-                ,"#.####"
-                ,"#.#..#"
-                ,"#.##.#"
-                ,"#....#"
-                ,"######"}));
+        BinaryCode binaryCode = new BinaryCode();
+        String[] s = binaryCode.decode("22111");
+        System.out.print(s[0] + " " + s[1]);
     }
 }

@@ -5,12 +5,12 @@ import org.junit.Test;
  * @author shashaku on 09/04/16.
  */
 
-public class TroytownKeeperTest {
-    private TroytownKeeper testObject;
+public class BinaryCodeTest {
+    private BinaryCode testObject;
 
     @Before
     public void setup(){
-        testObject = new TroytownKeeper();
+        testObject = new BinaryCode();
     }
 
     @Test
