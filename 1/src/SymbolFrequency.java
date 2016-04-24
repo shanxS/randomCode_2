@@ -1,4 +1,4 @@
-public class SpeedRadar {
+public class SymbolFrequency {
 
     private Integer min, max;
     private Integer speedSum;

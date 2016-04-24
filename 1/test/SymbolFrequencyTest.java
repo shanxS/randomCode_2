@@ -5,12 +5,12 @@ import org.junit.Test;
  * @author shashaku on 09/04/16.
  */
 
-public class SpeedRadarTest {
-    private SpeedRadar testObject;
+public class SymbolFrequencyTest {
+    private SymbolFrequency testObject;
 
     @Before
     public void setup(){
-        testObject = new SpeedRadar();
+        testObject = new SymbolFrequency();
     }
 
     @Test
