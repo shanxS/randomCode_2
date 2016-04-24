@@ -8,8 +8,13 @@ public class Main {
 
 
 
-        SymbolFrequency symbolFrequency = new SymbolFrequency();
-        System.out.print(symbolFrequency.language(new String[]{"a10b10c10d10e10f50"},
-                new String[] {"abcde g"}));
+        TroytownKeeper troytownKeeper = new TroytownKeeper();
+        System.out.print(troytownKeeper.limeLiters(new String[]{"######"
+                ,"#....."
+                ,"#.####"
+                ,"#.#..#"
+                ,"#.##.#"
+                ,"#....#"
+                ,"######"}));
     }
 }
