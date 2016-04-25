@@ -1,63 +1,43 @@
 public class BinaryCode {
 
-    Integer[] A = {-1, 40, -14, 7, 6, 5, -4, -1};
+    Integer[][] A = {
+            {0, 0, 0, 1},
+            {0, 1, 1, 1},
+            {1, 1, 1, 1},
+            {0, 0, 0, 0}
+    };
 
     public void run() {
 
-        Integer ksum = kadane();
-
-        Integer totalSum = 0;
-        for (Integer i=0; i<A.length; ++i) {
-            totalSum += A[i];
-            A[i] = -A[i];
+        Integer minIndex = A[0].length;
+        for (Integer[] arr : A) {
+            minIndex = Math.min(minIndex, firstOccurance(arr));
         }
-        Integer ksum2 = totalSum + kadane();
 
-        System.out.print(Math.max(ksum, ksum2));
+        System.out.print(A[0].length - minIndex);
 
     }
 
-    private Integer kadane() {
-        Integer gMax = Integer.MIN_VALUE;
-        Integer gStart = null;
-        Integer gEnd = null;
+    private Integer firstOccurance (Integer[] A) {
 
-        Integer max = null;
-        Integer start = null;
-        Integer end = null;
+        Integer start = 0, end = A.length-1;
 
-        for (Integer i=0; i<A.length; ++i) {
-
-            if (max == null && A[i]>0) {
-                max = A[i];
-                start = i;
-                end = i;
-            } else if (max != null){
-                max += A[i];
-                end = i;
-            }
-
-            if (max != null) {
-                if (max < 0) {
-
-                    max = null;
-                    start = null;
-                    end = null;
-
-                } else if (max > gMax) {
-
-                    gMax = max;
-                    gStart = start;
-                    gEnd = end;
-
+        while (start <= end) {
+            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+            if (A[mid] == 0) {
+                start = mid+1;
+            } else if (A[mid] == 1) {
+                if (mid-1 < 0) {
+                    return mid;
+                } else if (A[mid-1] == 0) {
+                    return mid;
+                } else {
+                    end = mid-1;
                 }
             }
-
         }
 
-        System.out.print(gMax + " " + gStart + " " + gEnd);
+        return A.length;
 
-        return gMax;
     }
-
 }
