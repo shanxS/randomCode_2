@@ -1,45 +1,63 @@
 public class BinaryCode {
 
-    private final String NONE = "NONE";
-    private final String ONE = "1";
-    private final String ZERO = "0";
+    Integer[] A = {-1, 40, -14, 7, 6, 5, -4, -1};
 
-    public String[] decode(String message) {
-        String res1 = decode("1", message);
-        String res2 = decode("0", message);
+    public void run() {
 
-        return new String[] {res1, res2};
+        Integer ksum = kadane();
+
+        Integer totalSum = 0;
+        for (Integer i=0; i<A.length; ++i) {
+            totalSum += A[i];
+            A[i] = -A[i];
+        }
+        Integer ksum2 = totalSum + kadane();
+
+        System.out.print(Math.max(ksum, ksum2));
+
     }
 
-    private String decode(String start , String message) {
+    private Integer kadane() {
+        Integer gMax = Integer.MIN_VALUE;
+        Integer gStart = null;
+        Integer gEnd = null;
 
-        String result = "";
+        Integer max = null;
+        Integer start = null;
+        Integer end = null;
 
-        Integer next = 0;
-        for (Integer i=0; i<message.length(); ++i) {
-            if (i==0) {
-                result = start;
-                next = toInt(message.charAt(i)) - toInt(start);
-            } else {
-                result += next.toString();
-                next = toInt(message.charAt(i)) - (toInt(result.charAt(i-1)) + toInt(result.charAt(i)) );
+        for (Integer i=0; i<A.length; ++i) {
+
+            if (max == null && A[i]>0) {
+                max = A[i];
+                start = i;
+                end = i;
+            } else if (max != null){
+                max += A[i];
+                end = i;
             }
 
-            if (next < 0 || next > 1) {
-                return NONE;
+            if (max != null) {
+                if (max < 0) {
+
+                    max = null;
+                    start = null;
+                    end = null;
+
+                } else if (max > gMax) {
+
+                    gMax = max;
+                    gStart = start;
+                    gEnd = end;
+
+                }
             }
+
         }
 
+        System.out.print(gMax + " " + gStart + " " + gEnd);
 
-        return result;
-
+        return gMax;
     }
 
-    private Integer toInt(String start) {
-        return Integer.parseInt(start);
-    }
-
-    private Integer toInt(Character c) {
-        return Character.getNumericValue(c);
-    }
 }
