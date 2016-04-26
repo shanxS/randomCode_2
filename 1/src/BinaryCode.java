@@ -1,42 +1,32 @@
 public class BinaryCode {
 
-    private Integer[] A = {10, 22, 5, 75, 65, 80};
+    private Integer[] A = {90, 80, 70, 60, 50};
 
     public void run() {
 
-
         Integer[] first = new Integer[A.length];
-        Integer buyValue = A[0];
-        Integer maxProfit = Integer.MIN_VALUE;
+        first[0] = 0;
+        Integer minBuyValue = A[0];
         for (Integer i=1; i<A.length; ++i) {
 
-            Integer profit = A[i] - buyValue;
-            maxProfit = Math.max(maxProfit, profit);
+            Integer thisProfit = A[i] - minBuyValue;
+            first[i] = Math.max(first[i-1], thisProfit);
 
-            first[i] = maxProfit;
-            buyValue = Math.min(buyValue, A[i]);
+            minBuyValue = Math.min(minBuyValue, A[i]);
         }
 
+        Integer maxSellValue = A[A.length-1];
         Integer totalProfit = Integer.MIN_VALUE;
-        Integer sellValue = A[A.length-1];
         for (Integer i=A.length-1; i>0; --i) {
 
-            if (i==A.length-1) {
-                totalProfit = first[i];
-            } else {
-                Integer thisProfit = sellValue - A[i];
-                Integer thisTotalProfit = ((first[i-1] == null) ? (0) : (first[i-1])) + thisProfit;
+            Integer thisProfit = maxSellValue - A[i];
+            totalProfit = Math.max(totalProfit, (first[i-1] + thisProfit));
 
-                totalProfit = Math.max(thisTotalProfit, totalProfit);
-            }
+            maxSellValue = Math.max(maxSellValue, A[i]);
 
-
-            sellValue = Math.max(sellValue, A[i]);
         }
 
-
         System.out.print(totalProfit);
-
 
     }
 
