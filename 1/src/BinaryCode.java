@@ -1,43 +1,43 @@
 public class BinaryCode {
 
-    Integer[][] A = {
-            {0, 0, 0, 1},
-            {0, 1, 1, 1},
-            {1, 1, 1, 1},
-            {0, 0, 0, 0}
-    };
+    private Integer[] A = {10, 22, 5, 75, 65, 80};
 
     public void run() {
 
-        Integer minIndex = A[0].length;
-        for (Integer[] arr : A) {
-            minIndex = Math.min(minIndex, firstOccurance(arr));
+
+        Integer[] first = new Integer[A.length];
+        Integer buyValue = A[0];
+        Integer maxProfit = Integer.MIN_VALUE;
+        for (Integer i=1; i<A.length; ++i) {
+
+            Integer profit = A[i] - buyValue;
+            maxProfit = Math.max(maxProfit, profit);
+
+            first[i] = maxProfit;
+            buyValue = Math.min(buyValue, A[i]);
         }
 
-        System.out.print(A[0].length - minIndex);
+        Integer totalProfit = Integer.MIN_VALUE;
+        Integer sellValue = A[A.length-1];
+        for (Integer i=A.length-1; i>0; --i) {
 
-    }
+            if (i==A.length-1) {
+                totalProfit = first[i];
+            } else {
+                Integer thisProfit = sellValue - A[i];
+                Integer thisTotalProfit = ((first[i-1] == null) ? (0) : (first[i-1])) + thisProfit;
 
-    private Integer firstOccurance (Integer[] A) {
-
-        Integer start = 0, end = A.length-1;
-
-        while (start <= end) {
-            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
-            if (A[mid] == 0) {
-                start = mid+1;
-            } else if (A[mid] == 1) {
-                if (mid-1 < 0) {
-                    return mid;
-                } else if (A[mid-1] == 0) {
-                    return mid;
-                } else {
-                    end = mid-1;
-                }
+                totalProfit = Math.max(thisTotalProfit, totalProfit);
             }
+
+
+            sellValue = Math.max(sellValue, A[i]);
         }
 
-        return A.length;
+
+        System.out.print(totalProfit);
+
 
     }
+
 }
