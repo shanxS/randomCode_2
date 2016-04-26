@@ -1,22 +1,23 @@
 public class BinaryCode {
 
     private String str = "aabaacaabaa";
-    private Character interim = null;
     private Integer interimPos = null;
+    private Character interim = null;
     private Integer fHash = 0;
-    private Integer lHash = 0;
+    private Integer sHash = 0;
 
     public void run() {
 
-
         for (Integer i=0; i<str.length(); ++i) {
+
             Character c = str.charAt(i);
 
             updateHash(c, i);
 
-            System.out.println("character " + c + " " + ((int)c) + " " + (((fHash.equals(lHash)) || (lHash == 0)) ? "yes" : "no") + " " + fHash + " " + lHash);
+            System.out.println(c + " " + ((fHash.equals(sHash) || sHash.equals(0)) ? "yes" : "no") + " " + fHash + " " + sHash);
 
         }
+
     }
 
     private void updateHash(Character c, Integer pos) {
@@ -25,31 +26,32 @@ public class BinaryCode {
 
         if (fHash == 0) {
             fHash = PRIME * ((int) c);
-        } else if (lHash == 0) {
-            lHash = PRIME * ((int) c);
+        } else if (sHash == 0) {
+            sHash = PRIME * ((int) c);
         } else {
             Integer midPos = pos/2;
 
             if (interim != null) {
-
                 fHash += PRIME * ((int) interim);
                 fHash += PRIME * interimPos;
+
                 interim = null;
                 interimPos = null;
 
-                lHash += PRIME * (pos-midPos-1);
+                sHash += PRIME * (pos-midPos-1);
             } else {
 
-                Character midChar = str.charAt(midPos);
-                lHash -= PRIME * ((int) midChar);
-
+                interim = str.charAt(midPos);
                 interimPos = midPos;
-                interim = midChar;
 
+                sHash -= PRIME * ((int)interim);
             }
 
-            lHash += PRIME * ((int) c);
+            sHash += PRIME * ((int)c);
+
         }
 
     }
+
+
 }
