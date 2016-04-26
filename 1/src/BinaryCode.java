@@ -1,29 +1,65 @@
 public class BinaryCode {
 
-    private Integer[] A = {90, 80, 70, 60, 50};
+    private Integer[] A = {3, 1, 4, 6, 5};
 
     public void run() {
 
-        Integer[] first = new Integer[A.length];
-        first[0] = 0;
-        Integer minBuyValue = A[0];
-        for (Integer i=1; i<A.length; ++i) {
-            Integer thisProfit = A[i] - minBuyValue;
-            first[i] = Math.max(first[i-1], thisProfit);
+        sort(0, A.length-1);
 
-            minBuyValue = Math.min(A[i], minBuyValue);
+        for (Integer i=0; i<A.length; ++i) {
+            A[i] = (int) Math.pow(A[i], 2);
         }
 
-        Integer maxSellValue = A[A.length-1];
-        Integer totalProfit = Integer.MIN_VALUE;
-        for (Integer i=A.length-1; i>0; --i) {
-            Integer thisProfit = maxSellValue - A[i];
-            totalProfit = Math.max(totalProfit, thisProfit+first[i-1]);
+        for (Integer i=A.length-1; i>=2; --i) {
+            Integer start = 0;
+            Integer end = i-1;
+            while (start < end) {
+                if (A[start] + A[end] == A[i]) {
+                    System.out.print(A[start] + " " + A[end] + " " + A[i]);
 
-            maxSellValue = Math.max(maxSellValue, A[i]);
+                    ++start;
+                    --end;
+                } else if (A[start] + A[end] < A[i]) {
+                    ++start;
+                } else if (A[start] + A[end] > A[i]) {
+                    --end;
+                }
+            }
         }
 
-        System.out.print(totalProfit);
+    }
+
+
+    private void sort(Integer start, Integer end) {
+        if (start >= end) {
+            return;
+        }
+
+        Integer pivot = qSort(start, end);
+        sort(start, pivot-1);
+        sort(pivot+1, end);
+    }
+
+    private Integer qSort(Integer start, Integer end) {
+
+        Integer pivotValue = A[end];
+        Integer marker = start-1;
+
+        for (Integer i=start; i<end; ++i) {
+            if (A[i] <= pivotValue) {
+                ++marker;
+                swap(marker, i);
+            }
+        }
+
+        swap(marker+1, end);
+        return marker+1;
+    }
+
+    private void swap(Integer from, Integer to) {
+        Integer tmp = A[from];
+        A[from] = A[to];
+        A[to] = tmp;
     }
 
 }
