@@ -1,24 +1,34 @@
 public class BinaryCode {
 
-    private Integer[] A = {12, 34, 10, 6, 40};
+    private Integer[] A = {1, 3, 4, 7, 10};
+    private Integer target = 15;
 
     public void run() {
 
-        Integer max = Integer.MIN_VALUE;
-        Integer sMax = Integer.MIN_VALUE;
+        Integer v1 = null, v2 = null;
+        Integer diff = Integer.MAX_VALUE;
 
-        for (Integer ele : A) {
 
-            if (ele > max) {
-                sMax = max;
-                max = ele;
-            } else if (ele > sMax) {
-                sMax = ele;
+        Integer start = 0, end = A.length-1;
+        while (start < end) {
+            Integer sum = A[start] + A[end];
+
+            if (diff > (Math.abs(sum - target))) {
+                diff = Math.abs(sum - target);
+                v1 = A[start];
+                v2 = A[end];
             }
 
+            if (sum == target) {
+                break;
+            } else if (sum > target) {
+                --end;
+            } else if (sum < target) {
+                ++start;
+            }
         }
 
-        System.out.print(sMax + max);
+        System.out.print(v1 + " " + v2);
 
     }
 }
