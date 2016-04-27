@@ -2,9 +2,9 @@ public class BinaryCode {
 
     private Node[] A = {
             new Node(1,3),
-            new Node(7,9),
-            new Node(4,6),
-            new Node(10,13)
+            new Node(5,7),
+            new Node(4,2),
+            new Node(6,8)
     };
 
     public void run() {
@@ -37,6 +37,10 @@ public class BinaryCode {
         Integer pivotValue = A[end].first;
 
         for (Integer i=start; i<end; ++i) {
+            if (A[i].first > A[i].second) {
+                swap(A[i]);
+            }
+
             if (A[i].first < pivotValue) {
                 ++marker;
                 swap(marker, i);
@@ -46,6 +50,13 @@ public class BinaryCode {
         swap(marker+1, end);
         return marker+1;
     }
+
+    private void swap(Node node) {
+        Integer tmp = node.first;
+        node.first = node.second;
+        node.second = tmp;
+    }
+
 
     private void swap(Integer from, Integer to) {
         Node tmp = A[from];
