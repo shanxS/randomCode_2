@@ -1,25 +1,33 @@
+import java.util.HashSet;
+import java.util.Set;
+
 public class BinaryCode {
 
-    private Integer[] A = {2, 3, 4, 5, 6};
+    private Integer[] A = {1, 2, 3, 4, 4};
+    private Integer k = 3;
     public void run() {
 
-        Integer prev = 1;
-        for (Integer i=0; i<A.length; ++i) {
-            Integer nextPrev = A[i];
-
-            if (i==0) {
-                A[i] *= A[i+1];
-            } else if (i == A.length-1) {
-                A[i] *= prev;
-            } else {
-                A[i] = prev * A[i+1];
+        Set<Integer> set = new HashSet<>();
+        Integer counter = 0;
+        while (counter <= k && counter < A.length) {
+            Integer ele = A[counter];
+            if (!set.add(ele)) {
+                System.out.println("repeated " + ele);
             }
 
-            prev = nextPrev;
+            ++counter;
         }
 
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
+
+        while (counter < A.length) {
+            set.remove(A[counter-k-1]);
+
+            Integer ele = A[counter];
+            if (!set.add(ele)) {
+                System.out.println("repeated " + ele);
+            }
+
+            ++counter;
         }
 
     }
