@@ -1,52 +1,73 @@
 public class BinaryCode {
 
-    private Integer[] A = {3, 1, 5, 90};
-    private Integer target = 2;
+    private Node[] A = {
+            new Node(1,3),
+            new Node(7,9),
+            new Node(4,6),
+            new Node(10,13)
+    };
 
     public void run() {
+        sort(0, A.length-1);
 
-        if (delete()) {
-            for (Integer i=0; i<A.length; ++i) {
-                System.out.print(A[i] + " ");
+        Integer prevEnd = A[0].second;
+        for (Integer i=1; i<A.length; ++i) {
+            if (prevEnd > A[i].first) {
+                System.out.println("overlap " + A[i-1] + " " + A[i]);
             }
-        } else {
-            System.out.print("not found");
+
+            prevEnd = A[i].second;
         }
 
     }
 
-    private Boolean delete() {
-
-        Integer[] tmp = new Integer[A.length-1];
-        Boolean found = false;
-        Integer writer = tmp.length-1;
-        for (Integer reader=A.length-1; reader>=0; --reader) {
-
-            if (reader == 0 && A[reader] != target) {
-                break;
-            }
-
-            if (A[reader] == target) {
-                found = true;
-                break;
-            } else {
-                tmp[writer] = A[reader];
-            }
-
-            --writer;
-
+    private void sort(Integer start, Integer end) {
+        if (start >= end) {
+            return;
         }
 
+        Integer pivot = qSort(start, end);
+        sort(start, pivot-1);
+        sort(pivot+1, end);
 
-        if (found) {
-            while (writer >= 0) {
-                tmp[writer] = A[writer];
-                --writer;
+    }
+
+    private Integer qSort(Integer start, Integer end) {
+        Integer marker = start-1;
+        Integer pivotValue = A[end].first;
+
+        for (Integer i=start; i<end; ++i) {
+            if (A[i].first < pivotValue) {
+                ++marker;
+                swap(marker, i);
             }
-
-            A = tmp;
         }
 
-        return found;
+        swap(marker+1, end);
+        return marker+1;
+    }
+
+    private void swap(Integer from, Integer to) {
+        Node tmp = A[from];
+        A[from] = A[to];
+        A[to] = tmp;
+    }
+
+}
+
+class Node {
+    public Integer first, second;
+
+    public Node(Integer first, Integer second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "first=" + first +
+                ", second=" + second +
+                '}';
     }
 }
