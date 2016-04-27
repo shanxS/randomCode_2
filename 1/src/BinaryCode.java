@@ -1,10 +1,9 @@
 public class BinaryCode {
 
-    private Integer[] A = {1, 2, 3, 4, 4};
+    private Integer[] A = {1, 2, 3, 1, 4, 5};
     private Integer k = 3;
 
     public void run() {
-
         BST bst = new BST();
 
         Integer counter = 0;
@@ -13,62 +12,56 @@ public class BinaryCode {
             ++counter;
         }
 
-        bst.print();
-
         while (counter < A.length) {
             bst.delete(A[counter-k-1]);
+
             bst.insert(A[counter]);
+
             ++counter;
         }
     }
 
 }
 
+
 class BST {
     private Node head;
 
-    public void insert(Integer value) {
-        if (head == null) {
-            head = new Node(value);
-        } else {
-            insert(head, value);
-        }
-    }
-
     public void delete (Integer value) {
 
-        RemovalContext removalContext = makeRemovalContext(head, null, value);
+        RemovalContext removalContext = makeRenewalContext(head, null, value);
         if (removalContext == null) {
-            System.out.print("cant find node and you are nuts " + value);
-            return;
+            System.out.println("cnat find ndoe " + value);
         }
 
         Node target = removalContext.target;
-
         Node replacement = null;
         if (bothChildren(target)) {
-            replacement = findBiggest(target.getLeft());
+
+            replacement = getBiggest(target.getLeft());
             delete(replacement.getValue());
 
             replacement.setLeft(target.getLeft());
             replacement.setRight(target.getRight());
+
         } else if (oneChild(target)) {
-            replacement = (target.getLeft() == null) ? (target.getRight()) : (target.getLeft());
+            replacement = (target.getLeft() != null) ? (target.getLeft()) : (target.getRight());
         } else if (noChild(target)) {
             replacement = null;
         }
 
         dropInReplacement(removalContext, replacement);
+
     }
 
     private void dropInReplacement(RemovalContext removalContext, Node replacement) {
         if (removalContext.parent != null) {
 
             Node parent = removalContext.parent;
-            if (parent.getValue() < removalContext.target.getValue()) {
-                parent.setRight(replacement);
-            } else {
+            if (parent.getValue() > removalContext.target.getValue()) {
                 parent.setLeft(replacement);
+            } else {
+                parent.setRight(replacement);
             }
 
         } else {
@@ -76,35 +69,35 @@ class BST {
         }
     }
 
-    private Node findBiggest(Node node) {
+    private boolean noChild(Node node) {
+        return (node.getLeft() == null) && (node.getRight() == null);
+    }
+
+    private boolean oneChild(Node node) {
+        return (node.getLeft() != null) || (node.getRight() != null);
+    }
+
+    private boolean bothChildren(Node node) {
+        return (node.getLeft() != null) && (node.getRight() != null);
+    }
+
+    private Node getBiggest(Node node) {
         if (node.getRight() == null) {
             return node;
         } else {
-            return findBiggest(node.getRight());
+            return getBiggest(node.getRight());
         }
     }
 
-    private boolean noChild(Node target) {
-        return (target.getRight() == null) && (target.getLeft() == null);
-    }
-
-    private boolean oneChild(Node target) {
-        return (target.getLeft() != null) || (target.getRight() != null);
-    }
-
-    private boolean bothChildren(Node target) {
-        return (target.getRight() != null) && (target.getLeft() != null);
-    }
-
-    private RemovalContext makeRemovalContext(Node node, Node parent, Integer value) {
+    private RemovalContext makeRenewalContext(Node node, Node parent, Integer value) {
         if (node == null) {
             return null;
         }
 
         if (node.getValue() > value) {
-            return makeRemovalContext(node.getLeft(), node, value);
+            return makeRenewalContext(node.getLeft(), node, value);
         } else if (node.getValue() < value) {
-            return makeRemovalContext(node.getRight(), node, value);
+            return makeRenewalContext(node.getRight(), node, value);
         }
 
         return new RemovalContext(parent, node);
@@ -119,6 +112,31 @@ class BST {
         }
     }
 
+    public void insert(Integer value) {
+        if (head == null) {
+            head = new Node(value);
+        } else {
+            insert(head, value);
+        }
+    }
+
+    private void insert(Node node, Integer value) {
+        if (node.getValue() < value) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(value));
+            } else {
+                insert(node.getRight(), value);
+            }
+        } else if (node.getValue() > value) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(value));
+            } else {
+                insert(node.getLeft(), value);
+            }
+        } else {
+            System.out.println("repeated " + value);
+        }
+    }
 
     public void print() {
         print(head);
@@ -142,26 +160,8 @@ class BST {
         print(node.getLeft());
         print(node.getRight());
     }
-
-
-    private void insert(Node node, Integer value) {
-        if (node.getValue() < value) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(value));
-            } else {
-                insert(node.getRight(), value);
-            }
-        } else if (node.getValue() > value) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value));
-            } else {
-                insert(node.getLeft(), value);
-            }
-        } else {
-            System.out.println("repeated " + value);
-        }
-    }
 }
+
 
 class Node {
     private Node left, right;
