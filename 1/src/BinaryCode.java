@@ -1,38 +1,41 @@
 public class BinaryCode {
 
-    private Integer[] A = {0, 0, 0, 0, 0, 0, 0};
+    private Integer[] A = {1, 4, 5, 7};
+    private Integer[] B = {10, 20, 30, 40};
+    private Integer target = 30;
 
     public void run() {
 
-        System.out.print((findLast() + 1));
+        Integer fwd = 0;
+        Integer rev = B.length-1;
 
-    }
+        Integer minDiff = Integer.MAX_VALUE;
+        Integer v1 = null;
+        Integer v2 = null;
 
-    private Integer findLast() {
+        while (rev >= 0 && fwd < A.length) {
 
-        Integer start = 0;
-        Integer end = A.length-1;
+            Integer sum = A[fwd] + B[rev];
 
-        while (start <= end) {
+            if (minDiff > Math.abs(sum-target)) {
 
-            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
-            if (A[mid] == 1) {
+                minDiff = Math.abs(sum-target);
+                v1 = A[fwd];
+                v2 = B[rev];
 
-                if (mid+1 == A.length
-                        || A[mid+1] == 0) {
-                    return mid;
-                } else {
-                    start = mid+1;
-                }
-
-            } else {
-                end = mid-1;
             }
 
+            if (sum > target) {
+                --rev;
+            } else if (sum < target){
+                ++fwd;
+            } else {
+                break;
+            }
         }
 
-        return null;
-    }
+        System.out.print(minDiff + " " + v1 + " " + v2);
 
+    }
 
 }
