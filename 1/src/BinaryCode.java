@@ -1,52 +1,38 @@
 public class BinaryCode {
 
-    private Integer[] S = {15, 13, 11, 10, 12, 10, 9, 8, 7, 5};
-    private Integer N;
-    private Integer[] A;
+    private Integer[] A = {0, 0, 0, 0, 0, 0, 0};
 
     public void run() {
 
-        findN();
-        System.out.println("N " + N);
+        System.out.print((findLast() + 1));
 
-        findInners();
+    }
 
-        findLimits();
+    private Integer findLast() {
 
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
+        Integer start = 0;
+        Integer end = A.length-1;
+
+        while (start <= end) {
+
+            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+            if (A[mid] == 1) {
+
+                if (mid+1 == A.length
+                        || A[mid+1] == 0) {
+                    return mid;
+                } else {
+                    start = mid+1;
+                }
+
+            } else {
+                end = mid-1;
+            }
+
         }
 
+        return null;
     }
 
-    private void findLimits() {
-        A[0] = S[0] - A[1];
-        A[N-1] = S[S.length-1] - A[A.length-2];
-    }
-
-    private void findInners() {
-
-        A = new Integer[N];
-        Integer end = 0;
-        for (Integer i=1; i<A.length-1; ++i) {
-            end += N-i;
-            A[i] = (S[end] + S[i-1] - S[i])/2;
-        }
-
-    }
-
-    private void findN() {
-
-        Integer sum = S.length;
-
-        Integer D = (int)Math.sqrt((1 + (8*sum)));
-
-        if (S.length % 2 != 0) {
-            N = (D - 1) / 2;
-        } else {
-            N = (D + 1) / 2;
-        }
-
-    }
 
 }
