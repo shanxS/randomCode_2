@@ -1,24 +1,32 @@
 public class BinaryCode {
 
-    private Integer[] A = {3, 2, 1, 0};
+    private Integer[] A = {2, 0, 1, 4, 5, 3};
+    private final Integer BIG = (int)10e4;
     public void run() {
 
-        Integer[] res = new Integer[A.length];
         for (Integer i=0; i<A.length; ++i) {
-            if (A[i] >= 0 && A[i] < A.length) {
-                Integer j=A[i];
-                res[j] = i;
+            Integer j = getOrig(A[i]);
+            if (j>=0 && j<A.length) {
+                A[j] = encrypt(getOrig(A[j]), i);
             }
         }
 
-        for (Integer i=0; i<res.length; ++i) {
-            if (res[i] != null) {
-                System.out.print(res[i] +" ");
-            } else {
-                System.out.print(A[i] +" ");
-            }
+        for (Integer i=0; i<A.length; ++i) {
+            System.out.print(getEncrypt(A[i]) + " ");
         }
+    }
 
+
+    private Integer encrypt(Integer value, Integer data) {
+        return value + (data*BIG);
+    }
+
+    private Integer getOrig(Integer value) {
+        return (value%BIG);
+    }
+
+    private Integer getEncrypt(Integer value) {
+        return (value/BIG);
     }
 
 }
