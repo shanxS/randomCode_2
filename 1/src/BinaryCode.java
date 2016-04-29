@@ -1,40 +1,51 @@
 public class BinaryCode {
 
-    private Integer[] A = {1, 4, 5, 7};
-    private Integer[] B = {10, 20, 30, 40};
-    private Integer target = 30;
+
+    private Integer[] A = {0, 1, 1, 1, 1};
 
     public void run() {
 
-        Integer fwd = 0;
-        Integer rev = B.length-1;
+        Integer prevSum = 0;
+        Integer maxSum = Integer.MIN_VALUE;
+        Integer index = null;
 
-        Integer minDiff = Integer.MAX_VALUE;
-        Integer v1 = null;
-        Integer v2 = null;
+        Integer counter = 0;
+        while (counter < A.length) {
 
-        while (rev >= 0 && fwd < A.length) {
+            if (A[counter] == 1) {
 
-            Integer sum = A[fwd] + B[rev];
+                Integer start = counter;
+                Integer thisSum = 0;
+                while (counter < A.length && A[counter] == 1) {
+                    thisSum += A[counter];
+                    ++counter;
+                }
 
-            if (minDiff > Math.abs(sum-target)) {
+                if (prevSum != 0 && (maxSum < prevSum+thisSum)) {
+                    maxSum = prevSum + thisSum;
+                    index = start-1;
+                } else if (prevSum == 0) {
+                    maxSum = thisSum;
+                    index = start-1;
+                }
 
-                minDiff = Math.abs(sum-target);
-                v1 = A[fwd];
-                v2 = B[rev];
+                prevSum = thisSum;
+
+            } else if (A[counter] == 0) {
+
+                if (counter+1 < A.length && A[counter+1] == 0) {
+                    prevSum = 0;
+                }
+
+                while (counter < A.length && A[counter] == 0) {
+                    ++counter;
+                }
 
             }
 
-            if (sum > target) {
-                --rev;
-            } else if (sum < target){
-                ++fwd;
-            } else {
-                break;
-            }
         }
 
-        System.out.print(minDiff + " " + v1 + " " + v2);
+        System.out.print(index + " " + (maxSum+1));
 
     }
 
