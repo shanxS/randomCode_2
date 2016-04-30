@@ -6,40 +6,54 @@ public class BinaryCode {
 
     public void run() {
 
-        sort(0, A.length-1);
-        System.out.print("--- " + A[k]);
+        Integer v = sort(0, A.length-1);
+        System.out.print(v);
     }
 
-    private void sort(Integer start, Integer end) {
+    private Integer sort(Integer start, Integer end) {
+        if (start > end) {
+            return null;
+        }
 
-        if (start >= end) {
+        if (start == end) {
 
-            if (start== end) {
-                System.out.println("start " + start);
+            if (start == k) {
+                return A[start];
+            } else {
+                return null;
             }
-
-            return;
         }
 
         Integer pivot = qSort(start, end);
-        System.out.print(pivot + " ");
-        sort(start, pivot-1);
-        sort(pivot+1, end);
+        System.out.println("pivot " + pivot);
+        if (pivot == k) {
+            return A[k];
+        }
 
+        Integer res1 = sort(start, pivot-1);
+        if (res1 != null) {
+            return res1;
+        }
+
+        Integer res2 = sort(pivot+1, end);
+        if (res2 != null) {
+            return res2;
+        }
+
+        return null;
     }
 
     private Integer qSort(Integer start, Integer end) {
         Integer pivotValue = A[end];
-        Integer marker = start - 1;
+        Integer marker = start-1;
 
-        Integer counter = start;
-        while (counter < end) {
-            if (A[counter] <= pivotValue) {
+        for (Integer i=start; i<end; ++i) {
+
+            if (A[i] <= pivotValue) {
                 ++marker;
-                swap(marker, counter);
+                swap(i, marker);
             }
 
-            ++counter;
         }
 
         swap(marker+1, end);
@@ -50,6 +64,5 @@ public class BinaryCode {
         Integer tmp = A[from];
         A[from] = A[to];
         A[to] = tmp;
-
     }
 }
