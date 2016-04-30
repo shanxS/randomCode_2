@@ -4,7 +4,7 @@ public class BinaryCode {
 
 
     private Integer[] A = {7, 10, 4, 3, 20, 15};
-    private Integer k = 6;
+    private Integer k = 1;
 
     public void run() {
 
@@ -28,10 +28,11 @@ public class BinaryCode {
         if (pivot == k-1) {
             System.out.print(A[pivot]);
             return;
+        } else if (pivot < k-1) {
+            sort(pivot+1, end);
+        } else if (pivot > k-1) {
+            sort(start, pivot - 1);
         }
-
-        sort(start, pivot-1);
-        sort(pivot+1, end);
     }
 
     private Integer qSort(Integer start, Integer end) {
