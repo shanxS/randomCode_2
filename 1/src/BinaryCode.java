@@ -6,63 +6,139 @@ public class BinaryCode {
 
     public void run() {
 
-        Integer v = sort(0, A.length-1);
-        System.out.print(v);
-    }
+        BST bst = new BST(k);
+        for (Integer ele : A) {
+            bst.insert(ele);
 
-    private Integer sort(Integer start, Integer end) {
-        if (start > end) {
-            return null;
         }
 
-        if (start == end) {
+        System.out.print(bst.getMin());
+    }
+}
 
-            if (start == k) {
-                return A[start];
+class BST {
+    private Node head;
+    private Node minHead;
+    private Integer size;
+
+    public BST(Integer size) {
+        this.size = size;
+    }
+
+    public Integer getMin () {
+        if (minHead == null) {
+            return head.getValue();
+        } else {
+            return minHead.getLeft().getValue();
+        }
+    }
+
+    public void insert(Integer value) {
+        if (head == null) {
+            head = new Node(value);
+        } else {
+
+            if (value < getMin()) {
+                return;
+            }
+
+            insert(head, value);
+        }
+
+        --size;
+        if (size < 0) {
+            removeMin();
+            ++size;
+        }
+        updateMinHead(head);
+    }
+
+    private void updateMinHead(Node node) {
+
+        minHead = null;
+        while (node.getLeft() != null) {
+            minHead = node;
+            node = node.getLeft();
+        }
+
+    }
+
+    private void removeMin() {
+        if (minHead == null) {
+            head = head.getRight();
+        } else {
+            minHead.setLeft(null);
+        }
+    }
+
+    public void insert(Node node, Integer value) {
+        if (node.getValue() > value) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(value));
             } else {
-                return null;
+                insert(node.getLeft(), value);
             }
+        } else if (node.getValue() < value) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(value));
+            } else {
+                insert(node.getRight(), value);
+            }
+        } else {
+            System.out.print("duplicate values " + value);
         }
-
-        Integer pivot = qSort(start, end);
-        System.out.println("pivot " + pivot);
-        if (pivot == k) {
-            return A[k];
-        }
-
-        Integer res1 = sort(start, pivot-1);
-        if (res1 != null) {
-            return res1;
-        }
-
-        Integer res2 = sort(pivot+1, end);
-        if (res2 != null) {
-            return res2;
-        }
-
-        return null;
     }
 
-    private Integer qSort(Integer start, Integer end) {
-        Integer pivotValue = A[end];
-        Integer marker = start-1;
-
-        for (Integer i=start; i<end; ++i) {
-
-            if (A[i] <= pivotValue) {
-                ++marker;
-                swap(i, marker);
-            }
-
-        }
-
-        swap(marker+1, end);
-        return marker+1;
+    public void print() {
+        print(head);
     }
 
-    private void swap(Integer from, Integer to) {
-        Integer tmp = A[from];
-        A[from] = A[to];
-        A[to] = tmp;
+    private void print(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        System.out.print(node.getValue() + " - ");
+        if (node.getLeft() != null) {
+            System.out.print(node.getLeft().getValue());
+        }
+        System.out.print(", ");
+        if (node.getRight() != null) {
+            System.out.print(node.getRight().getValue());
+        }
+        System.out.println();
+
+        print(node.getLeft());
+        print(node.getRight());
+    }
+}
+
+class Node {
+    private Node left, right;
+    private Integer value;
+
+
+    public Node(Integer value) {
+        this.value = value;
+    }
+
+    public void setLeft(Node left) {
+        this.left = left;
+    }
+
+    public void setRight(Node right) {
+        this.right = right;
+    }
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
+
+    public Integer getValue() {
+        return value;
     }
 }
