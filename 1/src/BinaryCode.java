@@ -2,30 +2,25 @@ public class BinaryCode {
 
 
     private Integer[] A = {7, 10, 4, 3, 20, 15};
-    private Integer k = 2;
+    private Integer k = 5;
 
     public void run() {
 
         BST bst = new BST(k);
         for (Integer ele : A) {
             bst.insert(ele);
-            System.out.println(bst.getMin());
+            System.out.println(bst.getMax());
         }
 
-        System.out.print(bst.getMin());
+        System.out.print(bst.getMax());
     }
 }
 
-
-class BST{
-    private Node head, minHead;
+class BST {
+    private Node head, maxParent;
     private Integer size;
 
     public BST(Integer size) {
-        if (size < 1) {
-            throw new RuntimeException("are you nuts!");
-        }
-
         this.size = size;
     }
 
@@ -33,44 +28,36 @@ class BST{
         if (head == null) {
             head = new Node(value);
         } else {
-
-            if (getMin() > value && size == 0) {
+            if (getMax() < value && size == 0) {
                 return;
             }
+
             insert(head, value);
         }
 
-        updateMinHead(head);
+        updateMaxParent(head);
 
         --size;
         if (size < 0) {
-            removeMin();
-            updateMinHead(head);
+            removeMax();
+            updateMaxParent(head);
             ++size;
         }
     }
 
-    public Integer getMin() {
-        if (minHead == null) {
-            return head.getValue();
+    private void removeMax() {
+        if (maxParent == null) {
+            head = head.getLeft();
         } else {
-            return minHead.getLeft().getValue();
+            maxParent.setRight(maxParent.getRight().getLeft());
         }
     }
 
-    private void removeMin() {
-        if (minHead == null) {
-            head = head.getRight();
-        } else {
-            minHead.setLeft(null);
-        }
-    }
-
-    private void updateMinHead(Node node) {
-        minHead = null;
-        while (node != null && node.getLeft() != null) {
-            minHead = node;
-            node = node.getLeft();
+    private void updateMaxParent(Node node) {
+        maxParent = null;
+        while (node != null && node.getRight() != null) {
+            maxParent = node;
+            node = node.getRight();
         }
     }
 
@@ -88,9 +75,18 @@ class BST{
                 insert(node.getRight(), value);
             }
         } else {
-            System.out.print("duplicate " + value);
+            System.out.print("duplicate values " + value);
         }
     }
+
+    public Integer getMax() {
+        if (maxParent == null) {
+            return head.getValue();
+        } else {
+            return maxParent.getRight().getValue();
+        }
+    }
+
 
     public void print() {
         print(head);
@@ -124,14 +120,6 @@ class Node {
         this.value = value;
     }
 
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
-    }
-
     public Node getLeft() {
         return left;
     }
@@ -142,5 +130,13 @@ class Node {
 
     public Integer getValue() {
         return value;
+    }
+
+    public void setLeft(Node left) {
+        this.left = left;
+    }
+
+    public void setRight(Node right) {
+        this.right = right;
     }
 }
