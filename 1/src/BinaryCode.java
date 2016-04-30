@@ -12,33 +12,24 @@ public class BinaryCode {
 
         }
 
-        System.out.print(bst.getMin());
+        System.out.print(bst.getMax());
     }
 }
 
 class BST {
-    private Node head;
-    private Node minHead;
+    private Node head, maxHead;
     private Integer size;
 
     public BST(Integer size) {
         this.size = size;
     }
 
-    public Integer getMin () {
-        if (minHead == null) {
-            return head.getValue();
-        } else {
-            return minHead.getLeft().getValue();
-        }
-    }
-
     public void insert(Integer value) {
+
         if (head == null) {
             head = new Node(value);
         } else {
-
-            if (value < getMin()) {
+            if (value > getMax()) {
                 return;
             }
 
@@ -47,31 +38,32 @@ class BST {
 
         --size;
         if (size < 0) {
-            removeMin();
+            removeMax();
             ++size;
         }
-        updateMinHead(head);
+
+        udpateMax(head);
+
     }
 
-    private void updateMinHead(Node node) {
-
-        minHead = null;
-        while (node.getLeft() != null) {
-            minHead = node;
-            node = node.getLeft();
+    private void udpateMax(Node node) {
+        maxHead = null;
+        while (node != null && node.getRight() != null) {
+            maxHead = node;
+            node = node.getRight();
         }
-
     }
 
-    private void removeMin() {
-        if (minHead == null) {
+    private void removeMax() {
+        if (maxHead == null) {
             head = head.getRight();
         } else {
-            minHead.setLeft(null);
+            maxHead.setRight(null);
         }
     }
 
-    public void insert(Node node, Integer value) {
+    private void insert(Node node, Integer value) {
+
         if (node.getValue() > value) {
             if (node.getLeft() == null) {
                 node.setLeft(new Node(value));
@@ -85,8 +77,9 @@ class BST {
                 insert(node.getRight(), value);
             }
         } else {
-            System.out.print("duplicate values " + value);
+            System.out.print("duplicate " + value);
         }
+
     }
 
     public void print() {
@@ -111,12 +104,19 @@ class BST {
         print(node.getLeft());
         print(node.getRight());
     }
+
+    public Integer getMax() {
+        if (maxHead == null) {
+            return head.getValue();
+        } else {
+            return maxHead.getRight().getValue();
+        }
+    }
 }
 
 class Node {
     private Node left, right;
     private Integer value;
-
 
     public Node(Integer value) {
         this.value = value;
