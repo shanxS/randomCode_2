@@ -1,57 +1,29 @@
-import java.util.Random;
-
 public class BinaryCode {
 
 
-    private Integer[] A = {7, 10, 4, 3, 20, 15};
-    private Integer k = 1;
+    private Integer[] A = {3, 6, 5, 10, 7, 20};
 
     public void run() {
 
-        sort (0, A.length-1);
-//        for (Integer ele : A) {
-//            System.out.print(ele + " ");
-//        }
+        Integer counter = 1;
+        while (counter < A.length) {
 
-    }
-
-    private void sort(Integer start, Integer end) {
-        if (start > end) {
-            return;
-        }
-
-        Integer count = end - start + 1;
-        Random rand  = new Random();
-        swap(end, start + rand.nextInt(count));
-
-        Integer pivot = qSort(start, end);
-        if (pivot == k-1) {
-            System.out.print(A[pivot]);
-            return;
-        } else if (pivot < k-1) {
-            sort(pivot+1, end);
-        } else if (pivot > k-1) {
-            sort(start, pivot - 1);
-        }
-    }
-
-    private Integer qSort(Integer start, Integer end) {
-
-        Integer marker = start-1;
-        Integer pivotValue = A[end];
-
-        for (Integer i=start; i<end; ++i) {
-            if (A[i] <= pivotValue) {
-                ++marker;
-                swap(marker, i);
+            if (A[counter-1] < A[counter]) {
+                swap(counter, counter-1);
+            } else if (counter+1 < A.length
+                    && A[counter] > A[counter+1]) {
+                swap(counter, counter+1);
             }
-        }
-        swap(marker+1, end);
 
-        return marker+1;
+            counter += 2;
+        }
+
+        for (Integer ele : A) {
+            System.out.print(ele + " ");
+        }
     }
 
-    private void swap(Integer from, Integer to) {
+    public void swap(Integer from, Integer to) {
         Integer tmp = A[from];
         A[from] = A[to];
         A[to] = tmp;
