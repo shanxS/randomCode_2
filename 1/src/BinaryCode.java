@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,34 +10,35 @@ public class BinaryCode {
     private Map<Integer, Integer> numCounter;
 
     public void run() {
-        numCounter = new TreeMap<>();
+        Arrays.sort(A1, new CustomCompartor(A2));
         for (Integer ele : A1) {
-            Integer count = numCounter.get(ele);
-            if (count == null) {
-                count=0;
-            }
-            ++count;
-            numCounter.put(ele, count);
+            System.out.print(ele + " ");
+        }
+    }
+}
+
+class CustomCompartor implements Comparator<Integer> {
+
+    private Map<Integer, Integer> map;
+
+    public CustomCompartor(Integer[] A2) {
+        map = new TreeMap<>();
+        for (Integer i=0; i<A2.length; ++i) {
+            map.put(A2[i], i);
         }
 
-        for (Integer ele : A2) {
-            Integer count = numCounter.get(ele);
-            if (count != null) {
-                numCounter.remove(ele);
-                while (count > 0) {
-                    System.out.print(ele + " ");
-                    --count;
-                }
-            }
-        }
+    }
 
-        for (Map.Entry<Integer, Integer> entry : numCounter.entrySet()) {
-            Integer ele = entry.getKey();
-            Integer count = entry.getValue();
-            while (count > 0) {
-                System.out.print(ele + " ");
-                --count;
-            }
+    @Override
+    public int compare(Integer num1, Integer num2) {
+        if (map.containsKey(num1) && map.containsKey(num2)) {
+            return map.get(num1).compareTo(map.get(num2));
+        } else if (map.containsKey(num1) && !map.containsKey(num2)) {
+            return -1;
+        } else if (!map.containsKey(num1) && map.containsKey(num2)) {
+            return 1;
+        } else {
+            return num1.compareTo(num2);
         }
     }
 }
