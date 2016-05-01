@@ -1,83 +1,66 @@
-import java.util.HashMap;
-import java.util.Map;
-
 public class BinaryCode {
 
-    private final String A = "A";
-    private final String B = "B";
-    private Map<String, Integer> indices;
-    private Map<String, Integer[]> arrays;
-    private Integer sumA = 0;
-    private Integer sumB = 0;
-    private Integer maxSoFar = 0;
+    private Integer[] A = {1,9,2,8,4,5,6};
 
     public void run() {
-        indices = new HashMap<>();
-        indices.put(A, 0);
-        indices.put(B, 0);
 
-        arrays = new HashMap<>();
-        arrays.put(A, new Integer[]{2, 3, 7, 10, 12});
-        arrays.put(B, new Integer[]{1, 5, 7, 8});
-
-        while (findCommonSum()) {
-            maxSoFar += Math.max(sumA, sumB);
-            maxSoFar += arrays.get(A)[indices.get(A)];
-            sumA = 0;
-
-            indices.put(A, indices.get(A)+1);
-            indices.put(B, indices.get(B)+1);
-            sumB = 0;
+        sort(0, A.length-1);
+        for (Integer ele : A) {
+            System.out.print(ele + " ");
         }
-
-        if (indices.get(A) < arrays.get(A).length) {
-            while (indices.get(A) < arrays.get(A).length) {
-                sumA += arrays.get(A)[indices.get(A)];
-                indices.put(A, indices.get(A)+1);
-            }
-        }
-
-        if (indices.get(B) < arrays.get(B).length) {
-            while (indices.get(B) < arrays.get(B).length) {
-                sumB += arrays.get(B)[indices.get(B)];
-                indices.put(B, indices.get(B)+1);
-            }
-        }
-
-        maxSoFar += Math.max(sumA, sumB);
-
-        System.out.print(maxSoFar);
-
 
     }
 
-    private boolean findCommonSum() {
-
-        while (indices.get(A) < arrays.get(A).length
-                && indices.get(B) < arrays.get(B).length
-                && arrays.get(B)[indices.get(B)] != arrays.get(A)[indices.get(A)]) {
-
-            while (indices.get(A) < arrays.get(A).length
-                    && indices.get(B) < arrays.get(B).length
-                    && arrays.get(B)[indices.get(B)] > arrays.get(A)[indices.get(A)]) {
-                sumA += arrays.get(A)[indices.get(A)];
-                indices.put(A, indices.get(A) + 1);
-            }
-
-            while (indices.get(A) < arrays.get(A).length
-                    && indices.get(B) < arrays.get(B).length
-                    && arrays.get(B)[indices.get(B)] < arrays.get(A)[indices.get(A)]) {
-                sumB += arrays.get(B)[indices.get(B)];
-                indices.put(B, indices.get(B) + 1);
-            }
+    private void sort(Integer start, Integer end) {
+        if (start >= end) {
+            return;
         }
 
-        if (indices.get(A) < arrays.get(A).length
-                && indices.get(B) < arrays.get(B).length
-                && arrays.get(B)[indices.get(B)] == arrays.get(A)[indices.get(A)]) {
-            return true;
-        } else {
-            return false;
+        Integer mid = start + ((end-start))/2;
+        sort(start, mid);
+        sort(mid+1, end);
+
+        merge(start, mid, mid+1, end);
+    }
+
+    private void merge(Integer start1, Integer end1, Integer start2, Integer end2) {
+
+        Integer counter1 = start1;
+        Integer counter2 = start2;
+        Integer counter = 0;
+        Integer[] tmp = new Integer[(end1-start1+1) + (end2-start2+1)];
+
+        while (counter1 <= end1 && counter2 <= end2) {
+            if (A[counter1] > A[counter2]) {
+                tmp[counter] = A[counter2];
+                ++counter2;
+            } else if (A[counter1] < A[counter2]) {
+                tmp[counter] = A[counter1];
+                ++counter1;
+            } else {
+                tmp[counter] = A[counter1];
+                ++counter1;
+                ++counter2;
+            }
+
+            ++counter;
+        }
+
+        while (counter1 <= end1) {
+            tmp[counter] = A[counter1];
+            ++counter1;
+            ++counter;
+        }
+
+        while (counter2 <= end2) {
+            tmp[counter] = A[counter2];
+            ++counter2;
+            ++counter;
+        }
+
+        counter = 0;
+        for (Integer i=start1; i<=end2; ++i, ++counter) {
+            A[i] = tmp[counter];
         }
 
     }
