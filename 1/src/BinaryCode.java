@@ -7,18 +7,18 @@ public class BinaryCode {
 
         sort(0, A.length-1);
 
-        Integer start = 0, end = A.length-1;
-        while (start < end) {
+        Integer start = 0, end = 0;
+        while (start < A.length && end < A.length) {
 
             Integer diff = A[end]-A[start];
 
             if (diff == k) {
                 System.out.println(A[end] + " " + A[start]);
 
-                --end;
+                ++end;
                 ++start;
             } else if (diff < k) {
-                --end;
+                ++end;
             } else {
                 ++start;
             }
