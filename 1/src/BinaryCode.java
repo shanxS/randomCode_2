@@ -1,44 +1,37 @@
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-
 public class BinaryCode {
 
-    private Integer[] A1 = {2, 1, 2, 5, 7, 1, 9, 3, 6, 8, 8};
-    private Integer[] A2 = {2, 1, 8, 3};
-    private Map<Integer, Integer> numCounter;
+    private Integer[] A = {1, 4, 45, 6, 0, 19};
+    private Integer target = 51;
 
     public void run() {
-        Arrays.sort(A1, new CustomCompartor(A2));
-        for (Integer ele : A1) {
-            System.out.print(ele + " ");
+        Integer sumSoFar = 0;
+        Integer start = 0;
+        Integer end = 0;
+        Integer minLen = Integer.MAX_VALUE;
+
+        while (start <= end && end < A.length) {
+
+            if (sumSoFar <= target) {
+                sumSoFar += A[end];
+                ++end;
+            } else if (sumSoFar > target) {
+
+                while (sumSoFar > target && start <= end) {
+                    minLen = Math.min(end - start, minLen);
+                    sumSoFar -= A[start];
+                    ++start;
+                }
+            }
+
         }
-    }
-}
 
-class CustomCompartor implements Comparator<Integer> {
-
-    private Map<Integer, Integer> map;
-
-    public CustomCompartor(Integer[] A2) {
-        map = new TreeMap<>();
-        for (Integer i=0; i<A2.length; ++i) {
-            map.put(A2[i], i);
+        while (sumSoFar > target && start <= end) {
+            minLen = Math.min(end - start + 1, minLen);
+            sumSoFar -= A[start];
+            ++start;
         }
 
-    }
+        System.out.print(minLen);
 
-    @Override
-    public int compare(Integer num1, Integer num2) {
-        if (map.containsKey(num1) && map.containsKey(num2)) {
-            return map.get(num1).compareTo(map.get(num2));
-        } else if (map.containsKey(num1) && !map.containsKey(num2)) {
-            return -1;
-        } else if (!map.containsKey(num1) && map.containsKey(num2)) {
-            return 1;
-        } else {
-            return num1.compareTo(num2);
-        }
     }
 }
