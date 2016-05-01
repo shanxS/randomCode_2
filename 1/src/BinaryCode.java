@@ -1,37 +1,37 @@
+import java.util.HashSet;
+
 public class BinaryCode {
 
-    private Integer[] A = {1, 4, 45, 6, 0, 19};
-    private Integer target = 51;
+    private Integer[] A = {4, 2, 0, 1, 6};
+    private HashSet<Integer> set;
 
     public void run() {
+
+        set = new HashSet<>();
         Integer sumSoFar = 0;
-        Integer start = 0;
-        Integer end = 0;
-        Integer minLen = Integer.MAX_VALUE;
 
-        while (start <= end && end < A.length) {
+        for (Integer i=0; i<A.length; ++i) {
+            Integer ele = A[i];
 
-            if (sumSoFar <= target) {
-                sumSoFar += A[end];
-                ++end;
-            } else if (sumSoFar > target) {
-
-                while (sumSoFar > target && start <= end) {
-                    minLen = Math.min(end - start, minLen);
-                    sumSoFar -= A[start];
-                    ++start;
-                }
+            sumSoFar += ele;
+            if (set.contains(sumSoFar)) {
+                searchFrom(i);
+                break;
+            } else {
+                set.add(sumSoFar);
             }
-
         }
 
-        while (sumSoFar > target && start <= end) {
-            minLen = Math.min(end - start + 1, minLen);
-            sumSoFar -= A[start];
-            ++start;
+    }
+
+    private void searchFrom(Integer index) {
+        Integer end = index;
+        Integer sum = A[index];
+        while (sum != 0 && index >= 0) {
+            --index;
+            sum += A[index];
         }
 
-        System.out.print(minLen);
-
+        System.out.print(index + " " + end);
     }
 }
