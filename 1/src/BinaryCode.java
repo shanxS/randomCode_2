@@ -1,69 +1,39 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class BinaryCode {
 
-    private List<Integer[]> arrays;
-    private Map<Integer, Integer> arrayIndex;
+    private Integer[] A = {5,2,7,4,9};
 
     public void run() {
-        init();
 
-        List<Integer> list = new ArrayList<>();
-        while (true) {
-
-            Integer min = findMin();
-            if (min == null) {
-                break;
+        Integer[] count = new Integer[10];
+        for (Integer i=0; i<A.length; ++i) {
+            Integer index = A[i];
+            if (count[index] == null) {
+                count[index] = 1;
             } else {
-                list.add(min);
+                ++count[index];
             }
-
         }
 
-        System.out.print(list);
-
-    }
-
-    private Integer findMin() {
-
-        Integer min = null;
-        Integer minArray = null;
-
-        for (Map.Entry<Integer, Integer> entry : arrayIndex.entrySet()) {
-
-            Integer array = entry.getKey();
-            Integer index = entry.getValue();
-            if (index < arrays.get(array).length) {
-
-                if (min == null || min > arrays.get(array)[index]) {
-                    min = arrays.get(array)[index];
-                    minArray = array;
+        for (Integer i=0; i<count.length; ++i) {
+            if (count[i] == null) {
+                if (i==0) {
+                    count[i] = 0;
+                } else {
+                    count[i] = count[i-1];
                 }
-
+            } else if (i>0) {
+                count[i] += count[i-1];
             }
-
         }
 
-        if (min != null) {
-            arrayIndex.put(minArray, arrayIndex.get(minArray) + 1);
+        Integer[] sorted = new Integer[A.length];
+        for (Integer i=0; i<A.length; ++i) {
+            sorted[count[A[i]]-1] = A[i];
         }
 
+        for (Integer ele : sorted) {
+            System.out.print(ele + " ");
+        }
 
-        return min;
-    }
-
-    private void init() {
-        arrays = new ArrayList<>();
-        arrays.add(new Integer[]{2, 6, 12, 34});
-        arrays.add(new Integer[]{1, 9, 20, 1000});
-        arrays.add(new Integer[]{23, 34, 90, 2000});
-
-        arrayIndex = new HashMap<>();
-        arrayIndex.put(0, 0);
-        arrayIndex.put(1, 0);
-        arrayIndex.put(2, 0);
     }
 }
