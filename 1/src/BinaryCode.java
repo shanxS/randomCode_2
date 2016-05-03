@@ -1,60 +1,70 @@
+import java.util.*;
+
 public class BinaryCode {
 
-    private int[] A = {170, 45, 75, 90, 802, 24, 2, 66};
-    private Integer pass;
+    List<Integer[]> women, men;
+    Stack<Integer> freeMen;
+    Map<Integer, Integer> womanMan;
+
 
     public void run() {
+        init();
 
-        initPass();
+        while (freeMen.size() > 0) {
+            Integer man = freeMen.pop();
+            for (Integer choice : men.get(man)) {
+                if (!womanMan.containsKey(choice)) {
+                    womanMan.put(choice, man);
 
-        Integer thisPass = 0;
-        while (thisPass < pass) {
-            int[] sorted = sortFor(thisPass);
-            A = sorted;
+                    break;
+                } else if (womanDumps(choice, man)) {
+                    freeMen.push(womanMan.get(choice));
+                    womanMan.put(choice, man);
 
-            ++thisPass;
+                    break;
+                }
+            }
         }
 
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
-        }
-
+        System.out.print(womanMan);
     }
 
-    private int[] sortFor(Integer thisPass) {
-        int[] count = new int[10];
-        for (Integer i=0; i<A.length; ++i) {
-            count[getIndex(A[i], thisPass)] += 1;
-        }
+    private void init() {
 
-        for (Integer i=1; i<count.length; ++i) {
-            count[i] += count[i-1];
-        }
+        men = new ArrayList<>();
+        men.add(new Integer[] {3, 1, 2, 0});
+        men.add(new Integer[] {1, 0, 2, 3});
+        men.add(new Integer[] {0, 1, 2, 3});
+        men.add(new Integer[] {0, 1, 2, 3});
 
-        int[] sorted = new int[A.length];
-        for (Integer i=sorted.length-1; i>=0; --i) {
-            sorted[count[getIndex(A[i], thisPass)] - 1] = A[i];
-            --count[getIndex(A[i], thisPass)];
-        }
 
-        return sorted;
+        women = new ArrayList<>();
+        women.add(new Integer[] {0, 1, 2, 3});
+        women.add(new Integer[] {0, 1, 2, 3});
+        women.add(new Integer[] {0, 1, 2, 3});
+        women.add(new Integer[] {0, 1, 2, 3});
+
+        freeMen = new Stack<>();
+        freeMen.push(0); freeMen.push(1); freeMen.push(2); freeMen.push(3);
+
+        womanMan = new HashMap<>();
     }
 
-    private int getIndex(Integer value, Integer thisPass) {
-        value /= (int) Math.pow(10, thisPass);
-        return value % 10;
+    private boolean womanDumps(Integer woman, Integer choice) {
+        Integer currentChoice = womanMan.get(woman);
+        Integer currentChoiceIndex = getIndex(women.get(woman), currentChoice);
+        Integer offeredChoiceIndex = getIndex(women.get(woman), choice);
+
+        return offeredChoiceIndex < currentChoiceIndex;
     }
 
-    private void initPass() {
-        Integer max = Integer.MIN_VALUE;
-        for (Integer ele : A) {
-            max = Math.max(ele, max);
+    private Integer getIndex(Integer[] choiceList, Integer choice) {
+        for (Integer i=0; i<choiceList.length; ++i) {
+            if (choiceList[i] == choice) {
+                return i;
+            }
         }
 
-        pass = 0;
-        while (max > 0) {
-            max /= 10;
-            ++pass;
-        }
+        return null;
     }
 }
