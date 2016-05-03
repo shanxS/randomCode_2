@@ -1,34 +1,27 @@
 public class BinaryCode {
 
-    private Integer[] A = {5,2,7,4,9};
+    private int[] A = {1,1,4,2,5,3,9,5};
+    private Integer pass;
 
     public void run() {
-
-        Integer[] count = new Integer[10];
+        int[] count = new int[10];
         for (Integer i=0; i<A.length; ++i) {
-            Integer index = A[i];
-            if (count[index] == null) {
-                count[index] = 1;
-            } else {
-                ++count[index];
-            }
+            count[A[i]] += 1;
         }
 
-        for (Integer i=0; i<count.length; ++i) {
-            if (count[i] == null) {
-                if (i==0) {
-                    count[i] = 0;
-                } else {
-                    count[i] = count[i-1];
-                }
-            } else if (i>0) {
-                count[i] += count[i-1];
-            }
+        for (Integer i=1; i<count.length; ++i) {
+            count[i] += count[i-1];
         }
 
-        Integer[] sorted = new Integer[A.length];
+        for (Integer i : count) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+
+        int[] sorted = new int[A.length];
         for (Integer i=0; i<A.length; ++i) {
-            sorted[count[A[i]]-1] = A[i];
+            sorted[count[A[i]] - 1] = A[i];
+            --count[A[i]];
         }
 
         for (Integer ele : sorted) {
@@ -36,4 +29,5 @@ public class BinaryCode {
         }
 
     }
+
 }
