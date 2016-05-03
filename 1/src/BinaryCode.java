@@ -1,29 +1,18 @@
 public class BinaryCode {
 
-    private int[] A = {170, 450, 75, 90, 802, 24, 2, 66};
+    private int[] A = {2,23,12,12,11,4,50};
     private Integer pass;
 
     public void run() {
 
-        initPass();
-
-        Integer thisPass = 0;
-        while (thisPass < pass) {
-            int[] sorted = sortFor(thisPass);
-            A = sorted;
-            ++thisPass;
-        }
-
+        Integer max = Integer.MIN_VALUE;
         for (Integer ele : A) {
-            System.out.print(ele + " ");
+            max = Math.max(max, ele);
         }
 
-    }
-
-    private int[] sortFor(Integer thisPass) {
-        int[] count = new int[10];
+        int[] count = new int[max + 1];
         for (Integer i=0; i<A.length; ++i) {
-            ++count[getIndex(A[i], thisPass)];
+            ++count[A[i]];
         }
 
         for (Integer i=1; i<count.length; ++i) {
@@ -31,31 +20,14 @@ public class BinaryCode {
         }
 
         int[] sorted = new int[A.length];
-        for (Integer i=A.length-1; i>=0; --i) {
-            sorted[count[getIndex(A[i], thisPass)] - 1] = A[i];
-            --count[getIndex(A[i], thisPass)];
+        for (Integer i=0; i<A.length; ++i) {
+            sorted[count[A[i]] - 1] = A[i];
+            --count[A[i]];
         }
 
-
-        return sorted;
-    }
-
-    private int getIndex(int value, Integer pass) {
-        value /= (int) Math.pow(10, pass);
-        return value % 10;
-    }
-
-    public void initPass() {
-        Integer max = Integer.MIN_VALUE;
-        for (Integer ele : A) {
-            max = Math.max(ele, max);
+        for (Integer ele : sorted) {
+            System.out.print(ele + " ");
         }
 
-        pass = 0;
-        while (max != 0) {
-            max /= 10;
-            ++pass;
-        }
     }
-
 }
