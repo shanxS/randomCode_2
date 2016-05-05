@@ -1,54 +1,34 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class BinaryCode {
 
-    int f(int x) { return (x*x*x + 20); }
-    private Integer start, end;
+    private Integer[] A = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
 
     public void run() {
+        List<Integer> data = new ArrayList<>();
 
-        if (f(0) > 0) {
+        for (Integer i=0; i<A.length; ++i) {
 
-            end = 0;
-            start = -2;
-            while (f(start) > 0) {
-                end = start;
-                start *= -start;
-            }
-
-        } else {
-
-            start = 0;
-            end = 2;
-            while (f(end) <= 0) {
-
-                start = end;
-                end *= end;
-
+            if (i==0) {
+                data.add(A[i]);
+            } else if (data.get(data.size()-1) < A[i]) {
+                data.add(A[i]);
+            } else {
+                replace(data, A[i]);
             }
 
         }
 
-        System.out.print(find(start, end));
-
+        System.out.print(data.size() + " --- " + data);
     }
 
-    private Integer find(Integer start, Integer end) {
-        while (start <= end) {
-            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
-
-            if (f(mid) == 0) {
-                start = mid+1;
-            } else if (f(mid) > 0) {
-                if ((mid-1 < start) ||
-                        (f(mid-1) < 0)) {
-                    return mid;
-                } else {
-                    end = mid - 1;
-                }
-            } else {
-                start = mid + 1;
-            }
+    private void replace(List<Integer> data, Integer value) {
+        Integer counter = data.size()-1;
+        while (counter >=0 && data.get(counter) > value) {
+            --counter;
         }
 
-        return null;
+        data.set(counter+1, value);
     }
 }
