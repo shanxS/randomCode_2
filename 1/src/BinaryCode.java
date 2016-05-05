@@ -1,115 +1,81 @@
 public class BinaryCode {
 
-    private Integer[] A = {6, 7, 8, 1, 2, 3, 9, 10};
+    private Integer[] A = {1, 5, 10, 8, 9};
     Integer[] maxL = new Integer[A.length];
     Integer[] maxR = new Integer[A.length];
 
     public void run() {
 
-        BST bst = new BST();
-        for (Integer i=0; i<A.length; ++i) {
-            maxL[i] = bst.insert(A[i]);
-        }
+        maxR[A.length-2] = A[A.length-1];
+        maxL[1] = A[0];
 
-        for (Integer i=A.length-2; i>=0; --i) {
-            if (i+1 == A.length-1) {
-                maxR[i] = A[i+1];
-            } else {
-                maxR[i] = Math.max(maxR[i+1], A[i+1]);
-            }
+
+        Integer fwd = 2;
+        Integer rev = A.length-3;
+        while (fwd < A.length && rev >= 0) {
+            maxL[fwd] = Math.max(maxL[fwd-1], A[fwd-1]);
+            ++fwd;
+
+            maxR[rev] = Math.max(maxR[rev+1], A[rev+1]);
+            --rev;
         }
 
         Integer[] values = new Integer[3];
         Integer maxProd = Integer.MIN_VALUE;
         for (Integer i=1; i<A.length-1; ++i) {
-            Integer biggestLeft = maxL[i];
-            Integer biggestRight = (maxR[i] < A[i]) ? null : maxR[i];
-
+            Integer biggestLeft = findBiggestLeft (i);
+            Integer biggestRight = findBiggestRight (i);
             if (biggestLeft != null
                     && biggestRight != null
-                    && maxProd < (biggestLeft * biggestRight * A[i])) {
-                maxProd = (biggestLeft * biggestRight * A[i]);
+                    && maxProd < biggestLeft * biggestRight * A[i]) {
+                maxProd = biggestLeft * biggestRight * A[i];
                 values[0] = biggestLeft;
                 values[1] = A[i];
                 values[2] = biggestRight;
             }
-
         }
 
         System.out.println(maxProd);
         for (Integer ele : values) {
             System.out.print(ele + " ");
         }
+
     }
-}
 
-class BST {
-    private Node head;
-
-    public Integer insert(Integer value) {
-        Node node = new Node(value);
-
-        if (head == null) {
-            head = node;
+    private Integer findBiggestRight(Integer thisIndex) {
+        if (maxR[thisIndex] <= A[thisIndex]) {
+            return null;
         } else {
-            insert(head, node);
-        }
-
-        return node.getBiggestSmallValue();
-    }
-
-    private void insert(Node parent, Node child) {
-        if (parent.getValue() > child.getValue()) {
-            if (parent.getLeft() == null) {
-                parent.setLeft(child);
-            } else {
-                insert(parent.getLeft(), child);
-            }
-        } else if (parent.getValue() < child.getValue()) {
-            child.setBiggestSmallValue(parent.getValue());
-
-            if (parent.getRight() == null) {
-                parent.setRight(child);
-            } else {
-                insert(parent.getRight(), child);
-            }
+            return maxR[thisIndex];
         }
     }
-}
 
-class Node {
-    private Node left, right;
-    private Integer value, biggestSmallValue;
-
-    public Integer getBiggestSmallValue() {
-        return biggestSmallValue;
+    private Integer findBiggestLeft(Integer thisIndex) {
+        if (maxL[thisIndex] < A[thisIndex]) {
+            return maxL[thisIndex];
+        } else {
+            return findSmaller(1, thisIndex-1, A[thisIndex]);
+        }
     }
 
-    public void setBiggestSmallValue(Integer biggestSmallValue) {
-        this.biggestSmallValue = biggestSmallValue;
-    }
+    private Integer findSmaller(int start, Integer end, Integer target) {
+        while (start <= end) {
+            Integer mid = Math.min(start, end) + ((Math.abs(start-end))/2);
 
-    public Node(Integer value) {
-        this.value = value;
-    }
+            if (maxL[mid] < target){
 
-    public void setLeft(Node left) {
-        this.left = left;
-    }
+                if ((mid+1 > end) || (maxL[mid+1] >= target)) {
+                    return maxL[mid];
+                } else {
+                    start = mid + 1;
+                }
+            } else if ((maxL[mid] == target)
+                    || (maxL[mid] > target)) {
+                end = mid - 1;
+            }
 
-    public void setRight(Node right) {
-        this.right = right;
-    }
+        }
 
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
-    }
-
-    public Integer getValue() {
-        return value;
+        return null;
     }
 }
