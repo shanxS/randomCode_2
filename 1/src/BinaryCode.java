@@ -1,92 +1,54 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class BinaryCode {
 
-    private Integer[] A = {3,1,2,2,2,1,4,3,3};
-    private Integer k = 4;
-    private Holder[] holder = new Holder[k-1];
+    private Integer[] A = {1,2,3,4,5};
+    private Integer k = 3;
+    List<List<Integer>> combinations;
 
     public void run() {
 
-        for (Integer i=0; i<A.length; ++i) {
-            Holder thisHolder = findHolderFor(A[i]);
-            if (thisHolder == null) {
-                knockOffMinHolder();
-                insertHolder(A[i]);
-            } else {
-                thisHolder.count++;
-            }
-        }
+        combinations = new ArrayList<>();
 
-        for (Integer i=0; i<holder.length; ++i) {
-            if (holder[i] != null) {
-                Integer value = holder[i].value;
-
-                Integer count = 0;
-                for (Integer j=0; j<A.length; ++j) {
-                    if (A[j] == value) {
-                        ++count;
-                    }
-                }
-                if (count > (A.length/k)) {
-                    System.out.print(value + " ");
-                }
+        for (List<Integer> list : performFor(0)) {
+            if (list.size() == k) {
+                System.out.println(list);
             }
         }
 
     }
 
-    private void insertHolder(Integer value) {
+    private List<List<Integer>> performFor(Integer start) {
 
-        for (Integer i=0; i<holder.length; ++i) {
-            if (holder[i] == null) {
-                holder[i] = new Holder(value);
-                return;
-            }
+        if (start == A.length-1) {
+            List<List<Integer>> lists = new ArrayList<>();
+            List<Integer> list = new ArrayList<>();
+            list.add(A[start]);
+            lists.add(list);
+
+            return lists;
         }
 
-    }
+        List<List<Integer>> lists = new ArrayList<>();
 
-    private void knockOffMinHolder() {
-        Holder minHolder = null;
-        Integer index = null;
-        for (Integer i=0; i<holder.length; ++i) {
-            if (holder[i] != null) {
-                if (minHolder == null) {
-                    minHolder = holder[i];
-                    index = i;
-                } else {
-                    minHolder = (minHolder.count < holder[i].count) ? minHolder : holder[i];
-                    index = i;
+        Integer thisValue = A[start];
+        List<Integer> thisList = new ArrayList<>();
+        thisList.add(thisValue);
+        lists.add(thisList);
+
+        for (Integer i= start+1; i<A.length; ++i) {
+            List<List<Integer>> subLists = performFor(i);
+            for (List<Integer> subList : subLists) {
+                if (subList.size() < k) {
+                    subList.add(thisValue);
                 }
             }
+
+            lists.addAll(subLists);
         }
 
-        if (index != null) {
-            if (minHolder.count == 1) {
-                holder[index] = null;
-            } else {
-                --minHolder.count;
-            }
-        }
+        return lists;
 
-    }
-
-    private Holder findHolderFor(Integer value) {
-        for (Integer i=0; i<holder.length; ++i) {
-            if (holder[i] != null && holder[i].value == value) {
-                return holder[i];
-            }
-        }
-
-        return null;
-    }
-}
-
-class Holder {
-    public Integer value;
-    public Integer count;
-
-    public Holder(Integer value) {
-        this.value = value;
-        this.count = 1;
     }
 }
