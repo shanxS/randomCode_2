@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BinaryCode {
@@ -12,43 +13,40 @@ public class BinaryCode {
         combinations = new ArrayList<>();
 
         for (List<Integer> list : performFor(0)) {
-            if (list.size() == k) {
-                System.out.println(list);
-            }
+            System.out.println(list);
         }
 
     }
 
     private List<List<Integer>> performFor(Integer start) {
 
-        if (start == A.length-1) {
-            List<List<Integer>> lists = new ArrayList<>();
-            List<Integer> list = new ArrayList<>();
-            list.add(A[start]);
-            lists.add(list);
+        List<List<Integer>> lists = new ArrayList<>();
 
+        if (start >= A.length) {
             return lists;
         }
 
-        List<List<Integer>> lists = new ArrayList<>();
 
-        Integer thisValue = A[start];
-        List<Integer> thisList = new ArrayList<>();
-        thisList.add(thisValue);
-        lists.add(thisList);
+        if (start >= (k-1)) {
+            lists.add(Arrays.asList(new Integer[]{A[start]}));
+        }
 
-        for (Integer i= start+1; i<A.length; ++i) {
-            List<List<Integer>> subLists = performFor(i);
-            for (List<Integer> subList : subLists) {
-                if (subList.size() < k) {
-                    subList.add(thisValue);
+        List<List<Integer>> subLists = performFor(start+1);
+        for (List<Integer> list : subLists) {
+
+            if (list.size() == k) {
+                lists.add(list);
+            } else if ((start+1) >= (k - list.size())) {
+                if (start > 0) {
+                    lists.add(list);
                 }
-            }
 
-            lists.addAll(subLists);
+                List<Integer> thisList = new ArrayList<>(list);
+                thisList.add(A[start]);
+                lists.add(thisList);
+            }
         }
 
         return lists;
-
     }
 }
