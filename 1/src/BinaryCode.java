@@ -1,48 +1,27 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class BinaryCode {
 
-    private Integer[] A = {1,2,3,4,5};
-    private Integer k = 3;
+    private Integer[] A = {3,2,6,1,9};
 
     public void run() {
 
-        for (List<Integer> list : performFor(0)) {
-            System.out.println(list);
+        int[] count = new int[10];
+        for (Integer ele : A) {
+            ++count[ele];
+        }
+
+        for (Integer i=1; i<count.length; ++i) {
+            count[i] += count[i-1];
+        }
+
+        int[] sort = new int[A.length];
+        for (Integer ele : A) {
+            sort[count[ele] - 1]  = ele;
+            --count[ele];
+        }
+
+        for (Integer ele : sort) {
+            System.out.print(ele + " ");
         }
 
     }
-
-    private List<List<Integer>> performFor(Integer start) {
-        List<List<Integer>> lists = new ArrayList<>();
-        if (start >= A.length) {
-            return lists;
-        }
-
-        if ((start+1) >= k) {
-            lists.add(Arrays.asList(new Integer[] {A[start]}));
-        }
-
-        List<List<Integer>> subLists = performFor(start+1);
-        for (List<Integer> list : subLists) {
-            if (k == list.size()) {
-                lists.add(list);
-            } else if ((start+1) >= (k - list.size())) {
-                if (start > 0) {
-                    lists.add(list);
-                }
-
-                List<Integer> thisList = new ArrayList<>(list);
-                thisList.add(A[start]);
-                lists.add(thisList);
-            }
-        }
-
-
-
-        return lists;
-    }
-
 }
