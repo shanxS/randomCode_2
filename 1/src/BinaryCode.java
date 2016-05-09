@@ -29,11 +29,6 @@ public class BinaryCode {
             ++freq;
             numberFreq.put(num, freq);
 
-            List<Integer> prevNumbers = freqNumbers.get(freq-1);
-            if (prevNumbers != null) {
-                prevNumbers.remove(num);
-            }
-
             List<Integer> numbers = freqNumbers.get(freq);
             if (numbers == null) {
                 numbers = new ArrayList<>();
@@ -47,6 +42,10 @@ public class BinaryCode {
         Integer marker = 0;
         for (Map.Entry<Integer, List<Integer>> entry : freqNumbers.entrySet()) {
             for (Integer num : entry.getValue()) {
+                if (numberFreq.get(num) != entry.getKey()) {
+                    continue;
+                }
+
                 Integer count = entry.getKey();
                 while (count > 0) {
                     sorted[marker] = num;
