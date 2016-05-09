@@ -1,10 +1,11 @@
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BinaryCode {
 
     private Integer[] A = {2, 5, 2, 8, 5, 6, 8, 8};
-    private Map<Integer, FreqBST> freqSeq;
+    private Map<Integer, BST> freqSeq;
 
     public void run() {
 
@@ -38,9 +39,9 @@ public class BinaryCode {
             return;
         }
 
-        FreqBST fBST = freqSeq.get(node.getFreq());
+        BST fBST = freqSeq.get(node.getFreq());
         if (fBST == null) {
-            fBST = new FreqBST();
+            fBST = new BST(new PositionComparator());
             freqSeq.put(node.getFreq(), fBST);
         }
         fBST.insert(node.getValue(), node.getPosition());
@@ -50,7 +51,7 @@ public class BinaryCode {
     }
 
     private BST makeBST() {
-        BST bst = new BST();
+        BST bst = new BST(new GeneralComparator());
         for (Integer i=0; i<A.length; ++i) {
             bst.insert(A[i], i);
         }
@@ -59,32 +60,37 @@ public class BinaryCode {
     }
 }
 
-class FreqBST {
+class BST {
     private Node head;
+    private final Comparator<Node> comparator;
+
+    public BST(Comparator<Node> comparator) {
+        this.comparator = comparator;
+    }
 
     public void insert(Integer value, Integer pos) {
         if (head == null) {
             head = new Node(value, pos);
         } else {
-            insert(head, value, pos);
+            insert(head, new Node(value, pos));
         }
     }
 
-    private void insert(Node node, Integer value, Integer pos) {
-        if (node.getPosition() > pos) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value, pos));
-            } else {
-                insert(node.getLeft(), value, pos);
-            }
-        } else if (node.getPosition() < pos) {
+    private void insert(Node node, Node newNode) {
+        if (comparator.compare(node, newNode) < 0) {
             if (node.getRight() == null) {
-                node.setRight(new Node(value, pos));
+                node.setRight(newNode);
             } else {
-                insert(node.getRight(), value, pos);
+                insert(node.getRight(), newNode);
+            }
+        } else if (comparator.compare(node, newNode) > 0) {
+            if (node.getLeft() == null) {
+                node.setLeft(newNode);
+            } else {
+                insert(node.getLeft(), newNode);
             }
         } else {
-            System.out.print("dude why are you still alive?");
+            node.bumpFreq();
         }
     }
 
@@ -102,36 +108,6 @@ class FreqBST {
             System.out.print(node.getValue() + " ");
         }
         printInSeq(node.getRight(), thisFreq);
-    }
-}
-
-class BST {
-    private Node head;
-
-    public void insert(Integer value, Integer pos) {
-        if (head == null) {
-            head = new Node(value, pos);
-        } else {
-            insert(head, value, pos);
-        }
-    }
-
-    private void insert(Node node, Integer value, Integer pos) {
-        if (node.getValue() < value) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(value, pos));
-            } else {
-                insert(node.getRight(), value, pos);
-            }
-        } else if (node.getValue() > value) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(value, pos));
-            } else {
-                insert(node.getLeft(), value, pos);
-            }
-        } else {
-            node.bumpFreq();
-        }
     }
 
     public void print() {
@@ -159,6 +135,34 @@ class BST {
 
     public Node getHead() {
         return head;
+    }
+}
+
+class PositionComparator implements Comparator<Node> {
+
+    @Override
+    public int compare(Node o1, Node o2) {
+        if (o1.getPosition() == o2.getPosition()) {
+            return 0;
+        } else if (o1.getPosition() < o2.getPosition()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+}
+
+class GeneralComparator implements Comparator<Node> {
+
+    @Override
+    public int compare(Node o1, Node o2) {
+        if (o1.getValue() == o2.getValue()) {
+            return 0;
+        } else if (o1.getValue() < o2.getValue()) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 }
 
