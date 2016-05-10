@@ -1,60 +1,17 @@
 public class BinaryCode {
 
-    private Integer[] A = {-1, 2, -3, 4, 5, -7, -8};
+    private Integer[] A = {100, 180, 260, 310, 40, 535, 695};
 
     public void run() {
 
-        Integer even = 0;
-        Integer odd = 1;
-
-        while (even < A.length && odd < A.length) {
-            if (A[even] < 0) {
-
-                odd = findPositive(odd);
-                if (odd < A.length) {
-                    swap(odd, even);
-                }
-
-                even += 2;
-            } else if(A[odd] > 0) {
-                even = findNegative(even);
-                if (even < A.length) {
-                    swap(even, odd);
-                }
-
-                odd += 2;
-            } else {
-                even += 2;
-                odd += 2;
-            }
+        Integer maxDiff = Integer.MIN_VALUE;
+        Integer minSoFar = A[0];
+        for (Integer i=1; i<A.length; ++i) {
+            maxDiff = Math.max(maxDiff, Math.abs(A[i] - minSoFar));
+            minSoFar = Math.min(minSoFar, A[i]);
         }
 
+        System.out.print(maxDiff);
 
-        for (Integer ele : A) {
-            System.out.print(ele + " ");
-        }
-    }
-
-    private void swap(Integer from, Integer to) {
-        Integer tmp = A[from];
-        A[from] = A[to];
-        A[to] = tmp;
-    }
-
-    private Integer findNegative(Integer start) {
-        while (start<A.length && A[start] > 0) {
-            start += 2;
-        }
-
-        return start;
-    }
-
-    private Integer findPositive(Integer start) {
-
-        while (start<A.length && A[start] < 0) {
-            start += 2;
-        }
-
-        return start;
     }
 }
