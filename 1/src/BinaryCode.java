@@ -1,79 +1,42 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class BinaryCode {
 
-    private Node[] A = {new Node(1,3)
-            , new Node(2,4)
-            , new Node(5,7)
-            , new Node(6,8)
-    };
+    private Integer[] A = {90, 80, 70, 60, 50};
+    private int[] fwd = new int[A.length];
+    private int[] rev = new int[A.length];
 
     public void run() {
 
-        sort(0, A.length-1);
+        Integer counter = 1;
+        Integer minSoFar = A[0];
+        fwd[0] = A[0];
+        while (counter < A.length) {
+            fwd[counter] = minSoFar;
+            minSoFar = Math.min(minSoFar, A[counter]);
 
-        List<Node> merged = new ArrayList<>();
-        for (Integer i=0; i<A.length; ++i) {
-            if (i+1 < A.length) {
-                if (A[i].end > A[i+1].start) {
-                    merged.add(new Node(A[i].start, A[i+1].end));
-                    ++i;
-                } else {
-                    merged.add(A[i]);
-                    merged.add(A[i+1]);
-                }
-            } else {
-                merged.add(A[i]);
-            }
+            ++counter;
         }
 
-        System.out.print(merged);
+        counter = A.length - 2;
+        Integer maxSoFar = A[A.length-1];
+        while (counter >= 0) {
+            rev[counter] = maxSoFar;
+            maxSoFar = Math.max(maxSoFar, A[counter]);
 
-    }
-
-    private void sort(int start, int end) {
-        if (start >= end) {
-            return;
+            --counter;
         }
 
-        int pivot = qSort(start, end);
-        sort(start, pivot-1);
-        sort(pivot+1, end);
-    }
+        Integer maxFwdGoingProfit = 0;
+        Integer maxProfit = rev[0] - A[0];
+        counter = 1;
+        while (counter < A.length) {
+            maxFwdGoingProfit = Math.max(maxFwdGoingProfit, (A[counter-1] - fwd[counter-1]));
+            Integer thisProfit = rev[counter] - A[counter] + maxFwdGoingProfit;
+            maxProfit = Math.max(thisProfit, maxProfit);
 
-    private int qSort(int begin, int stop) {
-        int marker = begin-1;
-        int pivotValue = A[stop].start;
-
-        for (Integer i=begin; i<stop; ++i) {
-            if (A[i].start <= pivotValue) {
-                ++marker;
-                swap(i, marker);
-            }
+            ++counter;
         }
 
-        swap(marker+1, stop);
-        return marker+1;
-    }
+        System.out.print(maxProfit);
 
-    private void swap(int from, int to) {
-        Node tmp = A[from];
-        A[from] = A[to];
-        A[to] = tmp;
-    }
-}
-
-class Node {
-    public int start, end;
-
-    public Node(Integer start, Integer end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    @Override
-    public String toString() {
-        return "[" + start + "," + end + "]";
     }
 }
