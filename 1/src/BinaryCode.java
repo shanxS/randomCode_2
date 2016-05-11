@@ -1,42 +1,71 @@
+import lombok.AllArgsConstructor;
+import lombok.ToString;
+
 public class BinaryCode {
 
-    private Integer[] A = {90, 80, 70, 60, 50};
-    private int[] fwd = new int[A.length];
-    private int[] rev = new int[A.length];
+    private Integer[] A = {-2, -5, 6, -2, -3, 1, 5, -6};
+    private int[][] results = new int[A.length][A.length];
 
     public void run() {
 
-        Integer counter = 1;
-        Integer minSoFar = A[0];
-        fwd[0] = A[0];
-        while (counter < A.length) {
-            fwd[counter] = minSoFar;
-            minSoFar = Math.min(minSoFar, A[counter]);
-
-            ++counter;
-        }
-
-        counter = A.length - 2;
-        Integer maxSoFar = A[A.length-1];
-        while (counter >= 0) {
-            rev[counter] = maxSoFar;
-            maxSoFar = Math.max(maxSoFar, A[counter]);
-
-            --counter;
-        }
-
-        Integer maxFwdGoingProfit = 0;
-        Integer maxProfit = rev[0] - A[0];
-        counter = 1;
-        while (counter < A.length) {
-            maxFwdGoingProfit = Math.max(maxFwdGoingProfit, (A[counter-1] - fwd[counter-1]));
-            Integer thisProfit = rev[counter] - A[counter] + maxFwdGoingProfit;
-            maxProfit = Math.max(thisProfit, maxProfit);
-
-            ++counter;
-        }
-
-        System.out.print(maxProfit);
+        ;
+        System.out.print(findMaxIn(0, A.length-1).toString());
 
     }
+
+    private Data findMaxIn(int start, int end) {
+        if (start > end) {
+            return new Data(start, end, Integer.MIN_VALUE);
+        }
+
+        if (start == end) {
+            return new Data(start, end, A[start]);
+        }
+
+        int mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+        Data leftMax = findMaxIn(start, mid);
+        Data rightMax = findMaxIn(mid+1, end);
+        Data midMax = findMidMax(start, mid, end);
+
+        if (midMax.value > leftMax.value && midMax.value > rightMax.value) {
+            return midMax;
+        } else if (leftMax.value > rightMax.value) {
+            return leftMax;
+        } else {
+            return rightMax;
+        }
+
+    }
+
+    private Data findMidMax(int start, int mid, int end) {
+        int sum = 0;
+        int leftMax = 0;
+        int leftStart = -1;
+        for (int i=mid; i>=start; --i) {
+            sum += A[i];
+            if (leftMax < sum) {
+                leftMax = sum;
+                leftStart = i;
+            }
+        }
+
+        sum = 0;
+        int rightMax = 0;
+        int rightEnd = -1;
+        for (int i=mid+1; i<=end; ++i) {
+            sum += A[i];
+            if (rightMax < sum) {
+                rightMax = sum;
+                rightEnd = i;
+            }
+        }
+
+        return new Data(leftStart, rightEnd, rightMax + leftMax);
+    }
+}
+
+@ToString
+@AllArgsConstructor
+class Data {
+    public int start, end, value;
 }
