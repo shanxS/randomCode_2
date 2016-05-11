@@ -1,71 +1,37 @@
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-
 public class BinaryCode {
 
-    private Integer[] A = {-2, -5, 6, -2, -3, 1, 5, -6};
-    private int[][] results = new int[A.length][A.length];
+    private int[] A = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
 
     public void run() {
 
-        ;
-        System.out.print(findMaxIn(0, A.length-1).toString());
+        int gStart = -1;
+        int gEnd = -1;
+        int gMax = Integer.MIN_VALUE;
 
-    }
+        int start = 0;
+        int end = 0;
+        int max = A[0];
+        for (int i=1; i<A.length; ++i) {
+            if (A[i] > 0 && max <= 0) {
+                max = A[i];
+                start = i;
+                end = i;
+            } else if (max > 0) {
 
-    private Data findMaxIn(int start, int end) {
-        if (start > end) {
-            return new Data(start, end, Integer.MIN_VALUE);
-        }
+                max += A[i];
+                end = i;
 
-        if (start == end) {
-            return new Data(start, end, A[start]);
-        }
+            }
 
-        int mid = Math.min(start, end) + ((Math.abs(start-end))/2);
-        Data leftMax = findMaxIn(start, mid);
-        Data rightMax = findMaxIn(mid+1, end);
-        Data midMax = findMidMax(start, mid, end);
-
-        if (midMax.value > leftMax.value && midMax.value > rightMax.value) {
-            return midMax;
-        } else if (leftMax.value > rightMax.value) {
-            return leftMax;
-        } else {
-            return rightMax;
-        }
-
-    }
-
-    private Data findMidMax(int start, int mid, int end) {
-        int sum = 0;
-        int leftMax = 0;
-        int leftStart = -1;
-        for (int i=mid; i>=start; --i) {
-            sum += A[i];
-            if (leftMax < sum) {
-                leftMax = sum;
-                leftStart = i;
+            if (gMax < max) {
+                gMax = max;
+                gStart = start;
+                gEnd = end;
             }
         }
 
-        sum = 0;
-        int rightMax = 0;
-        int rightEnd = -1;
-        for (int i=mid+1; i<=end; ++i) {
-            sum += A[i];
-            if (rightMax < sum) {
-                rightMax = sum;
-                rightEnd = i;
-            }
-        }
+        System.out.print(gStart + " " + gEnd + " " + gMax);
 
-        return new Data(leftStart, rightEnd, rightMax + leftMax);
     }
-}
 
-@ToString
-@AllArgsConstructor
-class Data {
-    public int start, end, value;
 }
