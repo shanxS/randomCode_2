@@ -6,31 +6,49 @@ public class BinaryCode {
 
     public void run() {
 
-        int counter = A.length-1;
-        while (counter > 0) {
-            int maxIndex = findMaxIndex(0, counter);
-            flip(maxIndex);
-            flip(counter);
+        int counter = 1;
+        while (counter < A.length) {
+            int maxIndex = findMax (0, counter);
+            if (maxIndex > -1 ) {
+                flip(maxIndex-1);
+                flip(counter-1);
+                flip(counter);
+                flip(maxIndex);
+            }
 
-            --counter;
+            System.out.println(Arrays.deepToString(A));
+
+            ++counter;
         }
+
 
         System.out.print(Arrays.deepToString(A));
     }
 
-    private int findMaxIndex(int start, int end) {
-        int max = A[start];
-        int index = start;
+    private int findMax(int start, int targetIndex) {
+        int target = A[targetIndex];
+        int end = targetIndex-1;
 
-        for (int i=start; i<=end; ++i) {
-            if (A[i] > max) {
-                max = A[i];
-                index = i;
+        if (start > end) {
+            return -1;
+        }
+
+        while (start <= end) {
+            int mid = Math.min(start, end) + ((Math.abs(start-end))/2);
+
+            if (A[mid] > target) {
+                if (mid == start
+                        || (mid-1 >= start && A[mid-1] < target)) {
+                    return mid;
+                } else {
+                    end = mid-1;
+                }
+            } else {
+                start = mid+1;
             }
         }
 
-
-        return index;
+        return -1;
     }
 
     private void flip (int i) {
