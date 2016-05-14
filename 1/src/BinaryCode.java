@@ -1,71 +1,41 @@
-import java.util.Arrays;
-
 public class BinaryCode {
 
-    private Integer[] A = {23, 10, 20, 11, 12, 6, 7};
+
+    private final int FUEL = 0, DISTANCE = 1;
+    private Integer[][] A = {{6, 4}, {3, 6}, {7, 3}};//{{4, 6}, {6, 5}, {7, 3}, {4, 5}};
 
     public void run() {
 
-        int counter = 1;
-        while (counter < A.length) {
-            int maxIndex = findMax (0, counter);
-            if (maxIndex > -1 ) {
-                flip(maxIndex-1);
-                flip(counter-1);
-                flip(counter);
-                flip(maxIndex);
-            }
+        int start = 0;
+        int fuelLeft = A[start][FUEL] - A[start][DISTANCE];
+        int thisPos = start;
 
-            System.out.println(Arrays.deepToString(A));
+        while (true) {
 
-            ++counter;
-        }
+            if (fuelLeft < 0) {
+                ++start;
 
-
-        System.out.print(Arrays.deepToString(A));
-    }
-
-    private int findMax(int start, int targetIndex) {
-        int target = A[targetIndex];
-        int end = targetIndex-1;
-
-        if (start > end) {
-            return -1;
-        }
-
-        while (start <= end) {
-            int mid = Math.min(start, end) + ((Math.abs(start-end))/2);
-
-            if (A[mid] > target) {
-                if (mid == start
-                        || (mid-1 >= start && A[mid-1] < target)) {
-                    return mid;
+                if (start < A.length) {
+                    fuelLeft = A[start][FUEL] - A[start][DISTANCE];
+                    thisPos = start;
                 } else {
-                    end = mid-1;
+
+                    System.out.print("cant travel");
+                    break;
                 }
+
             } else {
-                start = mid+1;
+
+                thisPos = (thisPos+1) % A.length;
+
+                if (thisPos == start) {
+                    System.out.print("travelled wiht start pos " + start);
+                    break;
+                }
+
+                fuelLeft += A[thisPos][FUEL] - A[thisPos][DISTANCE];
             }
         }
-
-        return -1;
-    }
-
-    private void flip (int i) {
-        int rev = i;
-        int fwd = 0;
-
-        while (rev > fwd) {
-            swap (rev, fwd);
-            --rev;
-            ++fwd;
-        }
-    }
-
-    private void swap(int rev, int fwd) {
-        int tmp = A[rev];
-        A[rev] = A[fwd];
-        A[fwd] = tmp;
     }
 
 }
