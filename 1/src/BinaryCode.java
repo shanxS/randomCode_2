@@ -1,26 +1,48 @@
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BinaryCode {
 
-    private int[] A = {10,2,7,8,4};
+    private Node head;
 
     public void run() {
 
-        BT bt = new BT();
-
-        for (Integer ele : A) {
-            bt.insert(ele);
-        }
-
-        bt.print();
-        System.out.println("----------");
-        bt.convert();
-        bt.print();
-        System.out.println("----------");
+        init();
+        print(head);
+        System.out.println("----");
+        Convertor c = new Convertor();
+        c.convertToBST(head);
+        print(head);
 
    }
+
+    private void init() {
+        head = new Node(10);
+        head.setLeft(new Node(30));
+        head.setRight(new Node(15));
+
+        head.getLeft().setLeft(new Node(20));
+        head.getRight().setRight(new Node(5));
+    }
+
+    private void print(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        System.out.print(node.getValue() + " - ");
+        if (node.getLeft() != null) {
+            System.out.print(node.getLeft().getValue());
+        }
+        System.out.print(", ");
+        if (node.getRight() != null) {
+            System.out.print(node.getRight().getValue());
+        }
+        System.out.println();
+
+        print(node.getLeft());
+        print(node.getRight());
+    }
 
 }
 
@@ -94,109 +116,6 @@ class Convertor {
         traverse(node.getRight());
     }
 
-}
-
-class BT {
-    private Node head;
-    private ArrayDeque<Node> startD, otherD;
-
-
-    public void insert(Integer value) {
-        if (head == null) {
-            head = new Node(value);
-        } else {
-            insertChildren(value);
-        }
-    }
-
-    private void insertChildren(Integer value) {
-        ArrayDeque<Node> d1;
-        if (startD == null) {
-            d1 = new ArrayDeque<>();
-            d1.addLast(head);
-        } else {
-            d1 = startD;
-        }
-
-        ArrayDeque<Node> d2 = (otherD == null) ? new ArrayDeque<>() : otherD;
-
-        while (true) {
-
-            if (processFor(d1, d2, value)) {
-                return;
-            }
-
-            if (processFor(d2, d1, value)) {
-                return;
-            }
-
-        }
-
-    }
-
-    private boolean processFor(ArrayDeque<Node> d1, ArrayDeque<Node> d2, Integer value) {
-
-        while (d1.size() > 0) {
-
-            Node node = d1.removeLast();
-
-            if (node.getLeft() != null) {
-                d2.addFirst(node.getLeft());
-            } else {
-                node.setLeft(new Node(value));
-
-                d1.addLast(node);
-                startD = d1;
-                otherD = d2;
-
-                return true;
-            }
-
-            if (node.getRight() != null) {
-                d2.addFirst(node.getRight());
-            } else {
-                node.setRight(new Node(value));
-
-                d2.removeFirst();
-                d1.addLast(node);
-                startD = d1;
-                otherD = d2;
-
-                return true;
-            }
-
-        }
-
-        return false;
-    }
-
-    public void print() {
-        print(head);
-    }
-
-    private void print(Node node) {
-        if (node == null) {
-            return;
-        }
-
-        System.out.print(node.getValue() + " - ");
-        if (node.getLeft() != null) {
-            System.out.print(node.getLeft().getValue());
-        }
-        System.out.print(", ");
-        if (node.getRight() != null) {
-            System.out.print(node.getRight().getValue());
-        }
-        System.out.println();
-
-        print(node.getLeft());
-        print(node.getRight());
-    }
-
-    public void convert() {
-        Convertor c = new Convertor();
-        c.convertToBST(head);
-    }
 }
 
 class Node {
