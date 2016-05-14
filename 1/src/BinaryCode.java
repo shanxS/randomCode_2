@@ -5,17 +5,21 @@ public class BinaryCode {
     private int[] A = {10,2,7,8,4,13};
 
     public void run() {
+
         BT bt = new BT();
+
         for (Integer ele : A) {
             bt.insert(ele);
         }
 
         bt.print();
+
    }
 
 }
 
 class BT {
+
     private Node head;
     private ArrayDeque<Node> startD, otherD;
 
@@ -28,7 +32,6 @@ class BT {
     }
 
     private void insertChildren(Integer value) {
-
         ArrayDeque<Node> d1;
         if (startD == null) {
             d1 = new ArrayDeque<>();
@@ -39,76 +42,48 @@ class BT {
 
         ArrayDeque<Node> d2 = (otherD == null) ? new ArrayDeque<>() : otherD;
 
-
         while (true) {
-
-            while (d1.size() > 0) {
-                Node node = d1.removeLast();
-
-                if (node.getLeft() != null) {
-                    d2.addFirst(node.getLeft());
-                } else {
-                    node.setLeft(new Node(value));
-
-                    d1.addLast(node);
-                    startD = d1;
-                    otherD = d2;
-
-
-
-                    return;
-                }
-
-                if (node.getRight() != null) {
-                    d2.addFirst(node.getRight());
-                } else {
-                    node.setRight(new Node(value));
-
-                    d2.removeFirst();
-                    d1.addLast(node);
-                    startD = d1;
-                    otherD = d2;
-
-
-                    return;
-                }
+            if (processFor(d1, d2, value)) {
+                return;
             }
 
-
-            while (d2.size() > 0) {
-
-                Node node = d2.removeLast();
-
-                if (node.getLeft() != null) {
-                    d1.addFirst(node.getLeft());
-                } else {
-                    node.setLeft(new Node(value));
-
-                    d2.addLast(node);
-                    startD = d2;
-                    otherD = d1;
-
-
-                    return;
-                }
-
-                if (node.getRight() != null) {
-                    d1.addFirst(node.getRight());
-                } else {
-                    node.setRight(new Node(value));
-
-                    d1.removeFirst();
-                    d2.addLast(node);
-                    startD = d2;
-                    otherD = d1;
-
-
-
-                    return;
-                }
-
+            if (processFor(d2, d1, value)) {
+                return;
             }
         }
+    }
+
+    private boolean processFor(ArrayDeque<Node> d1, ArrayDeque<Node> d2, Integer value) {
+        while (d1.size() > 0) {
+            Node node = d1.removeLast();
+
+            if (node.getLeft() != null) {
+                d2.addFirst(node.getLeft());
+            } else {
+                node.setLeft(new Node(value));
+
+                d1.addLast(node);
+                startD = d1;
+                otherD = d2;
+
+                return true;
+            }
+
+            if (node.getRight() != null) {
+                d2.addFirst(node.getRight());
+            } else {
+                node.setRight(new Node(value));
+
+                d2.removeFirst();
+                d1.addLast(node);
+                startD = d1;
+                otherD = d2;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void print() {
@@ -133,31 +108,19 @@ class BT {
         print(node.getLeft());
         print(node.getRight());
     }
+
 }
+
 
 class Node {
     private Node left, right;
     private Integer value;
 
-    @Override
-    public String toString() {
-        return value + " ";
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
-    }
-
-    public void setValue(Integer value) {
+    public Node(Integer value) {
         this.value = value;
     }
 
     public Node getLeft() {
-
         return left;
     }
 
@@ -169,8 +132,15 @@ class Node {
         return value;
     }
 
-    public Node(Integer value) {
+    public void setLeft(Node left) {
+        this.left = left;
+    }
 
+    public void setRight(Node right) {
+        this.right = right;
+    }
+
+    public void setValue(Integer value) {
         this.value = value;
     }
 }
