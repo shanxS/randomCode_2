@@ -1,72 +1,115 @@
-import java.util.Stack;
+import java.util.ArrayDeque;
 
 public class BinaryCode {
 
+    private int[] A = {10,2,7,8,4,13,15,10,11};
+
+   public void run() {
+
+       BT bt = new BT();
+       for (Integer ele : A) {
+           bt.insert(ele);
+       }
+
+       bt.print();
+
+   }
+
+}
+
+class BT {
 
     private Node head;
 
-    public void run() {
-        init();
-
-        print();
-
-    }
-
-    private void print() {
-        Stack<Node> s1 = new Stack<>();
-        Stack<Node> s2 = new Stack<>();
-
-        s1.push(head);
-        while (s1.size() > 0 || s2.size() > 0) {
-            while (s1.size() > 0) {
-                Node node = s1.pop();
-
-                System.out.print(node.getValue() + " ");
-
-                if (node.getRight() != null) {
-                    s2.push(node.getRight());
-                }
-
-                if (node.getLeft() != null) {
-                    s2.push(node.getLeft());
-                }
-            }
-            System.out.println();
-
-            while (s2.size() > 0) {
-                Node  node = s2.pop();
-
-                System.out.print(node.getValue() + " ");
-
-                if (node.getRight() != null) {
-                    s1.push(node.getRight());
-                }
-
-                if (node.getLeft() != null) {
-                    s1.push(node.getLeft());
-                }
-            }
-
-            System.out.println();
+    public void insert(Integer value) {
+        if (head == null) {
+            head = new Node(value);
+        } else {
+            insert(head, value);
         }
     }
 
-    private void init() {
-        head = new Node(10);
-        head.setLeft(new Node(2));
-        head.setRight(new Node(7));
+    private void insert(Node head, Integer value) {
+        ArrayDeque<Node> d1 = new ArrayDeque<>();
+        ArrayDeque<Node> d2 = new ArrayDeque<>();
 
-        head.getLeft().setLeft(new Node(8));
-        head.getLeft().setRight(new Node(4));
+        d1.push(head);
+
+        while (true) {
+
+            while (d1.size() > 0) {
+
+                Node node = d1.removeLast();
+
+                if (node.getLeft() != null) {
+                    d2.push(node.getLeft());
+                } else {
+                    node.setLeft(new Node(value));
+                    return;
+                }
+
+                if (node.getRight() != null) {
+                    d2.push(node.getRight());
+                } else {
+                    node.setRight(new Node(value));
+                    return;
+                }
+
+            }
+
+            while (d2.size() > 0) {
+
+                Node node = d2.removeLast();
+
+                if (node.getLeft() != null) {
+                    d1.push(node.getLeft());
+                } else {
+                    node.setLeft(new Node(value));
+                    return;
+                }
+
+                if (node.getRight() != null) {
+                    d1.push(node.getRight());
+                } else {
+                    node.setRight(new Node(value));
+                    return;
+                }
+
+            }
+
+        }
+    }
+
+    public void print() {
+        print(head);
+    }
+
+    private void print(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        System.out.print(node.getValue() + " - ");
+        if (node.getLeft() != null) {
+            System.out.print(node.getLeft().getValue());
+        }
+        System.out.print(", ");
+        if (node.getRight() != null) {
+            System.out.print(node.getRight().getValue());
+        }
+        System.out.println();
+
+        print(node.getLeft());
+        print(node.getRight());
     }
 
 }
 
 class Node {
     private Node left, right;
-    private int value;
+    private Integer value;
 
-    public Node(int value) {
+    public Node(Integer value) {
         this.value = value;
     }
 
@@ -86,7 +129,7 @@ class Node {
         return right;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 }
