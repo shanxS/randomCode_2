@@ -33,23 +33,22 @@ class Convertor {
         numbers = new ArrayList<>();
         traverse(head);
         sort(0, numbers.size()-1);
-        inorderReplacement(head);
+        inorderReplacement(head, 0);
 
     }
 
-    private void inorderReplacement(Node node) {
+    private int inorderReplacement(Node node, int pos) {
 
         if (node == null) {
-            return;
+            return pos;
         }
 
-        inorderReplacement(node.getLeft());
+        pos = inorderReplacement(node.getLeft(), pos);
 
-        node.setValue(numbers.get(0));
-        numbers.remove(0);
+        node.setValue(numbers.get(pos));
+        ++pos;
 
-        inorderReplacement(node.getRight());
-
+        return  inorderReplacement(node.getRight(), pos);
     }
 
     private void sort(int start, int end) {
