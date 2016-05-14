@@ -6,9 +6,14 @@ public class BinaryCode {
 
     public void run() {
         BT bt = new BT();
+
         for (Integer ele : A) {
             bt.insert(ele);
         }
+
+        bt.print();
+
+        bt.convertToBST();
 
         bt.print();
 
@@ -29,10 +34,16 @@ class BT {
     }
 
     private void insert(Node head, Integer value) {
-        ArrayDeque<Node> d1 = (startD == null) ? new ArrayDeque<>() : startD;
-        ArrayDeque<Node> d2 = (otherD == null) ? new ArrayDeque<>() : otherD;
+        ArrayDeque<Node> d1;
+        if (startD == null) {
+            d1 = new ArrayDeque<>();
+            d1.push(head);
+        } else {
+            d1 = startD;
+        }
 
-        d1.push(head);
+
+        ArrayDeque<Node> d2 = (otherD == null) ? new ArrayDeque<>() : otherD;
 
         while (true) {
 
@@ -64,8 +75,8 @@ class BT {
                 }
             }
 
-
             while (d2.size() > 0) {
+
                 Node node = d2.removeLast();
 
                 if (node.getLeft() != null) {
@@ -91,12 +102,16 @@ class BT {
 
                     return;
                 }
+
             }
+
         }
     }
 
     public void print() {
         print(head);
+
+        System.out.println("----------");
     }
 
     private void print(Node node) {
@@ -117,14 +132,56 @@ class BT {
         print(node.getLeft());
         print(node.getRight());
     }
-}
 
+    public void convertToBST() {
+        convertToBST(head);
+    }
+
+    private void convertToBST(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.getLeft() != null
+                && node.getRight() != null) {
+
+            int max = Math.max(node.getValue(), Math.max(node.getLeft().getValue(), node.getRight().getValue()));
+            int min = Math.min(node.getValue(), Math.min(node.getLeft().getValue(), node.getRight().getValue()));
+
+            int mid = (node.getValue() + node.getLeft().getValue() + node.getRight().getValue())
+                    - (min + max);
+
+            node.setValue(mid);
+            node.getRight().setValue(max);
+            node.getLeft().setValue(min);
+
+        } else if (node.getLeft() != null) {
+            if (node.getValue() < node.getLeft().getValue()) {
+                swapValues (node, node.getLeft());
+            }
+        } else if (node.getRight() != null) {
+            if (node.getValue() > node.getRight().getValue()) {
+                swapValues (node, node.getRight());
+            }
+        }
+    }
+
+    private void swapValues(Node from, Node to) {
+        Integer tmp = from.getValue();
+        from.setValue(to.getValue());
+        to.setValue(tmp);
+    }
+}
 
 class Node {
     private Node left, right;
     private Integer value;
 
     public Node(Integer value) {
+        this.value = value;
+    }
+
+    public void setValue(Integer value) {
         this.value = value;
     }
 
@@ -137,6 +194,7 @@ class Node {
     }
 
     public Node getLeft() {
+
         return left;
     }
 
