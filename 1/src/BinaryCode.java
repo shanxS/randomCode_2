@@ -9,20 +9,12 @@ public class BinaryCode {
 
         init();
         print(head);
-        System.out.println("----");
+        System.out.print("----------");
         Convertor c = new Convertor();
-        c.convertToBST(head);
+        c.convert(head);
         print(head);
 
-   }
 
-    private void init() {
-        head = new Node(10);
-        head.setLeft(new Node(30));
-        head.setRight(new Node(15));
-
-        head.getLeft().setLeft(new Node(20));
-        head.getRight().setRight(new Node(5));
     }
 
     private void print(Node node) {
@@ -44,37 +36,43 @@ public class BinaryCode {
         print(node.getRight());
     }
 
+    private void init() {
+        head = new Node(10);
+        head.setLeft(new Node(2));
+        head.setRight(new Node(7));
+
+        head.getLeft().setLeft(new Node(8));
+        head.getLeft().setRight(new Node(4));
+
+    }
 }
 
 class Convertor {
-
     private List<Integer> numbers;
 
-    public void convertToBST(Node head) {
-
+    public void convert(Node head) {
         numbers = new ArrayList<>();
+
         traverse(head);
         sort(0, numbers.size()-1);
-        inorderReplacement(head, 0);
+        applyNumbers(head, 0);
 
     }
 
-    private int inorderReplacement(Node node, int pos) {
-
+    private int applyNumbers(Node node, int pos) {
         if (node == null) {
             return pos;
         }
 
-        pos = inorderReplacement(node.getLeft(), pos);
+        pos = applyNumbers(node.getLeft(), pos);
 
         node.setValue(numbers.get(pos));
         ++pos;
 
-        return  inorderReplacement(node.getRight(), pos);
+        return applyNumbers(node.getRight(), pos);
     }
 
     private void sort(int start, int end) {
-
         if (start >= end) {
             return;
         }
@@ -82,7 +80,6 @@ class Convertor {
         Integer pivot = qSort(start, end);
         sort(start, pivot-1);
         sort(pivot+1, end);
-
     }
 
     private Integer qSort(int start, int end) {
@@ -90,9 +87,9 @@ class Convertor {
         Integer pivotValue = numbers.get(end);
 
         for (Integer i=start; i<end; ++i) {
-            if (numbers.get(i) <= pivotValue) {
+            if (numbers.get(i) < pivotValue) {
                 ++marker;
-                swap (i, marker);
+                swap(i, marker);
             }
         }
 
@@ -115,17 +112,11 @@ class Convertor {
         traverse(node.getLeft());
         traverse(node.getRight());
     }
-
 }
 
-class Node {
+class Node{
     private Node left, right;
     private Integer value;
-
-    @Override
-    public String toString() {
-        return value + " ";
-    }
 
     public Node(Integer value) {
         this.value = value;
