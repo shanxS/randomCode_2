@@ -28,19 +28,17 @@ class BT {
     }
 
     private void insertChildren(Integer value) {
+
         ArrayDeque<Node> d1;
-        System.out.println("in for " + value);
         if (startD == null) {
             d1 = new ArrayDeque<>();
-            d1.push(head);
+            d1.addLast(head);
         } else {
             d1 = startD;
-            System.out.println("startD " + d1);
         }
 
         ArrayDeque<Node> d2 = (otherD == null) ? new ArrayDeque<>() : otherD;
-        System.out.println("otherD " + d2);
-        System.out.println("-----");
+
 
         while (true) {
 
@@ -48,7 +46,7 @@ class BT {
                 Node node = d1.removeLast();
 
                 if (node.getLeft() != null) {
-                    d2.push(node.getLeft());
+                    d2.addFirst(node.getLeft());
                 } else {
                     node.setLeft(new Node(value));
 
@@ -56,40 +54,33 @@ class BT {
                     startD = d1;
                     otherD = d2;
 
-                    System.out.println("out");
-                    System.out.println("startD " + startD);
-                    System.out.println("otherD " + otherD);
-                    System.out.println("=======\n");
 
 
                     return;
                 }
 
                 if (node.getRight() != null) {
-                    d2.push(node.getRight());
+                    d2.addFirst(node.getRight());
                 } else {
                     node.setRight(new Node(value));
 
+                    d2.removeFirst();
                     d1.addLast(node);
-                    d2.pop();
                     startD = d1;
                     otherD = d2;
 
-                    System.out.println("out");
-                    System.out.println("startD " + startD);
-                    System.out.println("otherD " + otherD);
-                    System.out.println("=======\n");
 
                     return;
                 }
             }
 
+
             while (d2.size() > 0) {
+
                 Node node = d2.removeLast();
 
-
                 if (node.getLeft() != null) {
-                    d1.push(node.getLeft());
+                    d1.addFirst(node.getLeft());
                 } else {
                     node.setLeft(new Node(value));
 
@@ -97,31 +88,25 @@ class BT {
                     startD = d2;
                     otherD = d1;
 
-                    System.out.println("out");
-                    System.out.println("startD " + startD);
-                    System.out.println("otherD " + otherD);
-                    System.out.println("=======\n");
 
                     return;
                 }
 
                 if (node.getRight() != null) {
-                    d1.push(node.getRight());
+                    d1.addFirst(node.getRight());
                 } else {
                     node.setRight(new Node(value));
 
+                    d1.removeFirst();
                     d2.addLast(node);
-                    d1.pop();
                     startD = d2;
                     otherD = d1;
 
-                    System.out.println("out");
-                    System.out.println("startD " + startD);
-                    System.out.println("otherD " + otherD);
-                    System.out.println("=======\n");
+
 
                     return;
                 }
+
             }
         }
     }
