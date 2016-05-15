@@ -6,28 +6,37 @@ public class BinaryCode {
             {1, 5, 3}};
 
     private final int MAX = 25;
-    private int minWeight = Integer.MAX_VALUE;
+    private Integer[][] book = new Integer[A.length][A[0].length];
+    private int counter = 0;
 
     public void run() {
 
-        findMinPath(0,1, A[0][0]); findMinPath(1,1, A[0][0]); findMinPath(1,0,A[0][0]);
-        System.out.print(minWeight);
+        System.out.println(findMinPath(0,0));
+        System.out.println(counter);
 
     }
 
-    private void findMinPath(int r, int c, int weightSofar) {
-
-        if (r == A.length-1 && c == A[0].length-1) {
-            minWeight = Math.min(minWeight, A[r][c] + weightSofar);
-        }
+    private Integer findMinPath(int r, int c) {
 
         if (r>=A.length || c>=A[0].length) {
-            return;
+            return MAX;
         }
 
-        findMinPath(r,c+1, A[r][c] + weightSofar);
-        findMinPath(r+1,c+1, A[r][c] + weightSofar);
-        findMinPath(r+1,c, A[r][c] + weightSofar);
+        if (book[r][c] != null) {
+            return book[r][c];
+        }
+
+        ++counter;
+
+        if (r == A.length-1 && c == A[0].length-1) {
+             book[r][c] = A[r][c];
+        } else {
+            book[r][c] = A[r][c] + Math.min(findMinPath(r, c + 1),
+                    Math.min(findMinPath(r + 1, c + 1),
+                            findMinPath(r + 1, c)));
+        }
+
+        return book[r][c];
     }
 
 }
