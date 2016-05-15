@@ -1,36 +1,33 @@
 public class BinaryCode {
 
-    private String s1 = "sunday";
-    private String s2 = "saturday";
-    private int counter = 0;
 
-    private Integer[][] book = new Integer[s1.length()][s2.length()];
+    private int[][] A = {{1, 2, 3},
+            {4, 8, 2},
+            {1, 5, 3}};
+
+    private final int MAX = 25;
+    private int minWeight = Integer.MAX_VALUE;
 
     public void run() {
 
-        System.out.println(editDistance(s1.length()-1, s2.length()-1));
-        System.out.println(counter);
+        findMinPath(0,1, A[0][0]); findMinPath(1,1, A[0][0]); findMinPath(1,0,A[0][0]);
+        System.out.print(minWeight);
 
     }
 
-    private int editDistance(int len1, int len2) {
-        if (len1 < 0 || len2 < 0) {
-            return Math.max(len1, len2) + 1;
+    private void findMinPath(int r, int c, int weightSofar) {
+
+        if (r == A.length-1 && c == A[0].length-1) {
+            minWeight = Math.min(minWeight, A[r][c] + weightSofar);
         }
 
-        if (book[len1][len2] != null) {
-            return book[len1][len2];
+        if (r>=A.length || c>=A[0].length) {
+            return;
         }
 
-        ++counter;
-
-        if (s1.charAt(len1) == s2.charAt(len2)) {
-            book[len1][len2] =  editDistance(len1-1, len2-1);
-        } else {
-            book[len1][len2] = 1 + Math.min(editDistance(len1, len2-1), Math.min(editDistance(len1-1, len2), editDistance(len1-1, len2-1)));
-        }
-
-        return book[len1][len2];
+        findMinPath(r,c+1, A[r][c] + weightSofar);
+        findMinPath(r+1,c+1, A[r][c] + weightSofar);
+        findMinPath(r+1,c, A[r][c] + weightSofar);
     }
 
 }
