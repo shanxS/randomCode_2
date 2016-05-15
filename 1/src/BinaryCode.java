@@ -1,42 +1,35 @@
 public class BinaryCode {
 
-
-    private int[][] A = {{1, 2, 3},
-            {4, 8, 2},
-            {1, 5, 3}};
-
-    private final int MAX = 25;
-    private Integer[][] book = new Integer[A.length][A[0].length];
+    private int[] S = {2, 5, 3, 6};
     private int counter = 0;
+    private final int N = 10;
+    private Integer[][] book = new Integer[S.length][N+1];
 
     public void run() {
 
-        System.out.println(findMinPath(0,0));
+        System.out.println((findCount(0, N-1) + findCount(1, N)));
         System.out.println(counter);
 
     }
 
-    private Integer findMinPath(int r, int c) {
+    private int findCount(int index, int target) {
 
-        if (r>=A.length || c>=A[0].length) {
-            return MAX;
+        if (target == 0) {
+            return 1;
+        } else if (index >= S.length || target < 0) {
+            return 0;
         }
 
-        if (book[r][c] != null) {
-            return book[r][c];
+        if (book[index][target] != null) {
+            return book[index][target];
         }
 
         ++counter;
 
-        if (r == A.length-1 && c == A[0].length-1) {
-             book[r][c] = A[r][c];
-        } else {
-            book[r][c] = A[r][c] + Math.min(findMinPath(r, c + 1),
-                    Math.min(findMinPath(r + 1, c + 1),
-                            findMinPath(r + 1, c)));
-        }
+        book[index][target] =  findCount(index, target-S[index])
+                + findCount(index+1, target);
 
-        return book[r][c];
+        return book[index][target];
     }
 
 }
