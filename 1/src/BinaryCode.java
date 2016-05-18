@@ -1,35 +1,32 @@
 public class BinaryCode {
 
-    private Integer[] A = {40, 20, 30, 10, 30};
-    private Integer[][] book = new Integer[A.length][A.length];
+    private Integer[][] book;
 
-    int counter = 0;
+
 
     public void run() {
-        System.out.print(findMin(1, A.length-1) + " " + counter);
+
+        int n=6, k=4;
+        book = new Integer[n][k];
+
+        System.out.print(find(n,k));
 
     }
 
-    private int findMin(int start, int end) {
-        if (start == end) {
-            return 0;
+    private int find(int n, int k) {
+        if (n < 1 || k < 1 || k > n) {
+            return -1;
         }
 
-        if (book[start][end] != null) {
-            return book[start][end];
+        if (k == n) {
+            return 1;
         }
 
-        ++counter;
-
-        int min = Integer.MAX_VALUE;
-        for (int i=start; i<end; ++i) {
-            min = Math.min(min,
-                    findMin(start,i)
-                            + findMin(i+1, end)
-                            + (A[start-1] * A[i] * A[end]));
+        if (k==1) {
+            return n;
         }
 
-        book[start][end] = min;
-        return book[start][end];
+        return find(n-1, k) + find(n-1, k-1);
     }
+
 }
