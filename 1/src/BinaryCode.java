@@ -4,34 +4,25 @@ public class BinaryCode {
 
     public void run() {
 
-        int max = Integer.MIN_VALUE;
-        for (int startPoint = 0; startPoint<s.length(); ++startPoint) {
-            max = Math.max(max, Math.max(
-                    findMaxPalinLength(startPoint,startPoint),
-                    findMaxPalinLength(startPoint-1, startPoint)));
-        }
+        System.out.print(findMaxPalnLength(0, s.length()-1));
 
-        System.out.print(max);
     }
 
-    private int findMaxPalinLength(int startIndex, int endIndex) {
-        if (startIndex < 0 || endIndex >= s.length()) {
+    private int findMaxPalnLength(int start, int end) {
+        if (start == end) {
+            return 1;
+        } else if (start > end) {
             return 0;
-        } else if (startIndex == endIndex) {
-            return 1 + findMaxPalinLength(startIndex-1, endIndex+1);
-        }
-
-
-        if (s.charAt(startIndex) == s.charAt(endIndex)) {
-
-            return 2 + findMaxPalinLength(startIndex-1, endIndex+1);
-
         } else {
 
-            return Math.max(findMaxPalinLength(startIndex, endIndex+1),
-                    findMaxPalinLength(startIndex-1, endIndex));
-
+            if (s.charAt(start) == s.charAt(end)) {
+                return 2 + findMaxPalnLength(start + 1, end - 1);
+            } else {
+                return Math.max(findMaxPalnLength(start + 1, end),
+                        findMaxPalnLength(start, end - 1));
+            }
         }
     }
+
 
 }
