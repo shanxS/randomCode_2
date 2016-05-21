@@ -1,40 +1,43 @@
 public class BinaryCode {
 
-    private Integer[][] book;
+    private String s = "GEEKSFORGEEKS";
 
     public void run() {
 
-        int eggCount=20, floor=4000;
-
-        book = new Integer[floor+1][eggCount+1];
-
-        System.out.print(findMin(eggCount, floor));
+        System.out.print(Math.max(findMaxPalinLength(1, ""+s.charAt(0)),
+                findMaxPalinLength(1, "")));
     }
 
-    private int findMin(int eggCount, int floor) {
-
-        if (book[floor][eggCount] != null) {
-            return book[floor][eggCount];
+    private int findMaxPalinLength(int thisIndex, String strSoFar) {
+        if (thisIndex >= s.length()) {
+            if (isPalindrome(strSoFar)) {
+                return strSoFar.length();
+            } else {
+                return -1;
+            }
         }
 
+        int thisLen = (isPalindrome(strSoFar)) ? strSoFar.length() : -1;
+        return Math.max(thisLen,
+                Math.max(findMaxPalinLength(thisIndex+1, strSoFar+s.charAt(thisIndex)),
+                findMaxPalinLength(thisIndex+1, strSoFar)));
+    }
 
-        if (eggCount == 1) {
-            book[floor][eggCount] = floor;
-        } else if (floor == 0 || floor == 1) {
-            book[floor][eggCount] = floor;
-        } else {
 
-            int min = Integer.MAX_VALUE;
-            for (int thisFloor = 1; thisFloor <= floor; ++thisFloor) {
-                min = Math.min(min,
-                        Math.max(findMin(eggCount - 1, thisFloor - 1), findMin(eggCount, floor - thisFloor)));
+    private boolean isPalindrome (String s) {
+        int fwd = 0;
+        int rev = s.length()-1;
+
+        while (rev > fwd) {
+            if (s.charAt(rev) != s.charAt(fwd)) {
+                return false;
             }
 
-            book[floor][eggCount] = min + 1;
+            ++fwd;
+            --rev;
         }
 
-        return book[floor][eggCount];
-
+        return true;
     }
 
 
