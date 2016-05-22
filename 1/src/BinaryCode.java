@@ -1,39 +1,22 @@
 public class BinaryCode {
 
-    private String s = "BBABCBCAB";
-    private int count = 0;
-    private Integer[][] book = new Integer[s.length()][s.length()];
+    private Integer[] A = {1,   5,   8,   9,  10,  17,  17,  20};
 
     public void run() {
 
-        System.out.print(findMaxPalnLength(0, s.length()-1) + " " + count);
+
+        System.out.print(Math.max(findMaxValue (1, 1),
+                findMaxValue (1, 0)));
 
     }
 
-    private int findMaxPalnLength(int start, int end) {
-        if (book[start][end] != null) {
-            return book[start][end];
+    private int findMaxValue(int thisIndex, int valueSoFar) {
+        if (A.length - thisIndex <= 0) {
+            return valueSoFar;
         }
 
-        if (start > end) {
-            return 0;
-        }
-
-        ++count;
-        if (start == end) {
-            book[start][end] = 1;
-        } else {
-
-            if (s.charAt(start) == s.charAt(end)) {
-                book[start][end] = 2 + findMaxPalnLength(start + 1, end - 1);
-            } else {
-                book[start][end] = Math.max(findMaxPalnLength(start + 1, end),
-                        findMaxPalnLength(start, end - 1));
-            }
-        }
-
-        return book[start][end];
+        return Math.max(findMaxValue(thisIndex+1, valueSoFar+A[thisIndex]),
+                findMaxValue(thisIndex+1, valueSoFar));
     }
-
 
 }
