@@ -1,50 +1,29 @@
 public class BinaryCode {
 
-    private Integer[] A = {3,   5,   8,   9,  10,  17,  17,  20};//{1,   5,   8,   9,  10,  17,  17,  20};
-    private int count = 0;
-    private Integer[][] book = new Integer[A.length][A.length+1];
+    private int[] A = {1, 101, 2, 3, 100, 4, 5};
+    private int MAX = Integer.MIN_VALUE;
+
 
     public void run() {
 
-        int thisIndex = 0;
-
-        System.out.print(Math.max(
-                    A[thisIndex] + findMax(thisIndex+1, A.length-(thisIndex+1)),
-                    Math.max(
-                            findMax(thisIndex+1, A.length),
-                            A[thisIndex] + findMax(thisIndex, A.length-(thisIndex+1))
-                    )
-
-                )
-                + " " + count
-        );
+        compute(Integer.MIN_VALUE, 0, 0);
+        System.out.print(MAX);
 
     }
 
-    private int findMax(int thisIndex, int sizeAvailable) {
+    private void compute(int prevValue, int thisIndex, int sumSoFar) {
         if (thisIndex >= A.length) {
-            return 0;
-        } else if (thisIndex+1 > sizeAvailable) {
-            return 0;
+            MAX = Math.max(MAX, sumSoFar);
+            return;
         }
 
-        if (book[thisIndex][sizeAvailable] != null) {
-            return book[thisIndex][sizeAvailable];
+        if (A[thisIndex] >= prevValue) {
+            compute(A[thisIndex], thisIndex+1, sumSoFar+A[thisIndex]);
+        } else {
+            compute(A[thisIndex], thisIndex+1, A[thisIndex]);
         }
 
-        ++count;
-
-        book[thisIndex][sizeAvailable] = Math.max(
-                A[thisIndex] + findMax(thisIndex+1, sizeAvailable-(thisIndex+1)),
-                Math.max(
-                        findMax(thisIndex+1, sizeAvailable),
-                        A[thisIndex] + findMax(thisIndex, sizeAvailable-(thisIndex+1))
-                )
-
-        );
-
-        return book[thisIndex][sizeAvailable];
-
+        compute(prevValue, thisIndex+1, sumSoFar);
     }
 
 }
