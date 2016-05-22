@@ -1,6 +1,8 @@
 public class BinaryCode {
 
     private Integer[] A = {3,   5,   8,   9,  10,  17,  17,  20};//{1,   5,   8,   9,  10,  17,  17,  20};
+    private int count = 0;
+    private Integer[][] book = new Integer[A.length][A.length+1];
 
     public void run() {
 
@@ -14,6 +16,7 @@ public class BinaryCode {
                     )
 
                 )
+                + " " + count
         );
 
     }
@@ -25,7 +28,13 @@ public class BinaryCode {
             return 0;
         }
 
-        return Math.max(
+        if (book[thisIndex][sizeAvailable] != null) {
+            return book[thisIndex][sizeAvailable];
+        }
+
+        ++count;
+
+        book[thisIndex][sizeAvailable] = Math.max(
                 A[thisIndex] + findMax(thisIndex+1, sizeAvailable-(thisIndex+1)),
                 Math.max(
                         findMax(thisIndex+1, sizeAvailable),
@@ -33,6 +42,8 @@ public class BinaryCode {
                 )
 
         );
+
+        return book[thisIndex][sizeAvailable];
 
     }
 
