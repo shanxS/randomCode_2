@@ -1,41 +1,28 @@
 public class BinaryCode {
 
-    private Integer[][] book;
+    private int[] A = {1, 101, 2, 3, 100, 4, 5};
+    private int[] sum = new int[A.length];
 
     public void run() {
 
-        int eggCount=20, floor=4000;
-
-        book = new Integer[floor+1][eggCount+1];
-
-        System.out.print(findMin(eggCount, floor));
-    }
-
-    private int findMin(int eggCount, int floor) {
-
-        if (book[floor][eggCount] != null) {
-            return book[floor][eggCount];
+        for (int i=0; i<A.length; ++i) {
+            sum[i] = A[i];
         }
 
-
-        if (eggCount == 1) {
-            book[floor][eggCount] = floor;
-        } else if (floor == 0 || floor == 1) {
-            book[floor][eggCount] = floor;
-        } else {
-
-            int min = Integer.MAX_VALUE;
-            for (int thisFloor = 1; thisFloor <= floor; ++thisFloor) {
-                min = Math.min(min,
-                        Math.max(findMin(eggCount - 1, thisFloor - 1), findMin(eggCount, floor - thisFloor)));
+        for (int i=1; i<A.length; ++i) {
+            for (int j=0; j<i; ++j) {
+                if (A[j] < A[i] && sum[i] < sum[j] + A[i]) {
+                    sum[i] = sum[j] + A[i];
+                }
             }
-
-            book[floor][eggCount] = min + 1;
         }
 
-        return book[floor][eggCount];
+        int max = Integer.MIN_VALUE;
+        for (int i=0; i<sum.length; ++i) {
+            max = Math.max(max, sum[i]);
+        }
+
+        System.out.print(max);
 
     }
-
-
 }
