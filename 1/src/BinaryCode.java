@@ -24,5 +24,6 @@ public class BinaryCode {
 
         System.out.print(max);
 
+
     }
 }
