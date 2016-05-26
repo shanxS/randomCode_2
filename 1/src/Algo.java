@@ -1,57 +1,54 @@
 public class Algo {
 
-    private int[] A = {80, 60, 30, 40, 20, 10};
-    private int[] fwd = new int[A.length];
-    private int[] rev = new int[A.length];
+    private final int INF = Integer.MAX_VALUE;
+    private int[][] A = {
+            {0,    5,  INF, 10},
+            {INF,  0,  3,  INF},
+            {INF, INF, 0,   1},
+            {INF, INF, INF, 0}
+    };
+
+
+    private int[][] dist = new int[A.length][A[0].length];
 
     public void run() {
+
         for (int i=0; i<A.length; ++i) {
-            findForFwd(i);
-            findForRev(A.length - 1 - i);
-        }
-
-        int max = 1;
-        for (int i=0; i<A.length; ++i) {
-            max = Math.max(max, rev[i]+fwd[i]-1);
-        }
-
-        System.out.print(max);
-    }
-
-    private int findForRev(int prevIndex) {
-        if (rev[prevIndex] > 0) {
-            return rev[prevIndex];
-        }
-
-        int len = 1;
-
-        for (int i=prevIndex-1; i>=0; --i) {
-            if (A[i] < A[prevIndex]) {
-                len = Math.max(len, findForRev(i)+1);
+            for (int j=0; j<A.length; ++j) {
+                dist[i][j] = INF;
             }
         }
 
-        rev[prevIndex] = len;
-
-        return len;
-    }
-
-    private int findForFwd(int prevIndex) {
-
-        if (fwd[prevIndex] > 0) {
-            return fwd[prevIndex];
-        }
-
-        int len = 1;
-        for (int i=prevIndex+1; i<A.length; i++) {
-            if (A[i] < A[prevIndex]) {
-                len = Math.max(len, findForFwd(i) + 1);
+        for (int start=0; start<A.length; ++start) {
+            for (int dest=0; dest<A.length; ++dest) {
+                compute(start, dest);
             }
         }
 
-        fwd[prevIndex] = len;
+        for (int i=0; i<A.length; ++i) {
+            System.out.println();
+            for (int j=0; j<A.length; ++j) {
+                System.out.print(dist[i][j] + " ");
+            }
+        }
+    }
 
-        return len;
+    private int compute(int start, int dest) {
+        if (A[start][dest] == INF) {
+            return INF;
+        }
+
+
+        if (A[start][dest] < INF) {
+            dist[start][dest] = Math.min(A[start][dest], dist[start][dest]);
+
+            for (int nextDest = dest+1; nextDest<A.length; ++nextDest) {
+                dist[start][nextDest] = Math.min(dist[start][nextDest],
+                        dist[start][dest] + compute(dest, nextDest));
+            }
+        }
+
+        return dist[start][dest];
 
     }
 }
