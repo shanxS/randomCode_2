@@ -1,4 +1,5 @@
 import lombok.*;
+import java.util.*;
 
 public class Algo {
 
@@ -8,7 +9,7 @@ public class Algo {
             500,800,1020,
             400,600,900,
             550,850,950,
-            530,570,9703
+            530,570,970
     };
     /*{100,
     50, 200,
@@ -25,53 +26,45 @@ public class Algo {
         }
 
         tree.print();
-        System.out.print(tree.findDia());
+        System.out.println("------");
+        tree.printInorder();
     }
 }
 
 class BST {
-
     private Node head;
-
-    private int dia;
-
-    public int findDia() {
-        dia = 0;
-
-        int leftDepth = findDepth(head.getLeft());
-        int rightDepth = findDepth(head.getRight());
-
-        dia = Math.max (dia, (leftDepth + rightDepth + 1));
-
-        return dia;
-    }
-
-    private int findDepth(Node node) {
-        if (node == null) {
-            return 0;
-        }
-
-        if (node.getLeft() == null && node.getRight() == null) {
-            return 1;
-        }
-
-        int leftDepth = findDepth(node.getLeft());
-        int rightDepth = findDepth(node.getRight());
-
-        dia = Math.max (dia, (leftDepth + rightDepth + 1));
-
-        return 1 + Math.max(leftDepth, rightDepth);
-    }
 
     public void insert(int val) {
         if (head == null) {
-            head = new Node (val);
+            head = new Node(val);
         } else {
             insert(head, val);
         }
     }
 
-    public void insert(Node node, int val) {
+    public void printInorder() {
+        Stack<Node> stack = new Stack<>();
+
+        prep(stack, head);
+
+
+        while (stack.size() > 0) {
+            Node topNode = stack.pop();
+            System.out.print(topNode.getValue() + " ");
+
+            prep(stack, topNode.getRight());
+        }
+
+    }
+
+    private void prep(Stack<Node> stack, Node cursor) {
+        while (cursor != null) {
+            stack.push (cursor);
+            cursor = cursor.getLeft();
+        }
+    }
+
+    private void insert(Node node, int val) {
         if (node.getValue() < val) {
             if (node.getRight() == null) {
                 node.setRight(new Node(val));
@@ -82,10 +75,10 @@ class BST {
             if (node.getLeft() == null) {
                 node.setLeft(new Node(val));
             } else {
-                insert(node.getLeft(), val);
+                insert(node.getLeft() , val);
             }
         } else {
-            System.out.print("same value " + val);
+            System.out.print("duplicate value " + val);
         }
     }
 
@@ -97,6 +90,7 @@ class BST {
         if (node == null) {
             return;
         }
+
 
         System.out.print(node.getValue() + " - ");
         if (node.getLeft() != null) {
@@ -111,17 +105,16 @@ class BST {
         print(node.getLeft());
         print(node.getRight());
     }
-
 }
-
 
 class Node {
     @Getter @Setter
     private Node left, right;
+
     @Getter
     private Integer value;
 
-    public Node(Integer val) {
+    public Node(int val) {
         this.value = val;
     }
 }
