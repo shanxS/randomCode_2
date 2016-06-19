@@ -1,54 +1,88 @@
+import lombok.*;
+
 public class Algo {
 
-    private final int INF = Integer.MAX_VALUE;
-    private int[][] A = {
-            {0,    5,  INF, 10},
-            {INF,  0,  3,  INF},
-            {INF, INF, 0,   1},
-            {INF, INF, INF, 0}
-    };
-
-
-    private int[][] dist = new int[A.length][A[0].length];
+    private int[] A = {100, 50, 110, 25, 60};
 
     public void run() {
-
-        for (int i=0; i<A.length; ++i) {
-            for (int j=0; j<A.length; ++j) {
-                dist[i][j] = INF;
-            }
+        BST tree = new BST();
+        for (Integer i : A) {
+            tree.insert(i);
         }
 
-        for (int start=0; start<A.length; ++start) {
-            for (int dest=0; dest<A.length; ++dest) {
-                compute(start, dest);
-            }
-        }
+        tree.print();
+    }
+}
 
-        for (int i=0; i<A.length; ++i) {
-            System.out.println();
-            for (int j=0; j<A.length; ++j) {
-                System.out.print(dist[i][j] + " ");
-            }
+
+class BST{
+
+    private Node head;
+
+    public void insert(int val) {
+        if (head == null) {
+            head = new Node (val);
+        } else {
+            insert(head, val);
         }
     }
 
-    private int compute(int start, int dest) {
-        if (A[start][dest] == INF) {
-            return INF;
-        }
-
-
-        if (A[start][dest] < INF) {
-            dist[start][dest] = Math.min(A[start][dest], dist[start][dest]);
-
-            for (int nextDest = dest+1; nextDest<A.length; ++nextDest) {
-                dist[start][nextDest] = Math.min(dist[start][nextDest],
-                        dist[start][dest] + compute(dest, nextDest));
+    private void insert(Node node, int val) {
+        if (node.getValue() < val) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(val));
+            } else {
+                insert(node.getRight(), val);
             }
+        } else if (node.getValue() > val) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node (val));
+            } else {
+                insert(node.getLeft(), val);
+            }
+        } else {
+            System.out.print("duplicate value found for " + val);
+        }
+    }
+
+    public void print() {
+        print(head);
+    }
+
+
+    private void print(Node node) {
+        if (node == null) {
+            return;
         }
 
-        return dist[start][dest];
+        System.out.print(node.getValue() + " - ");
+        if (node.getLeft() != null) {
+            System.out.print(node.getLeft().getValue());
+        }
+        System.out.print(", ");
+        if (node.getRight() != null) {
+            System.out.print(node.getRight().getValue());
+        }
+        System.out.println();
 
+
+        print(node.getLeft());
+        print(node.getRight());
+    }
+
+
+}
+
+
+class Node{
+
+    @Getter @Setter
+    private Node left, right;
+
+    @Getter
+    private Integer value;
+
+    public Node (int v) {
+        this.value = v;
     }
 }
