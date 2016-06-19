@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Algo {
 
-    private int[] A = {100, 50, 210, 25, 60, 110, 250};
+    private int[] A = {100, 50, 210, 25, 60, 110, 250, 55, 70};
 
     public void run() {
 
@@ -39,35 +39,35 @@ class BST {
 
     private void breadthWisePrint(Node node) {
 
-        Stack<Node> stack1 = new Stack<>();
-        Stack<Node> stack2 = new Stack<>();
+        Queue<Node> stack1 = new ArrayDeque<>();
+        Queue<Node> stack2 = new ArrayDeque<>();
 
-        stack1.push(node);
+        stack1.add(node);
         while (stack1.size() > 0 || stack2.size() > 0) {
 
             while (stack1.size() > 0) {
-                Node thisNode = stack1.pop();
+                Node thisNode = stack1.remove();
                 System.out.print(thisNode.getValue() + " ");
 
                 if (thisNode.getLeft() != null) {
-                    stack2.push(thisNode.getLeft());
+                    stack2.add(thisNode.getLeft());
                 }
                 if (thisNode.getRight() != null) {
-                    stack2.push(thisNode.getRight());
+                    stack2.add(thisNode.getRight());
                 }
             }
 
             System.out.println();
 
             while (stack2.size() > 0) {
-                Node thisNode = stack2.pop();
+                Node thisNode = stack2.remove();
                 System.out.print(thisNode.getValue() + " ");
 
                 if (thisNode.getLeft() != null) {
-                    stack1.push(thisNode.getLeft());
+                    stack1.add(thisNode.getLeft());
                 }
                 if (thisNode.getRight() != null) {
-                    stack1.push(thisNode.getRight());
+                    stack1.add(thisNode.getRight());
                 }
             }
             System.out.println();
