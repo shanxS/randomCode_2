@@ -11,6 +11,14 @@ public class Algo {
         }
 
         tree.print();
+
+        System.out.println("inorder ");
+        tree.printInorderTraversal();
+        System.out.println("preorder ");
+        tree.printPreOrderTraversal();
+        System.out.println("postorder ");
+        tree.printPostOrderTraversal();
+
     }
 }
 
@@ -18,6 +26,51 @@ public class Algo {
 class BST{
 
     private Node head;
+
+    public void printInorderTraversal() {
+        printInorderTraversal(head);
+    }
+
+    private void printInorderTraversal(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        printInorderTraversal(node.getLeft());
+        System.out.println(node.getValue());
+        printInorderTraversal(node.getRight());
+    }
+
+
+    public void printPostOrderTraversal() {
+        printPostOrderTraversal(head);
+    }
+
+    private void printPostOrderTraversal(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        printPostOrderTraversal(node.getLeft());
+        printPostOrderTraversal(node.getRight());
+        System.out.println(node.getValue());
+    }
+
+    public void printPreOrderTraversal() {
+        printPreOrderTraversal(head);
+    }
+
+    private void printPreOrderTraversal(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        System.out.println(node.getValue());
+        printPreOrderTraversal(node.getLeft());
+        printPreOrderTraversal(node.getRight());
+    }
+
+
 
     public void insert(int val) {
         if (head == null) {
