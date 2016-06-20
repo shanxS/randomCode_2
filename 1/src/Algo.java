@@ -1,5 +1,5 @@
-import lombok.*;
-import java.util.*;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Algo {
 
@@ -27,59 +27,62 @@ public class Algo {
 
         tree.print();
         System.out.println("------");
-        tree.printInorder();
+        tree.makeThreaded();
+        tree.print();
+        System.out.println("------");
+        tree.printInOrder();
     }
 }
+
 
 class BST {
     private Node head;
 
-    public void insert(int val) {
-        if (head == null) {
-            head = new Node(val);
-        } else {
-            insert(head, val);
-        }
-    }
+    public void printInOrder() {
+        Node node = goLeftDeep(head);
 
-    public void printInorder() {
-        Stack<Node> stack = new Stack<>();
+        while (node != null) {
+            System.out.print(node.getValue() + " ");
 
-        prep(stack, head);
-
-
-        while (stack.size() > 0) {
-            Node topNode = stack.pop();
-            System.out.print(topNode.getValue() + " ");
-
-            prep(stack, topNode.getRight());
-        }
-
-    }
-
-    private void prep(Stack<Node> stack, Node cursor) {
-        while (cursor != null) {
-            stack.push (cursor);
-            cursor = cursor.getLeft();
-        }
-    }
-
-    private void insert(Node node, int val) {
-        if (node.getValue() < val) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(val));
+            if (node.isLeaf()) {
+                node = node.getRight();
             } else {
-                insert(node.getRight(), val);
+                node = goLeftDeep(node.getRight());
             }
-        } else if (node.getValue() > val) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(val));
-            } else {
-                insert(node.getLeft() , val);
-            }
-        } else {
-            System.out.print("duplicate value " + val);
         }
+    }
+
+    private Node goLeftDeep(Node node) {
+        if (node == null) {
+            return null;
+        }
+
+        while (node.getLeft() != null) {
+            node = node.getLeft();
+        }
+
+        return node;
+    }
+
+    public void makeThreaded()  {
+        makeThreaded(head, null);
+    }
+
+
+    private void makeThreaded(Node node, Node succ) {
+
+        if (node == null) {
+            return;
+        }
+
+        makeThreaded(node.getLeft(), node);
+        if (node.getRight() == null) {
+            node.setRight(succ);
+            node.setLeaf(true);
+        } else {
+            makeThreaded(node.getRight(), succ);
+        }
+
     }
 
     public void print() {
@@ -87,10 +90,10 @@ class BST {
     }
 
     private void print(Node node) {
+
         if (node == null) {
             return;
         }
-
 
         System.out.print(node.getValue() + " - ");
         if (node.getLeft() != null) {
@@ -100,10 +103,44 @@ class BST {
         if (node.getRight() != null) {
             System.out.print(node.getRight().getValue());
         }
+        System.out.print(" | ");
+        if (node.isLeaf()) {
+            System.out.print("is leaf");
+        }
         System.out.println();
 
-        print(node.getLeft());
-        print(node.getRight());
+        if (!node.isLeaf()) {
+            print(node.getLeft());
+            print(node.getRight());
+        }
+    }
+
+    public void insert(int val) {
+        if (head == null) {
+            head = new Node(val);
+        } else {
+            insert(head, val);
+        }
+    }
+
+    private void insert(Node node, int val) {
+        if (node.getValue() < val) {
+            if (node.getRight() == null) {
+                node.setLeaf(false);
+                node.setRight(new Node(val));
+            } else {
+                insert(node.getRight(), val);
+            }
+        } else if (node.getValue() > val) {
+            if (node.getLeft() == null) {
+                node.setLeaf(false);
+                node.setLeft(new Node(val));
+            } else {
+                insert(node.getLeft(), val);
+            }
+        } else {
+            System.out.print("duplicate values " + val);
+        }
     }
 }
 
@@ -114,7 +151,13 @@ class Node {
     @Getter
     private Integer value;
 
+    @Getter @Setter
+    private boolean isLeaf;
+
     public Node(int val) {
         this.value = val;
+        isLeaf = true;
     }
+
+
 }
