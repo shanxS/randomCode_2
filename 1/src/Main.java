@@ -7,13 +7,11 @@ public class Main {
     public static void main(String[] args) {
         algo = new Algo();
         algo.run();
-
     }
-
 }
 
-class Algo {
 
+class Algo {
     private int[] A = {
             1000,
             700, 1010,
@@ -24,61 +22,31 @@ class Algo {
     };
 
     public void run() {
-        BST tree = new BST();
 
+        BST tree = new BST();
         for (Integer i : A) {
             tree.insert(i);
         }
 
         tree.print();
-        System.out.println("----");
-        tree.printInorder();
-
     }
 }
-
 
 class BST {
 
     private Node head;
 
 
-    public void printInorder() {
-
-        Node node = goLeftBottom(head);
-
-        while (node != null) {
-            System.out.print(node.getValue() + " ");
-
-            if (node.isThreaded()) {
-                node = node.getRight();
-            } else {
-                node = goLeftBottom(node.getRight());
-            }
-        }
-    }
-
-    private Node goLeftBottom(Node node) {
-        if (node == null) {
-            return null;
-        }
-
-        while(node.getLeft() != null) {
-            node = node.getLeft();
-        }
-
-        return node;
-
-    }
-
     public void print() {
         print(head);
+
     }
 
     private void print(Node node) {
         if (node == null) {
             return;
         }
+
 
         System.out.print(node.getValue() + " - ");
         if (node.getLeft() != null) {
@@ -87,9 +55,8 @@ class BST {
         System.out.print(", ");
         if (node.getRight() != null) {
             System.out.print(node.getRight().getValue());
-
             if (node.isThreaded()) {
-                System.out.print(" | is leaf");
+                System.out.print(" | threaded");
             }
         }
         System.out.println();
@@ -99,6 +66,7 @@ class BST {
             print(node.getRight());
         }
     }
+
 
     public void insert(int val) {
 
@@ -110,6 +78,7 @@ class BST {
     }
 
     private void insert(Node node, Node succ, int val) {
+
         if (node.getValue() > val) {
             if (node.getLeft() == null) {
                 node.setLeft(new Node(val));
@@ -119,38 +88,39 @@ class BST {
             } else {
                 insert(node.getLeft(), node, val);
             }
+
         } else if (node.getValue() < val) {
             if (node.isThreaded() || node.getRight() == null) {
                 node.setRight(new Node(val));
+
                 node.setThreaded(false);
                 if (succ != null) {
                     node.getRight().setThreaded(true);
                     node.getRight().setRight(succ);
                 }
-
             } else {
                 insert(node.getRight(), succ, val);
             }
+        } else {
+            System.out.print("udplicate value " + val);
         }
-
     }
 }
 
-
-class Node {
-
-    @Getter @Setter
+class Node{
+    @Setter @Getter
     private Node left, right;
 
-    @Getter @Setter
+    @Setter @Getter
     private Integer value;
 
-    @Getter @Setter
+    @Setter @Getter
     private boolean isThreaded;
 
 
-    public Node (int val) {
+    public Node(int val) {
         this.value = val;
         this.isThreaded = false;
     }
+
 }
