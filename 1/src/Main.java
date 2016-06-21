@@ -1,13 +1,12 @@
 import lombok.*;
 
-public class Main {
 
-    public static void main(String[] args){
+public class Main {
+    public static void main(String[] args) {
         Algo algo = new Algo();
         algo.run();
     }
 }
-
 
 class Algo {
     private int[] A = {
@@ -25,29 +24,26 @@ class Algo {
             tree.insert(i);
         }
 
-
-        tree.connect(700, 970);
-        tree.connect(850, 1020);
-        tree.connect(570, 1000);
-        tree.connect(700, 600);
+        tree.connect(530, 600);
+        tree.connect(600, 400);
+        tree.connect(970, 600);
         tree.print();
-        System.out.print("---------");
+        System.out.print("-------");
 
         TreeCopier tc = new TreeCopier();
         Node copy = tc.copy(tree.getHead());
-        BST.print(tree.getHead());
-        System.out.print("---------");
         BST.print(copy);
+        System.out.print("-------");
+        tree.print();
     }
 }
 
 class TreeCopier {
     public Node copy(Node from) {
-        insertCopies(from);
-        copyRandomPointers(from);
+        makeCopy(from);
+        copyRandomPointer(from);
 
         Node copyHead = from.getLeft();
-
         detachCopy(from);
 
         return copyHead;
@@ -59,8 +55,8 @@ class TreeCopier {
         }
 
         Node to = from.getLeft();
-        from.setLeft(to.getLeft());
 
+        from.setLeft(to.getLeft());
         if (to.getLeft() != null) {
             to.setLeft(to.getLeft().getLeft());
         }
@@ -70,37 +66,35 @@ class TreeCopier {
 
     }
 
-    private void copyRandomPointers(Node from) {
+    private void copyRandomPointer(Node from) {
         if (from == null) {
             return;
         }
-
-        copyRandomPointers(from.getLeft().getLeft());
-        copyRandomPointers(from.getRight());
 
         if (from.getRandom() != null) {
             from.getLeft().setRandom(from.getRandom().getLeft());
         }
+
+        copyRandomPointer(from.getLeft().getLeft());
+        copyRandomPointer(from.getRight());
     }
 
-    private void insertCopies(Node from) {
+    private void makeCopy(Node from) {
         if (from == null) {
             return;
         }
 
-        insertCopies(from.getLeft());
-        insertCopies(from.getRight());
+        makeCopy(from.getLeft());
+        makeCopy(from.getRight());
 
         Node to = new Node(from);
-
         to.setLeft(from.getLeft());
-        from.setLeft(to);
-
         if (from.getRight() != null) {
             to.setRight(from.getRight().getLeft());
         }
-    }
 
+        from.setLeft(to);
+    }
 }
 
 class BST {
@@ -108,8 +102,8 @@ class BST {
     private Node head;
 
     public void connect(int src, int dst) {
-        Node srcNode = find (head, src);
-        Node dstNode = find (head, dst);
+        Node srcNode = find(head, src);
+        Node dstNode = find(head, dst);
 
         if (srcNode != null && dstNode != null) {
             srcNode.setRandom(dstNode);
@@ -123,10 +117,10 @@ class BST {
 
         if (node.getValue() == val) {
             return node;
+        } else if (node.getValue() < val) {
+            return find(node.getRight(), val);
         } else if (node.getValue() > val) {
             return find(node.getLeft(), val);
-        } else if (node.getValue() < val){
-            return find(node.getRight(), val);
         }
 
         return null;
@@ -154,11 +148,9 @@ class BST {
                 insert(node.getRight(), val);
             }
         } else {
-            System.out.print("duplicate val " + val);
+            System.out.print("duplicate value " + val);
         }
-
     }
-
 
     public void print() {
         BST.print(head);
@@ -182,14 +174,12 @@ class BST {
             System.out.print(node.getRandom().getValue());
         }
         System.out.println();
-
         print(node.getLeft());
         print(node.getRight());
     }
-
 }
 
-class Node{
+class Node {
     @Getter @Setter
     private Node left, right, random;
 
