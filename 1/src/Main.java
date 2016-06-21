@@ -2,10 +2,8 @@ import lombok.*;
 
 public class Main {
 
-    private static Algo algo;
-
-    public static void main(String[] args) {
-        algo = new Algo();
+    public static void main(String[] args){
+        Algo algo = new Algo();
         algo.run();
     }
 }
@@ -22,31 +20,154 @@ class Algo {
     };
 
     public void run() {
-
         BST tree = new BST();
         for (Integer i : A) {
             tree.insert(i);
         }
 
+
+        tree.connect(700, 970);
+        tree.connect(850, 1020);
+        tree.connect(570, 1000);
+        tree.connect(700, 600);
         tree.print();
+        System.out.print("---------");
+
+        TreeCopier tc = new TreeCopier();
+        Node copy = tc.copy(tree.getHead());
+        BST.print(tree.getHead());
+        System.out.print("---------");
+        BST.print(copy);
     }
 }
 
-class BST {
+class TreeCopier {
+    public Node copy(Node from) {
+        insertCopies(from);
+        copyRandomPointers(from);
 
-    private Node head;
+        Node copyHead = from.getLeft();
 
+        detachCopy(from);
 
-    public void print() {
-        print(head);
-
+        return copyHead;
     }
 
-    private void print(Node node) {
-        if (node == null) {
+    private void detachCopy(Node from) {
+        if (from == null) {
             return;
         }
 
+        Node to = from.getLeft();
+        from.setLeft(to.getLeft());
+
+        if (to.getLeft() != null) {
+            to.setLeft(to.getLeft().getLeft());
+        }
+
+        detachCopy(from.getLeft());
+        detachCopy(from.getRight());
+
+    }
+
+    private void copyRandomPointers(Node from) {
+        if (from == null) {
+            return;
+        }
+
+        copyRandomPointers(from.getLeft().getLeft());
+        copyRandomPointers(from.getRight());
+
+        if (from.getRandom() != null) {
+            from.getLeft().setRandom(from.getRandom().getLeft());
+        }
+    }
+
+    private void insertCopies(Node from) {
+        if (from == null) {
+            return;
+        }
+
+        insertCopies(from.getLeft());
+        insertCopies(from.getRight());
+
+        Node to = new Node(from);
+
+        to.setLeft(from.getLeft());
+        from.setLeft(to);
+
+        if (from.getRight() != null) {
+            to.setRight(from.getRight().getLeft());
+        }
+    }
+
+}
+
+class BST {
+    @Getter
+    private Node head;
+
+    public void connect(int src, int dst) {
+        Node srcNode = find (head, src);
+        Node dstNode = find (head, dst);
+
+        if (srcNode != null && dstNode != null) {
+            srcNode.setRandom(dstNode);
+        }
+    }
+
+    private Node find(Node node, int val) {
+        if (node == null) {
+            return null;
+        }
+
+        if (node.getValue() == val) {
+            return node;
+        } else if (node.getValue() > val) {
+            return find(node.getLeft(), val);
+        } else if (node.getValue() < val){
+            return find(node.getRight(), val);
+        }
+
+        return null;
+    }
+
+    public void insert(int val) {
+        if (head == null) {
+            head = new Node(val);
+        } else {
+            insert(head, val);
+        }
+    }
+
+    private void insert(Node node, int val) {
+        if (node.getValue() > val) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(val));
+            } else {
+                insert(node.getLeft(), val);
+            }
+        } else if (node.getValue() < val) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(val));
+            } else {
+                insert(node.getRight(), val);
+            }
+        } else {
+            System.out.print("duplicate val " + val);
+        }
+
+    }
+
+
+    public void print() {
+        BST.print(head);
+    }
+
+    public static void print(Node node) {
+        if (node == null) {
+            return;
+        }
 
         System.out.print(node.getValue() + " - ");
         if (node.getLeft() != null) {
@@ -55,72 +176,31 @@ class BST {
         System.out.print(", ");
         if (node.getRight() != null) {
             System.out.print(node.getRight().getValue());
-            if (node.isThreaded()) {
-                System.out.print(" | threaded");
-            }
+        }
+        System.out.print(" | ");
+        if (node.getRandom() != null) {
+            System.out.print(node.getRandom().getValue());
         }
         System.out.println();
 
         print(node.getLeft());
-        if (!node.isThreaded()) {
-            print(node.getRight());
-        }
+        print(node.getRight());
     }
 
-
-    public void insert(int val) {
-
-        if (head == null) {
-            head = new Node(val);
-        } else {
-            insert(head, null, val);
-        }
-    }
-
-    private void insert(Node node, Node succ, int val) {
-
-        if (node.getValue() > val) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(val));
-
-                node.getLeft().setThreaded(true);
-                node.getLeft().setRight(node);
-            } else {
-                insert(node.getLeft(), node, val);
-            }
-
-        } else if (node.getValue() < val) {
-            if (node.isThreaded() || node.getRight() == null) {
-                node.setRight(new Node(val));
-
-                node.setThreaded(false);
-                if (succ != null) {
-                    node.getRight().setThreaded(true);
-                    node.getRight().setRight(succ);
-                }
-            } else {
-                insert(node.getRight(), succ, val);
-            }
-        } else {
-            System.out.print("udplicate value " + val);
-        }
-    }
 }
 
 class Node{
-    @Setter @Getter
-    private Node left, right;
+    @Getter @Setter
+    private Node left, right, random;
 
-    @Setter @Getter
+    @Getter @Setter
     private Integer value;
-
-    @Setter @Getter
-    private boolean isThreaded;
-
 
     public Node(int val) {
         this.value = val;
-        this.isThreaded = false;
     }
 
+    public Node(Node node) {
+        this.value = node.getValue();
+    }
 }
