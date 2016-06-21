@@ -1,5 +1,4 @@
 import lombok.*;
-import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,67 +13,42 @@ class Algo {
             700, 1010,
             500,800,1020,
             400,600,900,
-            300, 550,850,950,
+            550,850,950,
             530,570,970
     };
 
     public void run() {
         BST tree = new BST();
-
         for (Integer i : A) {
             tree.insert(i);
         }
 
         tree.print();
-        System.out.println("------");
-        WidthFinder wf = new WidthFinder();
-        int width = wf.findMaxWidth(tree.getHead());
-        System.out.print("------" + width);
+        System.out.print("-----");
+        Ancestory anc = new Ancestory();
+        anc.printAncestors(tree.getHead(), 800);
     }
 }
 
-class WidthFinder {
-    private int maxW;
-
-    public int findMaxWidth (Node head) {
-        maxW = Integer.MIN_VALUE;
-
-        ArrayDeque<Node> q1 = new ArrayDeque<>();
-        ArrayDeque<Node> q2 = new ArrayDeque<>();
-
-        q1.addFirst(head);
-
-        while (q1.size() > 0 || q2.size() > 0) {
-            maxW = Math.max(maxW, q1.size());
-            while (q1.size() > 0) {
-                Node node = q1.removeFirst();
-
-                System.out.print(node.getValue() + " ");
-                if (node.getLeft() != null) {
-                    q2.addLast(node.getLeft());
-                }
-                if (node.getRight() != null) {
-                    q2.addLast(node.getRight());
-                }
-            }
-            System.out.println();
-
-            maxW = Math.max(maxW, q2.size());
-            while (q2.size() > 0) {
-                Node node = q2.removeFirst();
-
-                System.out.print(node.getValue() + " ");
-                if (node.getLeft() != null) {
-                    q1.addFirst(node.getLeft());
-                }
-                if (node.getRight() != null) {
-                    q1.addFirst(node.getRight());
-                }
-            }
-            System.out.println();
+class Ancestory {
+    public boolean printAncestors(Node node, int target) {
+        if (node == null) {
+            return false;
         }
 
-        return maxW;
+        if (node.getValue() == target) {
+            System.out.print(node.getValue() + " ");
+            return true;
+        } else if (printAncestors(node.getLeft(), target)) {
+            System.out.print(node.getValue() + " ");
+            return true;
+        } else if (printAncestors(node.getRight(), target)) {
+            System.out.print(node.getValue() + " ");
+            return true;
+        }
+
+        return false;
+
     }
 }
 
@@ -91,17 +65,17 @@ class BST {
     }
 
     private void insert(Node node, int val) {
-        if (node.getValue() < val) {
-            if (node.getRight() == null) {
-                node.setRight(new Node(val));
-            } else {
-                insert(node.getRight(), val);
-            }
-        } else if (node.getValue() > val) {
+        if (node.getValue() > val) {
             if (node.getLeft() == null) {
                 node.setLeft(new Node(val));
             } else {
                 insert(node.getLeft(), val);
+            }
+        } else if (node.getValue() < val) {
+            if (node.getRight() == null) {
+                node.setRight(new Node(val));
+            } else {
+                insert(node.getRight(), val);
             }
         } else {
             System.out.print("duplicate value " + val);
@@ -117,7 +91,7 @@ class BST {
             return;
         }
 
-        System.out.print(node.getValue() + " - " );
+        System.out.print(node.getValue() + " - ");
         if (node.getLeft() != null) {
             System.out.print(node.getLeft().getValue());
         }
@@ -133,13 +107,13 @@ class BST {
 }
 
 class Node {
-    @Getter @Setter
+    @Setter @Getter
     private Node left, right;
 
-    @Getter @Setter
+    @Setter @Getter
     private Integer value;
 
-    public Node(int val) {
+    public Node (int val) {
         this.value = val;
     }
 }
