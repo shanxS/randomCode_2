@@ -1,5 +1,5 @@
 import lombok.*;
-
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,117 +14,73 @@ class Algo {
             700, 1010,
             500,800,1020,
             400,600,900,
-            550,850,950,
+            300, 550,850,950,
             530,570,970
     };
 
     public void run() {
         BST tree = new BST();
+
         for (Integer i : A) {
             tree.insert(i);
         }
 
-        tree.connect(530, 600);
-        tree.connect(600, 400);
-        tree.connect(970, 600);
         tree.print();
-        System.out.print("-------");
-
-        TreeCopier tc = new TreeCopier();
-        Node copy = tc.copy(tree.getHead());
-        BST.print(copy);
-        System.out.print("-------");
-        tree.print();
+        System.out.println("------");
+        WidthFinder wf = new WidthFinder();
+        int width = wf.findMaxWidth(tree.getHead());
+        System.out.print("------" + width);
     }
 }
 
-class TreeCopier {
-    public Node copy(Node from) {
-        makeCopy(from);
-        copyRandomPointer(from);
+class WidthFinder {
+    private int maxW;
 
-        Node copyHead = from.getLeft();
-        detachCopy(from);
+    public int findMaxWidth (Node head) {
+        maxW = Integer.MIN_VALUE;
 
-        return copyHead;
-    }
+        ArrayDeque<Node> q1 = new ArrayDeque<>();
+        ArrayDeque<Node> q2 = new ArrayDeque<>();
 
-    private void detachCopy(Node from) {
-        if (from == null) {
-            return;
+        q1.addFirst(head);
+
+        while (q1.size() > 0 || q2.size() > 0) {
+            maxW = Math.max(maxW, q1.size());
+            while (q1.size() > 0) {
+                Node node = q1.removeFirst();
+
+                System.out.print(node.getValue() + " ");
+                if (node.getLeft() != null) {
+                    q2.addLast(node.getLeft());
+                }
+                if (node.getRight() != null) {
+                    q2.addLast(node.getRight());
+                }
+            }
+            System.out.println();
+
+            maxW = Math.max(maxW, q2.size());
+            while (q2.size() > 0) {
+                Node node = q2.removeFirst();
+
+                System.out.print(node.getValue() + " ");
+                if (node.getLeft() != null) {
+                    q1.addFirst(node.getLeft());
+                }
+                if (node.getRight() != null) {
+                    q1.addFirst(node.getRight());
+                }
+            }
+            System.out.println();
         }
 
-        Node to = from.getLeft();
-
-        from.setLeft(to.getLeft());
-        if (to.getLeft() != null) {
-            to.setLeft(to.getLeft().getLeft());
-        }
-
-        detachCopy(from.getLeft());
-        detachCopy(from.getRight());
-
-    }
-
-    private void copyRandomPointer(Node from) {
-        if (from == null) {
-            return;
-        }
-
-        if (from.getRandom() != null) {
-            from.getLeft().setRandom(from.getRandom().getLeft());
-        }
-
-        copyRandomPointer(from.getLeft().getLeft());
-        copyRandomPointer(from.getRight());
-    }
-
-    private void makeCopy(Node from) {
-        if (from == null) {
-            return;
-        }
-
-        makeCopy(from.getLeft());
-        makeCopy(from.getRight());
-
-        Node to = new Node(from);
-        to.setLeft(from.getLeft());
-        if (from.getRight() != null) {
-            to.setRight(from.getRight().getLeft());
-        }
-
-        from.setLeft(to);
+        return maxW;
     }
 }
 
 class BST {
     @Getter
     private Node head;
-
-    public void connect(int src, int dst) {
-        Node srcNode = find(head, src);
-        Node dstNode = find(head, dst);
-
-        if (srcNode != null && dstNode != null) {
-            srcNode.setRandom(dstNode);
-        }
-    }
-
-    private Node find(Node node, int val) {
-        if (node == null) {
-            return null;
-        }
-
-        if (node.getValue() == val) {
-            return node;
-        } else if (node.getValue() < val) {
-            return find(node.getRight(), val);
-        } else if (node.getValue() > val) {
-            return find(node.getLeft(), val);
-        }
-
-        return null;
-    }
 
     public void insert(int val) {
         if (head == null) {
@@ -135,17 +91,17 @@ class BST {
     }
 
     private void insert(Node node, int val) {
-        if (node.getValue() > val) {
-            if (node.getLeft() == null) {
-                node.setLeft(new Node(val));
-            } else {
-                insert(node.getLeft(), val);
-            }
-        } else if (node.getValue() < val) {
+        if (node.getValue() < val) {
             if (node.getRight() == null) {
                 node.setRight(new Node(val));
             } else {
                 insert(node.getRight(), val);
+            }
+        } else if (node.getValue() > val) {
+            if (node.getLeft() == null) {
+                node.setLeft(new Node(val));
+            } else {
+                insert(node.getLeft(), val);
             }
         } else {
             System.out.print("duplicate value " + val);
@@ -153,15 +109,15 @@ class BST {
     }
 
     public void print() {
-        BST.print(head);
+        print(head);
     }
 
-    public static void print(Node node) {
+    private void print(Node node) {
         if (node == null) {
             return;
         }
 
-        System.out.print(node.getValue() + " - ");
+        System.out.print(node.getValue() + " - " );
         if (node.getLeft() != null) {
             System.out.print(node.getLeft().getValue());
         }
@@ -169,11 +125,8 @@ class BST {
         if (node.getRight() != null) {
             System.out.print(node.getRight().getValue());
         }
-        System.out.print(" | ");
-        if (node.getRandom() != null) {
-            System.out.print(node.getRandom().getValue());
-        }
         System.out.println();
+
         print(node.getLeft());
         print(node.getRight());
     }
@@ -181,16 +134,12 @@ class BST {
 
 class Node {
     @Getter @Setter
-    private Node left, right, random;
+    private Node left, right;
 
     @Getter @Setter
     private Integer value;
 
     public Node(int val) {
         this.value = val;
-    }
-
-    public Node(Node node) {
-        this.value = node.getValue();
     }
 }
