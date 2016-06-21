@@ -17,38 +17,75 @@ class Algo {
             530,570,970
     };
 
+    private int[] A2 = {
+            600,
+            550,
+            530
+    };
+
     public void run() {
-        BST tree = new BST();
+        BST main = new BST();
         for (Integer i : A) {
-            tree.insert(i);
+            main.insert(i);
         }
 
-        tree.print();
-        System.out.print("-----");
-        Ancestory anc = new Ancestory();
-        anc.printAncestors(tree.getHead(), 800);
+        BST sub = new BST();
+        for (Integer i : A2) {
+            sub.insert(i);
+        }
+
+        SubTreeTester tester = new SubTreeTester();
+        System.out.print(tester.test(sub.getHead(), main.getHead()));
     }
 }
 
-class Ancestory {
-    public boolean printAncestors(Node node, int target) {
-        if (node == null) {
+class SubTreeTester {
+    public boolean test(Node subHead, Node head) {
+        Node nodeInMain = find(head, subHead.getValue());
+        if (nodeInMain == null) {
             return false;
         }
+        return testTree(nodeInMain, subHead);
+    }
 
-        if (node.getValue() == target) {
-            System.out.print(node.getValue() + " ");
-            return true;
-        } else if (printAncestors(node.getLeft(), target)) {
-            System.out.print(node.getValue() + " ");
-            return true;
-        } else if (printAncestors(node.getRight(), target)) {
-            System.out.print(node.getValue() + " ");
-            return true;
+    private boolean testTree(Node sub, Node main) {
+        if ((sub == null && main != null)
+                || (sub != null && main == null)) {
+            return false;
+        } else if (sub != null && main != null) {
+            if (!sub.getValue().equals(main.getValue())) {
+                return false;
+            } else {
+                if (!testTree(sub.getLeft(), main.getLeft())
+                        || !testTree(sub.getRight(), main.getRight())) {
+                    return false;
+                }
+            }
         }
 
-        return false;
+        return true;
+    }
 
+    private Node find(Node node, int val) {
+        if (node == null) {
+            return null;
+        }
+
+        if (node.getValue().equals(val)) {
+            return node;
+        }
+
+        Node leftSubTreeResult = find(node.getLeft(), val);
+        if (leftSubTreeResult != null) {
+            return leftSubTreeResult;
+        }
+
+        Node rightSubTreeResult = find(node.getRight(), val);
+        if (rightSubTreeResult != null) {
+            return rightSubTreeResult;
+        }
+
+        return null;
     }
 }
 
@@ -81,6 +118,7 @@ class BST {
             System.out.print("duplicate value " + val);
         }
     }
+
 
     public void print() {
         print(head);
