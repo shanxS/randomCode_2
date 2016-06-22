@@ -8,90 +8,80 @@ public class Main {
 }
 
 class Algo {
-    private int[] A = {
-            1000,
-            700, 1010,
-            500,800,1020,
-            400,600,900,
-            550,850,950,
-            530,570,970
-    };
 
-    private int[] A2 = {
-            600,
-            550,
-            530
+    private int[] A = {
+            100,
+            50,110,
+            20,60,120,
+            10,55,70,115,130,
+            5,140
+
+//            1000,
+//            700, 1010,
+//            500,800,1020,
+//            400,600,900,
+//            550,850,950,
+//            530,570,970
     };
 
     public void run() {
-        BST main = new BST();
+
+        BST tree = new BST();
         for (Integer i : A) {
-            main.insert(i);
+            tree.insert(i);
         }
+        tree.print();
 
-        BST sub = new BST();
-        for (Integer i : A2) {
-            sub.insert(i);
-        }
+        LevelConnector lc = new LevelConnector();
+        lc.connect(tree.getHead());
+        System.out.print("=========");
+        tree.print();
 
-        SubTreeTester tester = new SubTreeTester();
-        System.out.print(tester.test(sub.getHead(), main.getHead()));
     }
 }
 
-class SubTreeTester {
-    public boolean test(Node subHead, Node head) {
-        Node nodeInMain = find(head, subHead.getValue());
-        if (nodeInMain == null) {
-            return false;
+class LevelConnector {
+    public void connect(Node node) {
+        if(node == null) {
+            return;
         }
-        return testTree(nodeInMain, subHead);
-    }
 
-    private boolean testTree(Node sub, Node main) {
-        if ((sub == null && main != null)
-                || (sub != null && main == null)) {
-            return false;
-        } else if (sub != null && main != null) {
-            if (!sub.getValue().equals(main.getValue())) {
-                return false;
+        if (node.getLeft() != null) {
+            if (node.getRight() != null) {
+                node.getLeft().setNextRight(node.getRight());
             } else {
-                if (!testTree(sub.getLeft(), main.getLeft())
-                        || !testTree(sub.getRight(), main.getRight())) {
-                    return false;
-                }
+                node.getLeft().setNextRight(drillNextRights(node.getNextRight()));
             }
         }
+        if (node.getRight() != null) {
+            node.getRight().setNextRight(drillNextRights(node.getNextRight()));
+        }
 
-        return true;
+        connect(node.getRight());
+        connect(node.getLeft());
+
     }
 
-    private Node find(Node node, int val) {
+    private Node drillNextRights(Node node) {
         if (node == null) {
             return null;
         }
 
-        if (node.getValue().equals(val)) {
-            return node;
+        if (node.getLeft() != null) {
+            return node.getLeft();
+        } else if (node.getRight() != null) {
+            return node.getRight();
+        } else {
+            return drillNextRights(node.getNextRight());
         }
-
-        Node leftSubTreeResult = find(node.getLeft(), val);
-        if (leftSubTreeResult != null) {
-            return leftSubTreeResult;
-        }
-
-        Node rightSubTreeResult = find(node.getRight(), val);
-        if (rightSubTreeResult != null) {
-            return rightSubTreeResult;
-        }
-
-        return null;
     }
+
 }
 
 class BST {
     @Getter
     private Node head;
+
 
     public void insert(int val) {
         if (head == null) {
@@ -99,6 +89,7 @@ class BST {
         } else {
             insert(head, val);
         }
+
     }
 
     private void insert(Node node, int val) {
@@ -115,10 +106,9 @@ class BST {
                 insert(node.getRight(), val);
             }
         } else {
-            System.out.print("duplicate value " + val);
+            System.out.print("duplicate value" + val);
         }
     }
-
 
     public void print() {
         print(head);
@@ -137,21 +127,28 @@ class BST {
         if (node.getRight() != null) {
             System.out.print(node.getRight().getValue());
         }
+        System.out.print(" | ");
+        if (node.getNextRight() != null) {
+            System.out.print(node.getNextRight().getValue());
+        }
         System.out.println();
 
         print(node.getLeft());
         print(node.getRight());
     }
+
+
 }
 
 class Node {
-    @Setter @Getter
-    private Node left, right;
+    @Getter @Setter
+    private Node left, right, nextRight;
 
-    @Setter @Getter
+
+    @Getter @Setter
     private Integer value;
 
-    public Node (int val) {
+    public Node(int val) {
         this.value = val;
     }
 }
