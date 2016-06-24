@@ -1,7 +1,7 @@
 import lombok.*;
 
 public class Main {
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         Algo algo = new Algo();
         algo.run();
     }
@@ -25,11 +25,11 @@ class Algo {
             tree.insert(i);
         }
 
-        tree.print();
+        BST.print(tree.getHead());
 
         System.out.print("------------");
         NodeDeleter nd = new NodeDeleter();
-        Node head = nd.delete(tree.getHead(), 1000);
+        Node head = nd.deleteNode(tree.getHead(), 500);
         BST.print(head);
 
     }
@@ -37,91 +37,69 @@ class Algo {
 
 class NodeDeleter {
 
-    public Node delete(Node node, int val) {
+    public Node deleteNode (Node node, int val) {
         Node head = node;
-        NodeContext deleteContext = makeDeletionContext(null, node, val);
-        if (deleteContext == null) {
-            System.out.print("cant find node to delete");
+        NodeContext dContext = makeDeletionContext(null, node, val);
+        if (dContext == null) {
+            System.out.print("cant find node to detele");
             return head;
         }
 
-        Node deleteTarget = deleteContext.getTarget();
-        NodeContext replacementContext = null;
-
-        if (deleteTarget.getLeft() == null && deleteTarget.getRight() == null ) {
-
-            dropReplacement(deleteContext, null);
-
-        } else if (deleteTarget.getLeft() != null && deleteTarget.getRight() == null) {
-
-            replacementContext = new NodeContext(null, deleteTarget.getLeft());
-            //delete(deleteTarget, deleteTarget.getLeft().getValue());
-            dropReplacement(deleteContext, replacementContext);
-
-        } else if (deleteTarget.getRight() != null) {
-
-            replacementContext = makeMaxNodeContext (null, deleteTarget.getRight());
-
-            Node deletionTreeHead = (replacementContext.getParent() == null) ?  deleteTarget : replacementContext.getParent();
-            delete(deletionTreeHead, replacementContext.getTarget().getValue());
-
-            dropReplacement(deleteContext, replacementContext);
-
+        Node dNode = dContext.getTarget();
+        NodeContext rContext = null;
+        if (dNode.getLeft() == null && dNode.getRight() == null) {
+            rContext = null;
+        } else if (dNode.getLeft() != null && dNode.getRight() == null) {
+            rContext = new NodeContext(null, dNode.getLeft());
+        } else if (dNode.getRight() != null) {
+            rContext = makeMaxNodeContext(dNode, dNode.getRight());
+            deleteNode(rContext.getParent(), rContext.getTarget().getValue());
         }
+        dropReplacement(dContext, rContext);
 
-        if (deleteContext.getParent() == null) {
-            if (replacementContext == null) {
-                return null;
-            } else {
-                return replacementContext.getTarget();
-            }
+        if (dContext.getParent() == null) {
+            return rContext.getTarget();
         } else {
             return head;
         }
+
     }
 
-    private void dropReplacement(NodeContext deleteContext, NodeContext replacementContext) {
-        if (deleteContext.getParent() == null ){
-            if (replacementContext != null) {
-                Node replacement = replacementContext.getTarget();
-                replacement.setRight(deleteContext.getTarget().getRight());
-                replacement.setLeft(deleteContext.getTarget().getLeft());
-            }
-        } else {
-            Node dParent = deleteContext.getParent();
-            Node dTarget = deleteContext.getTarget();
+    private void dropReplacement(NodeContext dContext, NodeContext rContext) {
+        Node dParent = dContext.getParent();
+        Node dTarget = dContext.getTarget();
 
-            if (replacementContext == null) {
+        if (rContext == null) {
 
-                if (dParent.getValue() > dTarget.getValue()) {
-                    dParent.setLeft(null);
-                } else {
+            if (dParent != null) {
+                if (dParent.getValue() < dTarget.getValue()) {
                     dParent.setRight(null);
-                }
-
-            } else {
-
-                Node rTarget = replacementContext.getTarget();
-
-                if (! (dTarget.getLeft() != null && dTarget.getLeft().getValue() == rTarget.getValue())) {
-
-                    rTarget.setRight(dTarget.getRight());
-                    rTarget.setLeft(dTarget.getLeft());
-
-                }
-
-
-                if (dParent.getValue() > dTarget.getValue()) {
-                    dParent.setLeft(rTarget);
                 } else {
-                    dParent.setRight(rTarget);
+                    dParent.setLeft(null);
                 }
-
             }
+        } else {
+
+            Node rParent = rContext.getParent();
+            Node rTarget = rContext.getTarget();
+
+            if ( !(dTarget.getLeft() != null && dTarget.getLeft().getValue() == rTarget.getValue())) {
+                rTarget.setLeft(dTarget.getLeft());
+                rTarget.setRight(dTarget.getRight());
+            }
+
+            if (dParent != null) {
+                if (dParent.getValue() < dTarget.getValue()) {
+                    dParent.setRight(rTarget);
+                } else {
+                    dParent.setLeft(rTarget);
+                }
+            }
+
         }
     }
 
-    private NodeContext makeMaxNodeContext(Node parent, Node node) {
+    private NodeContext makeMaxNodeContext (Node parent, Node node) {
         while (node.getRight() != null) {
             parent = node;
             node = node.getRight();
@@ -139,22 +117,19 @@ class NodeDeleter {
             return new NodeContext(parent, node);
         } else if (node.getValue() < val) {
             return makeDeletionContext(node, node.getRight(), val);
-        } else if (node.getValue() > val) {
+        } else {
             return makeDeletionContext(node, node.getLeft(), val);
         }
-
-        return null;
     }
 
     private class NodeContext {
-        @Getter @Setter
+        @Getter
         private Node parent, target;
 
         public NodeContext(Node parent, Node target) {
             this.parent = parent;
             this.target = target;
         }
-
     }
 }
 
@@ -162,39 +137,34 @@ class BST {
     @Getter
     private Node head;
 
-    public void insert(int val) {
+    public void insert(int val)  {
         if (head == null) {
-            head = new Node(val);
+            head = new Node (val);
         } else {
             insert(head, val);
         }
     }
 
     private void insert(Node node, int val) {
-
         if (node.getValue() < val) {
             if (node.getRight() == null) {
                 node.setRight(new Node(val));
             } else {
                 insert(node.getRight(), val);
             }
-        } else if (node.getValue() > val) {
+        } else if (node.getValue() > val){
             if (node.getLeft() == null) {
                 node.setLeft(new Node(val));
             } else {
                 insert(node.getLeft(), val);
             }
         } else {
-            System.out.print("duplicate value " + val);
+            System.out.print("duplicate vlaue " + val);
         }
     }
 
-    public void print() {
-        BST.print(head);
-    }
-
     public static void print(Node node) {
-        if (node == null) {
+        if (node== null) {
             return;
         }
 
@@ -215,15 +185,14 @@ class BST {
 }
 
 class Node {
-    @Getter @Setter
+
+    @Setter @Getter
     private Node left, right;
 
-    @Getter @Setter
+    @Setter @Getter
     private Integer value;
-
 
     public Node(int val) {
         this.value = val;
     }
-
 }
