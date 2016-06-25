@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Main {
     public static void main(String[] args) {
         Algo algo = new Algo();
@@ -6,50 +8,161 @@ public class Main {
 }
 
 class Algo {
-    private int[] A = {
-            1000,
-            700, 1010,
-            500,800,1020,
-            400,600,900,
-            550,850,950,
-            530,570,970
-    };
-
     public void run() {
-        sort(0, A.length-1);
+        int[] A = {1,4,2,5,3,9,11};
+        MaxHeap heap = new MaxHeap();
         for (Integer i : A) {
-            System.out.print(i + " ");
+            heap.add(i);
+            System.out.print(heap.peekMax() + " ");
+        }
+
+        System.out.println();
+        while (heap.size() > 0) {
+            System.out.print(heap.getMax() + " ");
+        }
+    }
+}
+
+class MaxHeap {
+    private List<Integer> list;
+
+    public MaxHeap() {
+        list = new ArrayList<>();
+    }
+
+    public int size() {
+        return list.size();
+    }
+
+    public Integer peekMax() {
+        if (list.size() == 0) {
+            return null;
+        } else {
+            return list.get(0);
         }
     }
 
-    private void sort(int start, int end) {
-        if (start >= end) {
-            return;
+    public Integer getMax() {
+        if (list.size() == 0) {
+            return null;
         }
 
-        int pivotIndex = qsort(start, end);
-        sort(start, pivotIndex-1);
-        sort(pivotIndex+1, end);
-    }
+        int returnValue = list.get(0);
+        swap(0, list.size()-1);
+        list.remove((int)(list.size()-1));
+        bubbleDown(0);
 
-    private int qsort(int start, int end) {
-        int marker = start-1;
-        int pivot = A[end];
-
-        for (int i=start; i<end; ++i) {
-            if (A[i] < pivot) {
-                ++marker;
-                swap(marker, i);
-            }
-        }
-
-        swap(marker+1, end);
-        return marker+1;
+        return returnValue;
     }
 
     private void swap (int from, int to) {
-        int tmp = A[to];
-        A[to] = A[from];
-        A[from] = tmp;
+        int tmp = list.get(from);
+        list.set(from, list.get(to));
+        list.set(to, tmp);
+    }
+
+    private int getLeftChildIndex(int parentIndex) {
+        return (2*parentIndex) + 1;
+    }
+
+    private int getRightChildIndex(int parentIndex) {
+        return getLeftChildIndex(parentIndex) + 1;
+    }
+
+
+    private void bubbleDown(int parentIndex) {
+        if (!isValidIndex(parentIndex)) {
+            return;
+        }
+
+        int rightChildIndex = getRightChildIndex(parentIndex);
+        int leftChildIndex = getLeftChildIndex(parentIndex);
+
+        int parentV = list.get(parentIndex);
+        if (isValidIndex(rightChildIndex) && isValidIndex(leftChildIndex)) {
+
+            int leftV = list.get(leftChildIndex);
+            int rightV = list.get(rightChildIndex);
+
+            if (leftV > rightV) {
+                if (leftV > parentV) {
+                    swap(leftChildIndex, parentIndex);
+                    bubbleDown(leftChildIndex);
+                }
+            } else if (leftV < rightV) {
+                if (rightV > parentV) {
+                    swap(rightChildIndex, parentIndex);
+                    bubbleDown(rightChildIndex);
+                }
+            }
+
+        } else if (isValidIndex(rightChildIndex)) {
+
+            int rightV = list.get(rightChildIndex);
+            if (rightV > parentV) {
+                swap(rightChildIndex, parentIndex);
+                bubbleDown(rightChildIndex);
+            }
+
+        } else if (isValidIndex(leftChildIndex)) {
+
+            int leftV = list.get(leftChildIndex);
+            if (leftV > parentV) {
+                swap(leftChildIndex, parentIndex);
+                bubbleDown(leftChildIndex);
+            }
+
+        }
+
+
+    }
+
+    public void add (int val) {
+        list.add(val);
+        bubbleUp(list.size()-1);
+    }
+
+    private void bubbleUp(int childIndex) {
+        int parentIndex = getParentIndex(childIndex);
+
+        if (parentIndex == childIndex) {
+            return;
+        }
+
+        if (isValidIndex(parentIndex) && list.get(childIndex) > list.get(parentIndex)) {
+            swap (childIndex, parentIndex);
+            bubbleUp(parentIndex);
+        }
+    }
+
+    private boolean isValidIndex(int index) {
+        return (index >= 0 )  && (index < list.size());
+    }
+
+    private int getParentIndex(int childIndex) {
+        return (childIndex-1) / 2;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
