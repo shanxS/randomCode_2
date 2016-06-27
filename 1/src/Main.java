@@ -15,7 +15,7 @@ class Algo {
             {0,0,0,1}
     };
 
-    Deque<Integer> que;
+    private Deque<Integer> que;
     private boolean[] visited;
 
     public void run() {
@@ -25,35 +25,23 @@ class Algo {
         for (int i=2; i<visited.length+2; ++i) {
             int node = i%visited.length;
             if (!visited[node]) {
+                visited[node] = true;
                 que.addFirst(node);
-                bfs(node);
+                bfs();
             }
         }
-
     }
 
-    private void bfs(int node) {
-        if (visited[node]) {
-            return;
-        }
-
-        visited[node] = true;
-        for (int i=0; i<visited.length; ++i) {
-            if (!visited[i] && A[node][i] == 1) {
-                que.addFirst(i);
-            }
-        }
-
-        printBFS();
-    }
-
-    private void printBFS() {
+    private void bfs() {
         while (que.size() > 0) {
             int node = que.removeLast();
             System.out.print(node + " ");
-            bfs(node);
+            for (int i=0; i<visited.length; ++i) {
+                if (!visited[i] && A[node][i] == 1) {
+                    visited[i] = true;
+                    que.addFirst(i);
+                }
+            }
         }
     }
-
-
 }
