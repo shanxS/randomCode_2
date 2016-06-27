@@ -9,39 +9,48 @@ public class Main {
 
 class Algo {
     private int[][] A = {
-            {0,1,1,0},
-            {0,0,1,0},
-            {1,0,0,1},
-            {0,0,0,1}
+            {0,1,1,0,0},
+            {0,0,1,0,0},
+            {1,0,0,1,0},
+            {0,0,0,1,1},
+            {0,0,0,0,0}
     };
 
-    private Deque<Integer> que;
+    private Deque<Integer> stack;
     private boolean[] visited;
 
     public void run() {
-        que = new ArrayDeque<>();
+        stack = new ArrayDeque<>();
         visited = new boolean[A.length];
 
         for (int i=2; i<visited.length+2; ++i) {
             int node = i%visited.length;
             if (!visited[node]) {
                 visited[node] = true;
-                que.addFirst(node);
-                bfs();
+                stack.addFirst(node);
+                dfs();
             }
         }
     }
 
-    private void bfs() {
-        while (que.size() > 0) {
-            int node = que.removeLast();
+    private void dfs() {
+        while (stack.size() > 0) {
+            int node = stack.removeFirst();
             System.out.print(node + " ");
             for (int i=0; i<visited.length; ++i) {
                 if (!visited[i] && A[node][i] == 1) {
                     visited[i] = true;
-                    que.addFirst(i);
+                    stack.addFirst(i);
                 }
             }
         }
     }
 }
+
+
+
+
+
+
+
+
