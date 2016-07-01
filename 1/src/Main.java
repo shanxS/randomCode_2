@@ -8,39 +8,46 @@ public class Main {
 }
 
 class Algo {
+    private final int I = Integer.MAX_VALUE;
     private int[][] A = {
-            {0,1,1,0,0},
-            {0,0,1,0,0},
-            {1,0,0,1,0},
-            {0,0,0,1,1},
-            {0,0,0,0,0}
+            {0,5,2,9,I,I,I},
+            {I,0,3,I,3,2,1},
+            {I,I,0,1,I,I,I},
+            {8,I,I,0,I,I,I},
+            {I,I,I,I,I,I,I},
+            {I,I,I,I,I,I,I},
+            {I,I,I,I,I,I,I}
+
     };
 
-    private Deque<Integer> stack;
+    private int[][] min;
     private boolean[] visited;
 
+
     public void run() {
-        stack = new ArrayDeque<>();
+
         visited = new boolean[A.length];
 
-        for (int i=2; i<visited.length+2; ++i) {
-            int node = i%visited.length;
-            if (!visited[node]) {
-                visited[node] = true;
-                stack.addFirst(node);
-                dfs();
+        for (int i=0; i<visited.length; ++i) {
+            if (!visited[i]) {
+                bfs(i);
             }
         }
     }
 
-    private void dfs() {
-        while (stack.size() > 0) {
-            int node = stack.removeFirst();
-            System.out.print(node + " ");
-            for (int i=0; i<visited.length; ++i) {
-                if (!visited[i] && A[node][i] == 1) {
-                    visited[i] = true;
-                    stack.addFirst(i);
+    private void bfs(int node) {
+        Deque<Integer> que = new ArrayDeque<>();
+        que.addLast(node);
+        visited[node] = true;
+
+        while(que.size() > 0) {
+
+            int thisNode = que.removeFirst();
+            System.out.print(thisNode + " ");
+            for(int child=0; child<visited.length; ++child) {
+                if (!visited[child] && A[thisNode][child] != I && thisNode != child) {
+                    visited[child] = true;
+                    que.addLast(child);
                 }
             }
         }
