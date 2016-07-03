@@ -1,87 +1,61 @@
-import java.util.Arrays;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class Main {
+
     public static void main(String[] args) {
         Algo algo = new Algo();
         algo.run();
     }
+
 }
 
 class Algo {
+
     private final int I = Integer.MAX_VALUE;
     private int[][] A = {
-          // 0 1 2 3 4 5 6
-            {0,5,6,9,1,I,I}, // 0
-            {I,0,3,I,3,2,1}, // 1
-            {I,I,0,1,I,I,I}, // 2
-            {8,I,I,0,I,I,I}, // 3
-            {I,I,1,I,0,I,I}, // 4
-            {I,I,I,I,I,0,I}, // 5
-            {I,I,I,I,I,I,0}  // 6
+            {0,I,I,I,I,I},
+            {I,0,I,I,I,I},
+            {I,I,0,1,I,I},
+            {I,1,I,0,I,I},
+            {1,1,I,I,0,I},
+            {1,I,1,I,I,0}
+
 
     };
 
+    private boolean[] visited;
     private int nodeCount;
-    private Integer[][] minDist;
+    private Deque<Integer> stack;
 
     public void run() {
-
         nodeCount = A.length;
-        minDist = new Integer[A.length][A.length];
+        visited = new boolean[nodeCount];
+        stack = new ArrayDeque<>();
 
-        for (int src = 0; src < nodeCount; ++src) {
-            for (int target=0; target<nodeCount; ++target) {
-                if (src != target) {
-                    int min = A[src][target];
-
-                    for(int i=0; i<nodeCount; ++i) {
-                        if (i!=target && i!= src && A[src][i] != I) {
-                            boolean[] visited = new boolean[nodeCount];
-                            visited[src] = true;
-                            min = Math.min(min, findMinCost(src, target, visited, i, A[src][i]));
-                        }
-                    }
-                    minDist[src][target] = min;
-                    System.out.println("src " + src + " target " + target + " minDist " + min);
-                }
+        for (int i=0; i<nodeCount; ++i) {
+            if (!visited[i]) {
+                topo(i);
             }
         }
 
+        while (stack.size() > 0) {
+
+            System.out.print(stack.removeFirst() + " ");
+
+        }
     }
 
-    private int findMinCost(int src, int target, boolean[] visited, int thisNode, int costSoFar) {
+    private void topo(int node) {
+        visited[node] = true;
 
-        if (thisNode == target) {
-            return costSoFar;
-        }
-
-        int min;
-        if (minDist[thisNode][target] != null && minDist[thisNode][target] != I ) {
-            min = minDist[thisNode][target];
-        } else {
-
-            min = A[thisNode][target];
-            for (int subNode = 0; subNode < nodeCount; ++subNode) {
-                if (!visited[subNode] && A[thisNode][subNode] != I) {
-                    boolean[] thisVisited = Arrays.copyOf(visited, visited.length);
-                    thisVisited[subNode] = true;
-                    min = Math.min(min, findMinCost(src, target, thisVisited, subNode, A[thisNode][subNode]));
-                }
+        for (int i=0; i<nodeCount; ++i) {
+            if (!visited[i] && A[node][i] != I && node != i) {
+                topo(i);
             }
-
-            minDist[thisNode][target] = min;
         }
 
-        return (min == I) ? I : min + costSoFar;
+        stack.addFirst(node);
     }
-
 
 }
-
-
-
-
-
-
-
-
