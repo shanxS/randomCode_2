@@ -22,11 +22,12 @@ class Algo {
     };
 
     private int nodeCount;
-
+    private Integer[][] minDist;
 
     public void run() {
 
         nodeCount = A.length;
+        minDist = new Integer[A.length][A.length];
 
         for (int src = 0; src < nodeCount; ++src) {
             for (int target=0; target<nodeCount; ++target) {
@@ -40,8 +41,8 @@ class Algo {
                             min = Math.min(min, findMinCost(src, target, visited, i, A[src][i]));
                         }
                     }
-
-                    System.out.println("src " + src + " taget " + target + " minDist " + min);
+                    minDist[src][target] = min;
+                    System.out.println("src " + src + " target " + target + " minDist " + min);
                 }
             }
         }
@@ -54,17 +55,24 @@ class Algo {
             return costSoFar;
         }
 
-        int min = A[thisNode][target];
-        for (int subNode = 0; subNode<nodeCount; ++subNode) {
-            if (!visited[subNode] && A[thisNode][subNode] != I) {
-                boolean[] thisVisited = Arrays.copyOf(visited, visited.length);
-                thisVisited[subNode] = true;
-                min = Math.min(min, findMinCost(src, target, thisVisited, subNode, A[thisNode][subNode]));
+        int min;
+        if (minDist[thisNode][target] != null && minDist[thisNode][target] != I ) {
+            min = minDist[thisNode][target];
+        } else {
+
+            min = A[thisNode][target];
+            for (int subNode = 0; subNode < nodeCount; ++subNode) {
+                if (!visited[subNode] && A[thisNode][subNode] != I) {
+                    boolean[] thisVisited = Arrays.copyOf(visited, visited.length);
+                    thisVisited[subNode] = true;
+                    min = Math.min(min, findMinCost(src, target, thisVisited, subNode, A[thisNode][subNode]));
+                }
             }
+
+            minDist[thisNode][target] = min;
         }
 
         return (min == I) ? I : min + costSoFar;
-
     }
 
 
