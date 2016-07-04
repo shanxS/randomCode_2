@@ -1,61 +1,95 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.*;
 
 public class Main {
-
-    public static void main(String[] args) {
+    public static void main(String[] arg) {
         Algo algo = new Algo();
         algo.run();
     }
-
 }
 
 class Algo {
 
-    private final int I = Integer.MAX_VALUE;
     private int[][] A = {
-            {0,I,I,I,I,I},
-            {I,0,I,I,I,I},
-            {I,I,0,1,I,I},
-            {I,1,I,0,I,I},
-            {1,1,I,I,0,I},
-            {1,I,1,I,I,0}
-
-
+            {0,1,1},
+            {1,0,1},
+            {1,0,0}
     };
-
-    private boolean[] visited;
+    private Set<Integer> black, white;
+    private final int BLACK = 0, WHITE = 1, CONNECTED = 1;
     private int nodeCount;
-    private Deque<Integer> stack;
 
     public void run() {
+        black = new HashSet<>();
+        white = new HashSet<>();
+
         nodeCount = A.length;
-        visited = new boolean[nodeCount];
-        stack = new ArrayDeque<>();
-
         for (int i=0; i<nodeCount; ++i) {
-            if (!visited[i]) {
-                topo(i);
+            if (!isBipartite(i)) {
+                System.out.print("broke at " + i);
+                break;
             }
-        }
-
-        while (stack.size() > 0) {
-
-            System.out.print(stack.removeFirst() + " ");
-
         }
     }
 
-    private void topo(int node) {
-        visited[node] = true;
+    private boolean isBipartite(int node) {
+        if (black.contains(node) && white.contains(node)) {
+            return false;
+        }
 
-        for (int i=0; i<nodeCount; ++i) {
-            if (!visited[i] && A[node][i] != I && node != i) {
-                topo(i);
+        Integer color = null;
+        if (black.contains(node)) {
+            color = BLACK;
+        } else if (color == null && white.contains(node)) {
+            color = WHITE;
+        } else {
+            color = BLACK;
+            black.add(node);
+        }
+
+        for (int child=0; child<nodeCount; ++child) {
+            if (A[node][child] == CONNECTED) {
+                Integer childColor = getPreAssignedColor(child);
+                if (childColor == null) {
+                    addToOppositeSet(child, color);
+                } else if (childColor.equals(color)) {
+                    return false;
+                }
             }
         }
 
-        stack.addFirst(node);
+        return true;
+    }
+
+    private void addToOppositeSet(int node, int color) {
+        if (color == BLACK) {
+            white.add(node);
+        } else {
+            black.add(node);
+        }
+    }
+
+    private Integer getPreAssignedColor(int node) {
+        if (black.contains(node)) {
+            return BLACK;
+        } else if (white.contains(node)) {
+            return WHITE;
+        } else {
+            return null;
+        }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
